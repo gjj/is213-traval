@@ -1,9 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_catalog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_catalog'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -23,28 +29,28 @@ class CatalogItem(db.Model):
         self.price = price
 
     def json(self):
-        return {"id": self.id, "title": self.title, "description": self.description, "applicable_date": self.applicable_date, "price": self.price}
+        return {"id": self.id, "title": self.title, "description": self.description, "price": self.price}
 
 
-@app.route("/catalog-items")
+@app.route("/catalog_items")
 def get_all():
-    return jsonify({"catalog-items": [item.json() for item in CatalogItem.query.all()]})
+    return jsonify({"catalog_items": [item.json() for item in CatalogItem.query.all()]})
 
 
-@app.route("/catalog-items/<string:id>")
+@app.route("/catalog_items/<string:id>")
 def find_by_id(id):
     item = CatalogItem.query.filter_by(id=id).first()
     if item:
         return jsonify(item.json())
     return jsonify({"message": "Item not found."}), 404
 
-@app.route("/catalog-items", methods=['POST'])
+@app.route("/catalog_items", methods=['POST'])
 def create_item():
-    if (CatalogItem.query.filter_by(id=id).first()):
-        return jsonify({"message": "An item with ID '{}' already exists.".format(id)}), 400
-    
     data = request.get_json()
-    item = CatalogItem(id, **data)
+    item = CatalogItem(data)
+
+    if (CatalogItem.query.filter_by(id = item.id).first()):
+        return jsonify({"message": "An item with ID '{}' already exists.".format(item.id)}), 400
     
     try:
         db.session.add(item)
