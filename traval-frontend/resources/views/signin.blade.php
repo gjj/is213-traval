@@ -1,7 +1,7 @@
 @extends('partials.master')
 
 @section('title')
-Home @stop
+Sign in @stop
 
 @section('styles')
 @endsection

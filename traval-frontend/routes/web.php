@@ -13,16 +13,20 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
+/* Homepage */
 Route::get('/', function () {
     return view('home');
-});
+})
+->name('home');
 
-
+/* Sign in */
 Route::get('/signin', function () {
     return view('signin');
-});
+})
+->name('signin');
 
-
+/* Activity Item */
 Route::get('/activity/{id}', function () {
     return view('home');
-});
+})
+->name('activity.item');

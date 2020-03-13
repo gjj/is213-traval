@@ -24,29 +24,29 @@ Home @stop
         <div class="mb-lg-n16">
             <div class="card border-0 tab-shadow tab-shadow">
                 <div class="card-body mt-1">
-                    <form class="js-validate">
+                    <form action="" method="post">
                         <div class="row d-block nav-select d-lg-flex mb-lg-3 px-3">
-                            <div class="col-sm-12 col-lg-3dot7 mb-4 mb-lg-0 ">
+                            <div class="col-sm-12 col-lg-10 mb-4 mb-lg-0 ">
                                 <!-- Input -->
-                                <span class="d-block text-gray-1 text-left font-weight-normal mb-0">Destination</span>
+                                <span class="d-block text-gray-1 text-left font-weight-normal mb-0">What do you want to do?</span>
 
-                                <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="What do you want to do?">
+                                <input type="text" class="form-control" id="search" placeholder="Search by activity, destination or attraction">
                             </div>
-
-                            <div class="col-sm-12 col-lg-1dot8 align-self-lg-end text-md-right">
-                                <button type="submit" class="btn btn-primary text-white font-weight-bold btn-md mb-xl-0 mb-lg-1 transition-3d-hover"><i class="flaticon-magnifying-glass font-size-20 mr-2"></i>Search</button>
+                            <div class="col-sm-12 col-lg-2 align-self-lg-end text-md-right">
+                                <button type="submit" class="btn btn-primary text-white font-weight-bold btn-md mb-xl-0 mb-lg-1 transition-3d-hover">
+                                    <i class="flaticon-magnifying-glass font-size-20 mr-2"></i>
+                                    Search
+                                </button>
                             </div>
                         </div>
                         <!-- End Checkbox -->
                     </form>
                 </div>
             </div>
-            <!-- End Search Jobs Form -->
         </div>
     </div>
 </div>
-<!-- ========== END HERO ========== -->
-<!-- ========== Unmissable Destination ========== -->
+
 <div class="container mb-5 mb-lg-8 pb-lg-1">
     <div class="w-md-80 w-lg-50 text-center mx-md-auto mt-3">
         <h2 class="section-title text-black font-size-30 font-weight-bold mb-5">Unmissable Destinations</h2>
@@ -59,7 +59,7 @@ Home @stop
                     <h6 class="font-size-xs-30 font-size-50 font-weight-bold text-dark-2 mb-1">New York</h6>
                     <p class="text-lh-lg text-dark-2 pr-xl-14 mb-4">Take in the iconic skyline and visit the
                         neighborhood hangouts that you’ve only ever seen on TV.</p>
-                    <a href="../others/destination.html" class="btn btn-outline-dark-2 rounded height-51 width-223 transition-3d-hover d-flex align-items-center justify-content-center border-width-2 mb-1">Explore
+                    <a href="#" class="btn btn-outline-dark-2 rounded height-51 width-223 transition-3d-hover d-flex align-items-center justify-content-center border-width-2 mb-1">Explore
                         things to do</a>
                 </div>
             </div>
@@ -70,12 +70,12 @@ Home @stop
                     <div class="mb-3 mb-lg-2">
                         <div class="h-100">
                             <div class="position-relative">
-                                <a href="../others/destination.html" class="d-block gradient-overlay-half-bg-gradient-v6">
+                                <a href="#" class="d-block gradient-overlay-half-bg-gradient-v6">
                                     <img class="img-fluid rounded-xs min-height-230 bg-img-hero w-100" src="assets/img/300x230/img53.jpg" alt="Image-Description">
                                 </a>
                                 <div class="position-absolute bottom-0 left-0 right-0">
                                     <div class="px-4 pb-3">
-                                        <a href="../others/destination.html" class="d-block">
+                                        <a href="#" class="d-block">
                                             <div class="d-flex align-items-center font-size-14 text-white">
                                                 <i class="icon flaticon-pin-1 mr-2 font-size-20"></i> Greater
                                                 London, United Kingdom
