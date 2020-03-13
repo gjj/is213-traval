@@ -8,7 +8,7 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-class Users(db.Model):
+class User(db.Model):
     __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
@@ -29,25 +29,25 @@ class Users(db.Model):
         return {"id": self.id, "password": self.password, "name": self.name, "email": self.email, "phone": self.phone}
 
 
-# @app.route("/catalog-items")
+# @app.route("/users")
 # def get_all():
-#     return jsonify({"catalog-items": [book.json() for book in CatalogItem.query.all()]})
+#     return jsonify({"users": [user.json() for user in User.query.all()]})
 
 
-@app.route("/user/<int:id>")
+@app.route("/users/<int:id>")
 def find_by_id(id):
-    item = Users.query.filter_by(id=id).first()
+    item = User.query.filter_by(id=id).first()
     if item:
         return jsonify(item.json())
     return jsonify({"message": "Item not found."}), 404
 
-@app.route("/user", methods=['POST'])
+@app.route("/users", methods=['POST'])
 def create_item():
-    if (Users.query.filter_by(email=email).first()):
+    if (User.query.filter_by(email=email).first()):
         return jsonify({"message": "A user with email '{}' already exists.".format(email)}), 400
     
     data = request.get_json()
-    user = Users(email,**data)
+    user = User(email,**data)
 
     try:
         db.session.add(user)

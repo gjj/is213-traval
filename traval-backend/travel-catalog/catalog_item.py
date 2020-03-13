@@ -11,24 +11,24 @@ db = SQLAlchemy(app)
 class CatalogItem(db.Model):
     __tablename__ = 'catalog_items'
 
-    isbn13 = db.Column(db.String(13), primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
+    id = db.Column(db.Integer, primary_key=True)
+    title = db.Column(db.String(80), nullable=False)
+    description = db.Column(db.String(1000), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
-    availability = db.Column(db.Integer)
 
-    def __init__(self, isbn13, title, price, availability):
-        self.isbn13 = isbn13
+    def __init__(self, id, title, description, price):
+        self.id = id
         self.title = title
+        self.description = description
         self.price = price
-        self.availability = availability
 
     def json(self):
-        return {"isbn13": self.isbn13, "title": self.title, "price": self.price, "availability": self.availability}
+        return {"id": self.id, "title": self.title, "description": self.description, "applicable_date": self.applicable_date, "price": self.price}
 
 
 @app.route("/catalog-items")
 def get_all():
-    return jsonify({"catalog-items": [book.json() for book in CatalogItem.query.all()]})
+    return jsonify({"catalog-items": [item.json() for item in CatalogItem.query.all()]})
 
 
 @app.route("/catalog-items/<string:id>")
@@ -40,11 +40,11 @@ def find_by_id(id):
 
 @app.route("/catalog-items", methods=['POST'])
 def create_item():
+    if (CatalogItem.query.filter_by(id=id).first()):
+        return jsonify({"message": "An item with ID '{}' already exists.".format(id)}), 400
+    
     data = request.get_json()
-    item = CatalogItem(**data)
-
-    # if (CatalogItem.query.filter_by(id=id).first()):
-    #     return jsonify({"message": "A book with isbn13 '{}' already exists.".format(isbn13)}), 400
+    item = CatalogItem(id, **data)
     
     try:
         db.session.add(item)
