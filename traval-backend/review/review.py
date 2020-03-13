@@ -1,57 +1,85 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_catalog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_catalog'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-class CatalogItem(db.Model):
-    __tablename__ = 'catalog_items'
 
-    isbn13 = db.Column(db.String(13), primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
-    price = db.Column(db.Float(precision=2), nullable=False)
-    availability = db.Column(db.Integer)
+class Review(db.Model):
+    __tablename__ = 'reviews'
 
-    def __init__(self, isbn13, title, price, availability):
-        self.isbn13 = isbn13
-        self.title = title
-        self.price = price
-        self.availability = availability
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    order_id = db.Column(db.Integer, nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    message = db.Column(db.String(800), nullable=False)
+    status = db.Column(db.String(8), nullable=False)
+
+    def __init__(self, id, title, description, price):
+        self.id = id
+        self.user_id = user_id
+        self.order_id = order_id
+        self.datetime = datetime
+        self.rating = rating
+        self.message = message
+        self.status = status
 
     def json(self):
-        return {"isbn13": self.isbn13, "title": self.title, "price": self.price, "availability": self.availability}
+        return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "datetime": self.datetime, "rating": self.rating, "message": self.message, "status": self.status}
+
+class ReviewPhoto(db.Model):
+    __tablename__ = 'review_photos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    review_id = db.Column(db.Integer, nullable=False)
+    photo_url = db.Column(db.String(100), nullable=False)
+
+    def __init__(self, id, review_id, photo_url):
+        self.id = id
+        self.review_id = review_id
+        self.photo_url = photo_url
+        
+    def json(self):
+        return {"id": self.id, "review_id": self.review_id, "photo_url": self.photo_url}
 
 
-@app.route("/catalog-items")
+@app.route("/reviews")
 def get_all():
-    return jsonify({"catalog-items": [book.json() for book in CatalogItem.query.all()]})
+    return jsonify({"reviews": [review.json() for review in Review.query.all()]})
 
 
-@app.route("/catalog-items/<string:id>")
-def find_by_id(id):
-    item = CatalogItem.query.filter_by(id=id).first()
-    if item:
-        return jsonify(item.json())
-    return jsonify({"message": "Item not found."}), 404
+# @app.route("/reviews/<string:id>")
+# def find_by_id(id):
+#     review = Review.query.filter_by(id=id).first()
+#     if review:
+#         return jsonify(review.json())
+#     return jsonify({"message": "Review not found."}), 404
 
-@app.route("/catalog-items", methods=['POST'])
-def create_item():
+@app.route("/reviews", methods=['POST'])
+def create_review():
     data = request.get_json()
-    item = CatalogItem(**data)
+    review = Review(data)
 
-    # if (CatalogItem.query.filter_by(id=id).first()):
-    #     return jsonify({"message": "A book with isbn13 '{}' already exists.".format(isbn13)}), 400
+    # if (Review.query.filter_by(id = review.id).first()):
+    #     return jsonify({"message": "A review with ID '{}' already exists.".format(review.id)}), 400
     
     try:
-        db.session.add(item)
+        db.session.add(review)
         db.session.commit()
     except:
-        return jsonify({"message": "An error occurred creating the catalog item."}), 500
-    return jsonify(item.json()), 201
+        return jsonify({"message": "An error occurred creating the catalog review."}), 500
+    return jsonify(review.json()), 201
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
