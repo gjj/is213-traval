@@ -3,51 +3,54 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_catalog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-class CatalogItem(db.Model):
-    __tablename__ = 'catalog_items'
+class Users(db.Model):
+    __tablename__ = 'users'
 
-    isbn13 = db.Column(db.String(13), primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
-    price = db.Column(db.Float(precision=2), nullable=False)
-    availability = db.Column(db.Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    password = db.Column(db.String(90), nullable=False)
+    name = db.Column(db.String(90), nullable=False)
+    email = db.Column(db.String(180), nullable=False)
+    phone = db.Column(db.String(15), nullable=False)
 
-    def __init__(self, isbn13, title, price, availability):
-        self.isbn13 = isbn13
-        self.title = title
-        self.price = price
-        self.availability = availability
+
+    def __init__(self, id, password, name, email, phone):
+        self.id = id
+        self.password = password
+        self.name = name
+        self.email = email
+        self.phone = phone
 
     def json(self):
-        return {"isbn13": self.isbn13, "title": self.title, "price": self.price, "availability": self.availability}
+        return {"id": self.id, "password": self.password, "name": self.name, "email": self.email, "phone": self.phone}
 
 
-@app.route("/catalog-items")
-def get_all():
-    return jsonify({"catalog-items": [book.json() for book in CatalogItem.query.all()]})
+# @app.route("/catalog-items")
+# def get_all():
+#     return jsonify({"catalog-items": [book.json() for book in CatalogItem.query.all()]})
 
 
-@app.route("/catalog-items/<string:id>")
+@app.route("/user/<int:id>")
 def find_by_id(id):
-    item = CatalogItem.query.filter_by(id=id).first()
+    item = Users.query.filter_by(id=id).first()
     if item:
         return jsonify(item.json())
     return jsonify({"message": "Item not found."}), 404
 
-@app.route("/catalog-items", methods=['POST'])
+@app.route("/user", methods=['POST'])
 def create_item():
-    data = request.get_json()
-    item = CatalogItem(**data)
-
-    # if (CatalogItem.query.filter_by(id=id).first()):
-    #     return jsonify({"message": "A book with isbn13 '{}' already exists.".format(isbn13)}), 400
+    if (Users.query.filter_by(email=email).first()):
+        return jsonify({"message": "A user with email '{}' already exists.".format(email)}), 400
     
+    data = request.get_json()
+    user = Users(email,**data)
+
     try:
-        db.session.add(item)
+        db.session.add(user)
         db.session.commit()
     except:
         return jsonify({"message": "An error occurred creating the catalog item."}), 500
