@@ -18,6 +18,11 @@ Route::get('/', function () {
 });
 
 
+Route::get('/signin', function () {
+    return view('signin');
+});
+
+
 Route::get('/activity/{id}', function () {
     return view('home');
 });
