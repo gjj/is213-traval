@@ -25,6 +25,12 @@ Route::get('/signin', function () {
 })
 ->name('signin');
 
+/* Search */
+Route::get('/search', function () {
+    return view('search');
+})
+->name('search');
+
 /* Activity Item */
 Route::get('/activity/{id}', function () {
     return view('home');
