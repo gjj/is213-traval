@@ -1,9 +1,15 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_users'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_users'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -36,18 +42,18 @@ class User(db.Model):
 
 @app.route("/users/<int:id>")
 def find_by_id(id):
-    item = User.query.filter_by(id=id).first()
-    if item:
-        return jsonify(item.json())
-    return jsonify({"message": "Item not found."}), 404
+    user = User.query.filter_by(id=id).first()
+    if user:
+        return jsonify(user.json())
+    return jsonify({"message": "User not found."}), 404
 
 @app.route("/users", methods=['POST'])
 def create_item():
-    if (User.query.filter_by(email=email).first()):
-        return jsonify({"message": "A user with email '{}' already exists.".format(email)}), 400
-    
     data = request.get_json()
-    user = User(email,**data)
+    user = User(data)
+
+    if (User.query.filter_by(email = user.email).first()):
+        return jsonify({"message": "A user with email '{}' already exists.".format(email)}), 400
 
     try:
         db.session.add(user)
