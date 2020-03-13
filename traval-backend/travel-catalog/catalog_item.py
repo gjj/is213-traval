@@ -31,6 +31,20 @@ class CatalogItem(db.Model):
     def json(self):
         return {"id": self.id, "title": self.title, "description": self.description, "price": self.price}
 
+class CatalogItemPhoto(db.Model):
+    __tablename__ = 'catalog_photos'
+
+    id = db.Column(db.Integer, primary_key=True)
+    item_id = db.Column(db.Integer, nullable=False)
+    photo_url = db.Column(db.String(100), nullable=False)
+
+    def __init__(self, id, item_id, photo_url):
+        self.id = id
+        self.item_id = item_id
+        self.photo_url = photo_url
+    def json(self):
+        return {"id": self.id, "item_id": self.item_id, "photo_url": self.photo_url}
+
 
 @app.route("/catalog_items")
 def get_all():
