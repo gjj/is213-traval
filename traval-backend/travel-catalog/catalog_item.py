@@ -55,7 +55,10 @@ def get_all():
 def find_by_id(id):
     item = CatalogItem.query.filter_by(id=id).first()
     if item:
-        photos = {"catalog_items_photos": [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]}
+        retrieved_photos = [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]
+        photos = {"catalog_items_photos":[]}
+        for photo in retrieved_photos:
+            photos["catalog_items_photos"].append(photo["photo_url"])
         updated_item = item.json()
         updated_item.update(photos)
         return jsonify(updated_item)
