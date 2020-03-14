@@ -193,12 +193,16 @@ Search @stop
 
 @section('scripts')
 <script type="text/javascript">
-    var apiUrl = "http://localhost:5000/catalog_items"
+    var apiUrl = "http://localhost:5000/catalog_items";
+    var id = {{ Request()->id }};
 
     $.ajax({
-        url: apiUrl,
+        url: apiUrl + "/" + id,
         success: function(data) {
-            console.log(data);
+            $('#item-image').attr('src', data.photo_urls[0]); // use first pic for now
+            $('#item-title').text(data.title);
+            $('#item-description').text(data.description);
+
         }
     });
 </script>
