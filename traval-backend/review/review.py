@@ -56,7 +56,15 @@ class ReviewPhoto(db.Model):
 
 @app.route("/reviews")
 def get_all():
-    return jsonify({"reviews": [review.json() for review in Review.query.all()]})
+    all_reviews = {"reviews": [review.json() for review in Review.query.all()]}
+        for review_dict in all_reviews["reviews"]:
+        id = review_dict["id"]
+        review = CatalogItem.query.filter_by(id=id).first()
+        if review:
+            photos = get_photos(review, id)
+            review_dict.update(photos)               
+    return jsonify(all_reviews)
+    #return jsonify({"reviews": [review.json() for review in Review.query.all()]})
 
 
 # @app.route("/reviews/<string:id>")
@@ -80,6 +88,14 @@ def create_review():
     except:
         return jsonify({"message": "An error occurred creating the catalog review."}), 500
     return jsonify(review.json()), 201
+
+def get_photos(review, id):
+    if review:
+        retrieved_photos = [review_photos.json() for review_photos in ReviewPhoto.query.filter_by(review_id=id)]
+        photos = {
+            "photo_urls": [photo["photo_url"] for photo in retrieved_photos]
+        }
+        return photos
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
