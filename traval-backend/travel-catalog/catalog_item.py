@@ -48,8 +48,15 @@ class CatalogItemPhoto(db.Model):
 
 @app.route("/catalog_items")
 def get_all():
-
-    return jsonify({"catalog_items": [item.json() for item in CatalogItem.query.all()]})
+    all_items = {"catalog_items": [item.json() for item in CatalogItem.query.all()]}
+    for item_dict in all_items["catalog_items"]:
+        id = item_dict["id"]
+        item = CatalogItem.query.filter_by(id=id).first()
+        if item:
+            retrieved_photos = [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]
+            photos = {"catalog_items_photos":[photo["photo_url"] for photo in retrieved_photos]}
+            item_dict.update(photos)               
+    return jsonify(all_items)
 
 
 @app.route("/catalog_items/<string:id>")
