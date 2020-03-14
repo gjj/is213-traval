@@ -40,7 +40,7 @@ class User(db.Model):
 #     return jsonify({"users": [user.json() for user in User.query.all()]})
 
 
-@app.route("/users/<int:id>")
+@app.route("/users/<string:id>")
 def find_by_id(id):
     user = User.query.filter_by(id=id).first()
     if user:

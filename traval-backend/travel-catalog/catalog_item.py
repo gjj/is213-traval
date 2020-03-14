@@ -55,7 +55,10 @@ def get_all():
 def find_by_id(id):
     item = CatalogItem.query.filter_by(id=id).first()
     if item:
-        return jsonify(item.json())
+        photos = {"catalog_items_photos": [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]}
+        updated_item = item.json()
+        updated_item.update(photos)
+        return jsonify(updated_item)
     return jsonify({"message": "Item not found."}), 404
 
 @app.route("/catalog_items", methods=['POST'])
