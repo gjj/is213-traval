@@ -50,6 +50,15 @@ class CatalogItemPhoto(db.Model):
         return {"id": self.id, "item_id": self.item_id, "photo_url": self.photo_url}
 
 
+def get_photos(item, id):
+    if item:
+        retrieved_photos = [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]
+        photos = {
+            "photo_urls": [photo["photo_url"] for photo in retrieved_photos]
+        }
+        return photos
+
+
 @app.route("/catalog_items")
 def get_all():
     all_items = {"catalog_items": [item.json() for item in CatalogItem.query.all()]}
@@ -60,7 +69,6 @@ def get_all():
             photos = get_photos(item, id)
             item_dict.update(photos)               
     return jsonify(all_items)
-
 
 @app.route("/catalog_items/<string:id>")
 def find_by_id(id):
@@ -76,10 +84,8 @@ def find_by_id(id):
 def create_item():
     data = request.get_json()
     item = CatalogItem(data)
-
     if (CatalogItem.query.filter_by(id = item.id).first()):
         return jsonify({"message": "An item with ID '{}' already exists.".format(item.id)}), 400
-    
     try:
         db.session.add(item)
         db.session.commit()
@@ -87,14 +93,6 @@ def create_item():
         return jsonify({"message": "An error occurred creating the catalog item."}), 500
     return jsonify(item.json()), 201
 
-
-def get_photos(item, id):
-    if item:
-        retrieved_photos = [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]
-        photos = {
-            "photo_urls": [photo["photo_url"] for photo in retrieved_photos]
-        }
-        return photos
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

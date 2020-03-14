@@ -35,11 +35,6 @@ class User(db.Model):
         return {"id": self.id, "password": self.password, "name": self.name, "email": self.email, "phone": self.phone}
 
 
-# @app.route("/users")
-# def get_all():
-#     return jsonify({"users": [user.json() for user in User.query.all()]})
-
-
 @app.route("/users/<string:id>")
 def find_by_id(id):
     user = User.query.filter_by(id=id).first()
@@ -51,16 +46,15 @@ def find_by_id(id):
 def create_item():
     data = request.get_json()
     user = User(data)
-
     if (User.query.filter_by(email = user.email).first()):
         return jsonify({"message": "A user with email '{}' already exists.".format(email)}), 400
-
     try:
         db.session.add(user)
         db.session.commit()
     except:
         return jsonify({"message": "An error occurred creating the catalog item."}), 500
     return jsonify(item.json()), 201
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)

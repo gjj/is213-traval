@@ -54,41 +54,6 @@ class ReviewPhoto(db.Model):
         return {"id": self.id, "review_id": self.review_id, "photo_url": self.photo_url}
 
 
-@app.route("/reviews")
-def get_all():
-    all_reviews = {"reviews": [review.json() for review in Review.query.all()]}
-    for review_dict in all_reviews["reviews"]:
-        id = review_dict["id"]
-        review = Review.query.filter_by(id=id).first()
-        if review:
-            photos = get_photos(review, id)
-            review_dict.update(photos)               
-    return jsonify(all_reviews)
-    #return jsonify({"reviews": [review.json() for review in Review.query.all()]})
-
-
-# @app.route("/reviews/<string:id>")
-# def find_by_id(id):
-#     review = Review.query.filter_by(id=id).first()
-#     if review:
-#         return jsonify(review.json())
-#     return jsonify({"message": "Review not found."}), 404
-
-@app.route("/reviews", methods=['POST'])
-def create_review():
-    data = request.get_json()
-    review = Review(data)
-
-    # if (Review.query.filter_by(id = review.id).first()):
-    #     return jsonify({"message": "A review with ID '{}' already exists.".format(review.id)}), 400
-    
-    try:
-        db.session.add(review)
-        db.session.commit()
-    except:
-        return jsonify({"message": "An error occurred creating the catalog review."}), 500
-    return jsonify(review.json()), 201
-
 def get_photos(review, id):
     if review:
         retrieved_photos = [review_photos.json() for review_photos in ReviewPhoto.query.filter_by(review_id=id)]
@@ -96,6 +61,44 @@ def get_photos(review, id):
             "photo_urls": [photo["photo_url"] for photo in retrieved_photos]
         }
         return photos
+
+
+# @app.route("/reviews")
+# def get_all():
+#     all_reviews = {"reviews": [review.json() for review in Review.query.all()]}
+#     for review_dict in all_reviews["reviews"]:
+#         id = review_dict["id"]
+#         review = Review.query.filter_by(id=id).first()
+#         if review:
+#             photos = get_photos(review, id)
+#             review_dict.update(photos)               
+#     return jsonify(all_reviews)
+#     #return jsonify({"reviews": [review.json() for review in Review.query.all()]})
+
+@app.route("/catalog_items/<string:order_id>/reviews")
+def get_by_order(order_id):
+    all_reviews = {"reviews": [review.json() for review in Review.query.filter_by(order_id=order_id).all()]}
+    for review_dict in all_reviews["reviews"]:
+        id = review_dict["id"]
+        review = Review.query.filter_by(id=id).first()
+        if review:
+            photos = get_photos(review, id)
+            review_dict.update(photos)               
+    return jsonify(all_reviews)
+
+@app.route("/catalog_items/<string:order_id>/review", methods=['POST'])
+def create_review(order_id):
+    data = request.get_json()
+    review = Review(data)
+    if (Review.query.filter_by(order_id=order_id).first()):
+        return jsonify({"message": "You have already left a review for this order."}), 400
+    try:
+        db.session.add(review)
+        db.session.commit()
+    except:
+        return jsonify({"message": "An error occurred creating the catalog review."}), 500
+    return jsonify(review.json()), 201
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
