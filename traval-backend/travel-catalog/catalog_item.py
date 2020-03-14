@@ -54,10 +54,7 @@ def get_all():
         id = item_dict["id"]
         item = CatalogItem.query.filter_by(id=id).first()
         if item:
-            retrieved_photos = [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]
-            photos = {
-                "photo_urls": [photo["photo_url"] for photo in retrieved_photos]
-            }
+            photos = get_photos(item, id)
             item_dict.update(photos)               
     return jsonify(all_items)
 
@@ -66,10 +63,7 @@ def get_all():
 def find_by_id(id):
     item = CatalogItem.query.filter_by(id=id).first()
     if item:
-        retrieved_photos = [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]
-        photos = {
-            "photo_urls": [photo["photo_url"] for photo in retrieved_photos]
-        }
+        photos = get_photos(item, id)
         updated_item = item.json()
         updated_item.update(photos)
         return jsonify(updated_item)
@@ -89,6 +83,15 @@ def create_item():
     except:
         return jsonify({"message": "An error occurred creating the catalog item."}), 500
     return jsonify(item.json()), 201
+
+
+def get_photos(item, id):
+    if item:
+        retrieved_photos = [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]
+        photos = {
+            "photo_urls": [photo["photo_url"] for photo in retrieved_photos]
+        }
+        return photos
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
