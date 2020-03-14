@@ -25,13 +25,13 @@ Home @stop
             <div class="mb-lg-n16">
                 <div class="card border-0 tab-shadow tab-shadow">
                     <div class="card-body mt-1">
-                        <form action="" method="post">
+                        <form action="{{ route('search') }}" method="get">
                             <div class="row d-block nav-select d-lg-flex mb-lg-3 px-3">
                                 <div class="col-sm-12 col-lg-10 mb-4 mb-lg-0 ">
                                     <!-- Input -->
                                     <span class="d-block text-gray-1 text-left font-weight-normal mb-0">What do you want to do?</span>
 
-                                    <input type="text" class="form-control" id="search" placeholder="Search by activity, destination or attraction">
+                                    <input type="text" name="q" id="search" class="form-control" placeholder="Search by activity, destination or attraction">
                                 </div>
                                 <div class="col-sm-12 col-lg-2 align-self-lg-end text-md-right">
                                     <button type="submit" class="btn btn-primary text-white font-weight-bold btn-md mb-xl-0 mb-lg-1 transition-3d-hover">

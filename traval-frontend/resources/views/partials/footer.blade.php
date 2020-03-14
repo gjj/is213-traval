@@ -27,6 +27,11 @@
 <script src="assets/js/components/hs.svg-injector.js"></script>
 <script src="assets/js/components/hs.quantity-counter.js"></script>
 
+<!-- Note: when deploying, replace "development.js" with "production.min.js". -->
+<script src="https://unpkg.com/react@16/umd/react.development.js" crossorigin></script>
+<script src="https://unpkg.com/react-dom@16/umd/react-dom.development.js" crossorigin></script>
+
+<script src="assets/js/react/index.js"></script>
 
 <!-- JS Plugins Init. -->
 <script>

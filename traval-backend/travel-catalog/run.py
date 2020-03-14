@@ -1,7 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 
-from catalog_item import *
+import catalog_item
 
 app = Flask(__name__)
 

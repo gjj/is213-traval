@@ -33,6 +33,19 @@ Route::get('/search', function () {
 
 /* Activity Item */
 Route::get('/activity/{id}', function () {
-    return view('home');
+    return view('activity.item');
 })
 ->name('activity.item');
+
+
+
+/* Payment */
+Route::get('/payment/checkout', function () {
+    return view('payment.checkout');
+})
+->name('payment.checkout');
+
+Route::get('/payment/result', function () {
+    return view('payment.result');
+})
+->name('payment.result');
