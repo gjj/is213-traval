@@ -8,6 +8,7 @@ load_dotenv()
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_catalog'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -54,7 +55,9 @@ def get_all():
         item = CatalogItem.query.filter_by(id=id).first()
         if item:
             retrieved_photos = [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]
-            photos = {"catalog_items_photos":[photo["photo_url"] for photo in retrieved_photos]}
+            photos = {
+                "photo_urls": [photo["photo_url"] for photo in retrieved_photos]
+            }
             item_dict.update(photos)               
     return jsonify(all_items)
 
@@ -64,7 +67,9 @@ def find_by_id(id):
     item = CatalogItem.query.filter_by(id=id).first()
     if item:
         retrieved_photos = [item_photos.json() for item_photos in CatalogItemPhoto.query.filter_by(item_id=id)]
-        photos = {"catalog_items_photos":[photo["photo_url"] for photo in retrieved_photos]}
+        photos = {
+            "photo_urls": [photo["photo_url"] for photo in retrieved_photos]
+        }
         updated_item = item.json()
         updated_item.update(photos)
         return jsonify(updated_item)
