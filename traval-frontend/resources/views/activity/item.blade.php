@@ -9,7 +9,7 @@ Search @stop
 @section('content')
 
 <div class="mb-4 mb-lg-8">
-    <img class="img-fluid" src="assets/img/1920x600/img3.jpg" alt="Image">
+    <img class="img-fluid" src="" alt="Image" id="item-image" />
 </div>
 <div class="container">
     <div class="row">
@@ -17,7 +17,9 @@ Search @stop
             <div class="d-block d-md-flex flex-center-between align-items-start mb-3">
                 <div class="mb-1">
                     <div class="mb-2 mb-md-0">
-                        <h4 class="font-size-23 font-weight-bold mb-1 mr-3">Singapore Cable Car Sky Pass</h4>
+                        <h4 class="font-size-23 font-weight-bold mb-1 mr-3" id="item-title">
+                            @{{ title }}
+                        </h4>
                     </div>
                     <div class="d-block d-md-flex flex-horizontal-center">
                         <div class="mr-4 mb-2 mb-md-0">
@@ -25,29 +27,21 @@ Search @stop
                             <span class="font-size-14 text-gray-1 ml-2">(1,186 Reviews)</span>
                         </div>
                         <div class="d-block d-md-flex flex-horizontal-center font-size-14 text-gray-1 mb-2 mb-md-0">
-                            <i class="icon flaticon-placeholder mr-2 font-size-20"></i> Greater London, United Kingdom
+                            <i class="icon flaticon-placeholder mr-2 font-size-20"></i>
+                            <div id="item-location">@{{ item_location }}</div>
                             <a href="#" class="ml-1 d-block d-md-inline"> - View on map</a>
                         </div>
                     </div>
                 </div>
-                <ul class="list-group list-group-borderless list-group-horizontal custom-social-share">
-                    <li class="list-group-item px-1">
-                        <a href="#" class="height-45 width-45 border rounded border-width-2 flex-content-center">
-                            <i class="flaticon-like font-size-18 text-dark"></i>
-                        </a>
-                    </li>
-                    <li class="list-group-item px-1">
-                        <a href="#" class="height-45 width-45 border rounded border-width-2 flex-content-center">
-                            <i class="flaticon-share font-size-18 text-dark"></i>
-                        </a>
-                    </li>
-                </ul>
             </div>
-            
+
             <div class="border-top pt-4 border-bottom position-relative">
                 <h5 class="font-size-21 font-weight-bold text-dark mb-3">
                     Description
                 </h5>
+                <p id="item-description">
+                    @{{ item_description }}
+                </p>
                 <p>Explore one of the world’s best art museums at your own pace with your ticket to the Louvre. Skip the line and walk straight inside, after a security check.</p>
                 <p class="mb-4">Once inside the historic palace located on the Right Bank of the Seine, see unmissable and iconic sights such as the Mona Lisa and Venus de Milo. Discover masterpieces of the Renaissance and ancient Egyptian relics, along with paintings from the 13th to 20th centuries, prints from the Royal Collection, and much more.</p>
                 <p class="mb-4">The museum first opened on August 10 1793 with an exhibition of just 537 paintings. Despite closing in 1796, due to structural problems, it reopened in 1801 as the Musée Napoléon with a larger collection. Many works were seized and returned to their original owners after the defeat of Napoleon at Waterloo.</p>
@@ -90,7 +84,7 @@ Search @stop
                 </h5>
                 <iframe src="https://www.google.com/maps/embed?pb=!1m26!1m12!1m3!1d7772.225184901051!2d80.28441927545006!3d13.092050163095971!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!4m11!3e0!4m3!3m2!1d13.098645!2d80.2916092!4m5!1s0x3a526f5213f46501%3A0x56d2a4b14dba42f2!2sMadras%20High%20Court%2C%20High%20Ct%20Rd%2C%20Parry&#39;s%20Corner%2C%20George%20Town%2C%20Chennai%2C%20Tamil%20Nadu%20600108!3m2!1d13.0867057!2d80.28774949999999!5e0!3m2!1sen!2sin!4v1580358870925!5m2!1sen!2sin" width="100%" height="480" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
             </div>
-            
+
             <div class="border-bottom py-4">
                 <h5 class="font-size-21 font-weight-bold text-dark mb-4">
                     Average Reviews
@@ -198,4 +192,14 @@ Search @stop
 @endsection
 
 @section('scripts')
+<script type="text/javascript">
+    var apiUrl = "http://localhost:5000/catalog_items"
+
+    $.ajax({
+        url: apiUrl,
+        success: function(data) {
+            console.log(data);
+        }
+    });
+</script>
 @endsection
