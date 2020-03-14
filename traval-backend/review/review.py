@@ -9,7 +9,7 @@ DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_catalog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_reviews'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -57,9 +57,9 @@ class ReviewPhoto(db.Model):
 @app.route("/reviews")
 def get_all():
     all_reviews = {"reviews": [review.json() for review in Review.query.all()]}
-        for review_dict in all_reviews["reviews"]:
+    for review_dict in all_reviews["reviews"]:
         id = review_dict["id"]
-        review = CatalogItem.query.filter_by(id=id).first()
+        review = Review.query.filter_by(id=id).first()
         if review:
             photos = get_photos(review, id)
             review_dict.update(photos)               
