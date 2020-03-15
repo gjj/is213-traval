@@ -63,17 +63,17 @@ def get_photos(review, id):
         return photos
 
 
-# @app.route("/reviews")
-# def get_all():
-#     all_reviews = {"reviews": [review.json() for review in Review.query.all()]}
-#     for review_dict in all_reviews["reviews"]:
-#         id = review_dict["id"]
-#         review = Review.query.filter_by(id=id).first()
-#         if review:
-#             photos = get_photos(review, id)
-#             review_dict.update(photos)               
-#     return jsonify(all_reviews)
-#     #return jsonify({"reviews": [review.json() for review in Review.query.all()]})
+@app.route("/reviews")
+def get_all():
+    all_reviews = {"reviews": [review.json() for review in Review.query.all()]}
+    for review_dict in all_reviews["reviews"]:
+        id = review_dict["id"]
+        review = Review.query.filter_by(id=id).first()
+        if review:
+            photos = get_photos(review, id)
+            review_dict.update(photos)               
+    return jsonify(all_reviews)
+
 
 @app.route("/catalog_items/<string:order_id>/reviews")
 def get_by_order(order_id):
@@ -98,12 +98,15 @@ def get_by_item(item_id):
             review_dict.update(photos)               
     return jsonify(all_reviews)
 
-@app.route("/catalog_items/<string:order_id>/review/<string:id>", methods=['POST'])
-def create_review(order_id):
+
+@app.route("/catalog_items/<string:order_id>/reviews", methods=['POST'])
+def create_review():
     data = request.get_json()
-    review = Review(id, order_id, **data)
-    if (Review.query.filter_by(order_id=order_id).first()):
-        return jsonify({"message": "You have already left a review for this order."}), 400
+    review = Review(**data)
+    if (Review.query.filter_by(filter_by(id = review.id).first()):
+        return jsonify({"message": "A review with id '{}' already exists.".format(user.id)}), 400
+    if (Review.query.filter_by(order_id = review.order_id).first()):
+        return jsonify({"message": "A review already exists for this order."}), 400
     try:
         db.session.add(review)
         db.session.commit()
