@@ -42,10 +42,10 @@ def find_by_id(id):
         return jsonify(user.json())
     return jsonify({"message": "User not found."}), 404
 
-@app.route("/users", methods=['POST'])
-def create_item():
+@app.route("/users/<string:id>", methods=['POST'])
+def create_item(id):
     data = request.get_json()
-    user = User(data)
+    user = User(id, **data)
     if (User.query.filter_by(email = user.email).first()):
         return jsonify({"message": "A user with email '{}' already exists.".format(email)}), 400
     try:

@@ -98,10 +98,10 @@ def get_by_item(item_id):
             review_dict.update(photos)               
     return jsonify(all_reviews)
 
-@app.route("/catalog_items/<string:order_id>/review", methods=['POST'])
+@app.route("/catalog_items/<string:order_id>/review/<string:id>", methods=['POST'])
 def create_review(order_id):
     data = request.get_json()
-    review = Review(data)
+    review = Review(id, order_id, **data)
     if (Review.query.filter_by(order_id=order_id).first()):
         return jsonify({"message": "You have already left a review for this order."}), 400
     try:

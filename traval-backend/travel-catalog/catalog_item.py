@@ -80,10 +80,10 @@ def find_by_id(id):
         return jsonify(updated_item)
     return jsonify({"message": "Item not found."}), 404
 
-@app.route("/catalog_items", methods=['POST'])
-def create_item():
+@app.route("/catalog_items/<string:id>", methods=['POST'])
+def create_item(id):
     data = request.get_json()
-    item = CatalogItem(data)
+    item = CatalogItem(id, **data)
     if (CatalogItem.query.filter_by(id = item.id).first()):
         return jsonify({"message": "An item with ID '{}' already exists.".format(item.id)}), 400
     try:
