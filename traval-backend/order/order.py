@@ -6,7 +6,6 @@ from dotenv import load_dotenv
 import os
 
 import requests
-travel_catalog_url = "http://localhost:5004/catalog_items"
 
 load_dotenv()
 
@@ -48,9 +47,15 @@ class Orders(db.Model):
 
 @app.route("/orders/get_activity/<string:id>")
 def get_activity_details(id):
-    #send request to travel catalog
-    r = requests.get(travel_catalog_url + "/{id}")
+    #send request to travel catalog 
+    travel_catalog_url = "http://localhost:5004/catalog_items/" + id
+    r = requests.get(travel_catalog_url)
+    return r.json()
 
+#testing
+@app.route("/orders")
+def get_orders():
+    return jsonify({"orders": [Orders.json() for orders in Orders.query.all()]})
 
 
 # @app.route("/catalog-items")
