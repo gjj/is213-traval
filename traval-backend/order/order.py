@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import datetime
 
 from dotenv import load_dotenv
 import os
@@ -31,7 +32,7 @@ class Orders(db.Model):
     datetime = db.Column(db.Date, nullable=False)
     status = db.Column(db.Float(precision=2), nullable=False)
 
-    def __init__(id, user_id, item_id, quantity, datetime, status):
+    def __init__(self, id, user_id, item_id, quantity, datetime, status):
         self.id = id
         self.user_id = user_id
         self.item_id = item_id
@@ -48,9 +49,45 @@ class Orders(db.Model):
 
 @app.route("/orders/get_activity/<string:id>")
 def get_activity_details(id):
-    #send request to travel catalog
-    r = requests.get(travel_catalog_url + "/{id}")
+    #send request to travel catalog 
+    travel_catalog_url = "http://localhost:5004/catalog_items/" + id
+    r = requests.get(travel_catalog_url).json()
+    return r.json()
 
+#UC3
+#Retrieving order data based on given order.id
+@app.route("/orders/<string:id>")
+def get_orders(id):
+    order_item = Orders.query.filter_by(id=id).first()
+    if order_item:
+        return jsonify(order_item.json())
+    return jsonify({"message":"Order not found."}), 404
+
+
+
+""" Test POST with this format
+{
+	"id": "1",
+  "user_id": "2",
+  "item_id": "3",
+  "quantity": "4",
+  "datetime": "2020-03-15",
+  "status": 200
+}
+"""
+#UC1
+#Creating order
+@app.route("/orders", methods=['POST'])
+def create_orders():
+    data = request.get_json()
+    order = Orders(**data)
+    try:
+        db.session.add(order)
+        db.session.commit()
+    except:
+        return jsonify({"message": "An error occurred when creating the order"}), 500
+    
+    return jsonify(order.json()), 201
 
 
 # @app.route("/catalog-items")
