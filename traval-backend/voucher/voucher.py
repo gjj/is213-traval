@@ -3,27 +3,30 @@ from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_catalog'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_vouchers'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
 
-class CatalogItem(db.Model):
-    __tablename__ = 'catalog_items'
+class Vouchers(db.Model):
+    __tablename__ = 'vouchers'
 
-    isbn13 = db.Column(db.String(13), primary_key=True)
-    title = db.Column(db.String(64), nullable=False)
-    price = db.Column(db.Float(precision=2), nullable=False)
-    availability = db.Column(db.Integer)
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable=False)
+    order_id = db.Column(db.Integer, nullable=False)
+    applicable_date = db.Column(db.Date, nullable=False)
+    status = title = db.Column(db.String(8), nullable=False)
 
-    def __init__(self, isbn13, title, price, availability):
-        self.isbn13 = isbn13
-        self.title = title
-        self.price = price
-        self.availability = availability
+
+    def __init__(id, user_id, order_id, applicable_date, status):
+        self.id = id
+        self.user_id = user_id
+        self.order_id = order_id
+        self.applicable_date = applicable_date
+        self.status = status
 
     def json(self):
-        return {"isbn13": self.isbn13, "title": self.title, "price": self.price, "availability": self.availability}
+        return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "applicable_date": self.applicable_date, "status": self.status}
 
 
 @app.route("/catalog-items")
@@ -54,4 +57,4 @@ def create_item():
     return jsonify(item.json()), 201
 
 if __name__ == '__main__':
-    app.run(port=5000, debug=True)
+    app.run(port=5006, debug=True)
