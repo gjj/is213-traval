@@ -2,27 +2,26 @@
 
 const e = React.createElement;
 
+// Login button component
 class SignInButton extends React.Component {
     constructor(props) {
         super(props);
-        this.state = { liked: false };
+        this.state = { signedIn: false };
     }
 
     render() {
-        if (this.state.liked) {
-            return (
-                <a id="signUpDropdownInvoker" href="javascript:;" class="d-flex align-items-center text-dark" aria-controls="signUpDropdown" aria-haspopup="true" aria-expanded="true" data-unfold-event="click" data-unfold-target="#signUpDropdown" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-delay="300" data-unfold-hide-on-scroll="true" data-unfold-animation-in="slideInUp" data-unfold-animation-out="fadeOut">
-                    <i class="flaticon-user mr-2 ml-1 font-size-18"></i>
-                    <span class="d-inline-block font-size-14 mr-1">Sign in or Register</span>
-                </a>
+        if (!this.state.signedIn) {
+            return e('div', { className: "pl-4 ml-1 u-header__last-item-btn u-header__last-item-btn-xl" },
+                e('a', { className: "btn btn-wide rounded-sm btn-outline-white border-width-2 transition-3d-hover", href: "signin" },
+                    e('span', { className: "d-inline-block" }, "Sign in or Register")
+                )
             )
         }
-
-        return e(
-            'button',
-            { onClick: () => this.setState({ liked: true }) },
-            'Like'
-        );
+        return e('div', { className: "pl-4 ml-1 u-header__last-item-btn u-header__last-item-btn-xl" },
+            e('a', { className: "btn btn-wide rounded-sm btn-outline-white border-width-2 transition-3d-hover", href: "logout" },
+                e('span', { className: "d-inline-block" }, "Logout")
+            )
+        )
     }
 }
 
@@ -32,7 +31,7 @@ document.querySelectorAll('#react-login')
         // Read the comment ID from a data-* attribute.
         const commentID = parseInt(domContainer.dataset.commentid, 10);
         ReactDOM.render(
-            e(LikeButton, { commentID: commentID }),
+            e(SignInButton, { commentID: commentID }),
             domContainer
         );
     });

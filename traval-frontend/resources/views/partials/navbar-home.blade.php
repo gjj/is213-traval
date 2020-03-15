@@ -82,12 +82,7 @@
                 <!-- End Shopping Cart -->
 
                 <!-- Sign in -->
-                <div class="pl-4 ml-1 u-header__last-item-btn u-header__last-item-btn-xl">
-                    <a class="btn btn-wide rounded-sm btn-outline-white border-width-2 transition-3d-hover" href="{{ route('signin') }}">
-                        <i class="flaticon-user font-size-16 mr-2"></i>
-                        <span class="d-inline-block">Sign in or Register</span>
-                    </a>
-                </div>
+                <div id="react-login"></div>
             </nav>
         </div>
     </div>
