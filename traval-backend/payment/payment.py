@@ -12,6 +12,7 @@ import requests
 import pika
 import uuid
 import csv
+import sys
 
 load_dotenv()
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
@@ -53,7 +54,7 @@ def AMQP():
     exchangename="payment_direct"
     channel.exchange_declare(exchange=exchangename, exchange_type='direct') 
 
-    order = {"user_id": 1, "order_id": 1, "applicable_date": "2020-03-15"}
+    payment_info = {"user_id": 1, "order_id": 1, "applicable_date": "2020-03-15"}
     message = json.dumps(order, default=str) # convert a JSON object to a string
 
     #make sure queue exist and durable
@@ -64,6 +65,8 @@ def AMQP():
 
     #send the message to voucher
     channel.basic_publish(exchange=exchangename, routing_key="voucher.payment", body=message)
+
+    connection.close()
 
 
 @app.route("/payment", methods=['POST'])

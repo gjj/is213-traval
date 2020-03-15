@@ -12,6 +12,7 @@ import requests
 import pika
 import uuid
 import csv
+import sys
 
 load_dotenv()
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
@@ -64,9 +65,11 @@ def merchant_scan_voucher(id):
 
     return jsonify({"message":"Voucher not found."}), 404
 
-# @app.route("/voucher", methods=['POST'])
+#unconfirm#########
+# @app.route("/voucher", methods=['PUT']) 
 # def merchant_update_redeem_status(id, status):
 #     voucher_status= Vouchers.query.filter_by(id=id).first()
+#     voucher_status[4]['status']=status
 #     data = request.get_json()
 #     item = CatalogItem(data)
 
@@ -138,39 +141,34 @@ def receivePayment():
     channel.basic_qos(prefetch_count=1) 
 
     #consume
-    # channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
     channel.basic_consume(queue=queue_name)
+    
     channel.start_consuming() 
 
-# def callback(channel, method, properties, body): # required signature for the callback; no return
-#     print("Received an order by " + __file__)
-#     result = processOrder(json.loads(body))
+def callback(channel, method, properties, body): # required signature for the callback; no return
+    print("Received an order by " + __file__)
+    result = processVoucher(json.loads(body))
 
-#     json.dump(result, sys.stdout, default=str) 
+    json.dump(result, sys.stdout, default=str) 
+    channel.basic_ack(delivery_tag=method.delivery_tag) # 
 
-#     # prepare the reply message and send it out
-#     replymessage = json.dumps(result, default=str)
-#     replyqueuename="shipping.reply"
-
-#     channel.queue_declare(queue=replyqueuename, durable=True) 
-#     channel.queue_bind(exchange=exchangename, queue=replyqueuename, routing_key=replyqueuename) 
-#     channel.basic_publish(exchange=exchangename,
-#             routing_key=properties.reply_to, 
-#             body=replymessage, 
-#             properties=pika.BasicProperties(delivery_mode = 2, 
-#                 correlation_id = properties.correlation_id, 
-#             )
-#     )
-#     channel.basic_ack(delivery_tag=method.delivery_tag) # 
-
-# def processOrder(order):
-#     print("Processing an order:")
-#     print(order)
-
-#     result = {}
-#     # add to db
-
-#     return result
+def processVoucher(data):
+    print("Processing an Voucher Creation:")
+    voucher_id = 1
+    user_id = data["user_id"]
+    order_id = data["order_id"]
+    applicable_date = "2020-03-15"
+    status = "gucci"
+    order = Vouchers(voucher_id, user_id, order_id, applicable_date, status)
+    
+    try:
+        db.session.add(order)
+        db.session.commit()
+    except:
+        return jsonify({"message": "An error occurred when creating the order"}), 500
+    
+    return jsonify(order.json()), 201
 
 if __name__ == '__main__':
     app.run(port=5006, debug=True)
