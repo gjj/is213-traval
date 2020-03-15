@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 import datetime
+import json
 
 from dotenv import load_dotenv
 import os
@@ -44,27 +45,14 @@ class Orders(db.Model):
         return {"id": self.id, "user_id": self.user_id, "item_id": self.item_id,"quantity": self.quantity, "datetime": self.datetime, "status": self.status}
 
 
-"""UC2"""
-#Send request to traval catalog -> return activity details -> return activity + order details
-
-@app.route("/orders/get_activity/<string:id>")
-def get_activity_details(id):
-    #send request to travel catalog 
-    travel_catalog_url = "http://localhost:5004/catalog_items/" + id
-    r = requests.get(travel_catalog_url).json()
-    return r.json()
-
-#UC3
-#Retrieving order data based on given order.id
-@app.route("/orders/<string:id>")
-def get_orders(id):
+def retrieve_order_in_json(id):
     order_item = Orders.query.filter_by(id=id).first()
     if order_item:
         return jsonify(order_item.json())
     return jsonify({"message":"Order not found."}), 404
 
-
-
+#UC1
+#Creating order
 """ Test POST with this format
 {
 	"id": "1",
@@ -75,8 +63,6 @@ def get_orders(id):
   "status": 200
 }
 """
-#UC1
-#Creating order
 @app.route("/orders", methods=['POST'])
 def create_orders():
     data = request.get_json()
@@ -89,32 +75,38 @@ def create_orders():
     
     return jsonify(order.json()), 201
 
+#USC2
+#view all information of order + catalog
+@app.route("/orders/view/<string:id>")
+def view_order(id):
+    order_item = Orders.query.filter_by(id=id).first()
+    if not order_item:
+        return jsonify({"message":"Order not found."}), 404
+    item_id = str(order_item.item_id)
 
-# @app.route("/catalog-items")
-# def get_all():
-#     return jsonify({"catalog-items": [book.json() for book in CatalogItem.query.all()]})
+    #extract json data from catalog
+    travel_catalog_url = "http://localhost:5004/catalog_items"
+    r = requests.get(travel_catalog_url + "/" + item_id)
+    description = json.loads(r.text)["description"]
+    title = json.loads(r.text)["title"]
 
-# @app.route("/catalog-items/<string:id>")
-# def find_by_id(id):
-#     item = CatalogItem.query.filter_by(id=id).first()
-#     if item:
-#         return jsonify(item.json())
-#     return jsonify({"message": "Item not found."}), 404
+    quantity = order_item.quantity
+    datetime = order_item.datetime
 
-# @app.route("/catalog-items", methods=['POST'])
-# def create_item():
-#     data = request.get_json()
-#     item = CatalogItem(**data)
+    #store in dictionary
+    reply = {"title":title, "description":description, "quantity": quantity, "datetime": datetime}
 
-#     # if (CatalogItem.query.filter_by(id=id).first()):
-#     #     return jsonify({"message": "A book with isbn13 '{}' already exists.".format(isbn13)}), 400
-    
-#     try:
-#         db.session.add(item)
-#         db.session.commit()
-#     except:
-#         return jsonify({"message": "An error occurred creating the catalog item."}), 500
-#     return jsonify(item.json()), 201
+    return jsonify(reply)
+
+#UC3
+#Retrieving order data based on given order.id
+@app.route("/orders/user/<string:user_id>")
+def get_orders(user_id):
+    order_item = Orders.query.filter_by(user_id=user_id).first()
+    if order_item:
+        reply = {"id":str(order_item.id)}
+        return jsonify(reply)
+    return jsonify({"message":"Order not found."}), 404
 
 if __name__ == '__main__':
     app.run(port=5001, debug=True)
