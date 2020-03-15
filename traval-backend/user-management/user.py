@@ -35,6 +35,11 @@ class User(db.Model):
         return {"id": self.id, "password": self.password, "name": self.name, "email": self.email, "phone": self.phone}
 
 
+@app.route("/users")
+def get_all():
+    return jsonify({"users": [user.json() for user in User.query.all()]})
+
+
 @app.route("/users/<string:id>")
 def find_by_id(id):
     user = User.query.filter_by(id=id).first()
@@ -42,12 +47,37 @@ def find_by_id(id):
         return jsonify(user.json())
     return jsonify({"message": "User not found."}), 404
 
+@app.route("/users/<string:email>")
+def find_by_email(email):
+    user = User.query.filter_by(email=email).first()
+    if user:
+        return jsonify(user.json())
+    return jsonify({"message": "User not found."}), 404
+
+@app.route("/users/<string:phone>")
+def find_by_phone(phone):
+    user = User.query.filter_by(phone=phone).first()
+    if user:
+        return jsonify(user.json())
+    return jsonify({"message": "User not found."}), 404
+
+
 @app.route("/users", methods=['POST'])
 def create_item():
+    errors = []
     data = request.get_json()
-    user = User(data)
+    user = User(**data)
+    if (User.query.filter_by(id = user.id).filter_by(phone = user.phone).first()):
+        errors.append("A user with id '{}' already exists.".format(user.id))
+        # return jsonify({"message": "A user with id '{}' already exists.".format(user.id)}), 400       
     if (User.query.filter_by(email = user.email).first()):
-        return jsonify({"message": "A user with email '{}' already exists.".format(email)}), 400
+        errors.append("A user with email '{}' already exists.".format(user.email))
+        # return jsonify({"message": "A user with email '{}' already exists.".format(user.email)}), 400
+    if (User.query.filter_by(phone = user.phone).first()):
+        errors.append("A user with phone '{}' already exists.".format(user.phone))
+        # return jsonify({"message": "A user with phone '{}' already exists.".format(user.phone)}), 400          
+    if len(errors)>0:
+        return jsonify({"message": errors}), 400
     try:
         db.session.add(user)
         db.session.commit()

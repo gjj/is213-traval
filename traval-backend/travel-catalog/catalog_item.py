@@ -70,6 +70,7 @@ def get_all():
             item_dict.update(photos)               
     return jsonify(all_items)
 
+
 @app.route("/catalog_items/<string:id>")
 def find_by_id(id):
     item = CatalogItem.query.filter_by(id=id).first()
@@ -80,12 +81,28 @@ def find_by_id(id):
         return jsonify(updated_item)
     return jsonify({"message": "Item not found."}), 404
 
+
 @app.route("/catalog_items", methods=['POST'])
 def create_item():
     data = request.get_json()
-    item = CatalogItem(data)
+    item = CatalogItem(**data)
     if (CatalogItem.query.filter_by(id = item.id).first()):
         return jsonify({"message": "An item with ID '{}' already exists.".format(item.id)}), 400
+    try:
+        db.session.add(item)
+        db.session.commit()
+    except:
+        return jsonify({"message": "An error occurred creating the catalog item."}), 500
+    return jsonify(item.json()), 201
+
+@app.route("/catalog_photos", methods=['POST'])
+def create_photo():
+    data = request.get_json()
+    photo = CatalogItemPhoto(**data)
+    if (CatalogItemPhoto.query.filter_by(id = photo.id).first()):
+        return jsonify({"message": "A photo with id '{}' already exists.".format(photo.id)}), 400
+    if (CatalogItemPhoto.query.filter_by(item_id = photo.item_id).filter_by(photo_url = photo.photo_url).first()):
+        return jsonify({"message": "A photo with url '{}' already exists for this item.".format(photo.photo_url)}), 400
     try:
         db.session.add(item)
         db.session.commit()
