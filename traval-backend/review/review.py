@@ -86,6 +86,18 @@ def get_by_order(order_id):
             review_dict.update(photos)               
     return jsonify(all_reviews)
 
+# will need to call order class
+@app.route("/catalog_items/<string:item_id>/reviews")
+def get_by_item(item_id):
+    all_reviews = {"reviews": [review.json() for review in Review.query.filter_by(order_id=order_id).all()]}
+    for review_dict in all_reviews["reviews"]:
+        id = review_dict["id"]
+        review = Review.query.filter_by(id=id).first()
+        if review:
+            photos = get_photos(review, id)
+            review_dict.update(photos)               
+    return jsonify(all_reviews)
+
 @app.route("/catalog_items/<string:order_id>/review", methods=['POST'])
 def create_review(order_id):
     data = request.get_json()
