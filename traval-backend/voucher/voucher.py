@@ -153,6 +153,7 @@ def callback(channel, method, properties, body): # required signature for the ca
     json.dump(result, sys.stdout, default=str) 
     channel.basic_ack(delivery_tag=method.delivery_tag) # 
 
+#wip
 def processVoucher(data):
     print("Processing an Voucher Creation:")
     voucher_id = 1

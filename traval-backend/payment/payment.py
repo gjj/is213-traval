@@ -55,7 +55,7 @@ def AMQP():
     channel.exchange_declare(exchange=exchangename, exchange_type='direct') 
 
     payment_info = {"user_id": 1, "order_id": 1, "applicable_date": "2020-03-15"}
-    message = json.dumps(order, default=str) # convert a JSON object to a string
+    message = json.dumps(payment_info, default=str) # convert a JSON object to a string
 
     #make sure queue exist and durable
     channel.queue_declare(queue="voucher", durable = True)
