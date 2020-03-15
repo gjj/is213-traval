@@ -1,9 +1,26 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+import datetime
+import json
+
+from dotenv import load_dotenv
+import os
+import requests
+
+#AMQP
+import pika
+import uuid
+import csv
+
+load_dotenv()
+DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
+CORS(app)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_vouchers'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_vouchers'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
@@ -18,7 +35,7 @@ class Vouchers(db.Model):
     status = title = db.Column(db.String(8), nullable=False)
 
 
-    def __init__(id, user_id, order_id, applicable_date, status):
+    def __init__(self, id, user_id, order_id, applicable_date, status):
         self.id = id
         self.user_id = user_id
         self.order_id = order_id
@@ -29,12 +46,33 @@ class Vouchers(db.Model):
         return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "applicable_date": self.applicable_date, "status": self.status}
 
 
-@app.route("/voucher")
-def get_all_voucher(id):
-    all_voucher = Vouchers.query.filter_by(id=id).first()
+@app.route("/vouchers")
+def get_all_voucher(order_id):
+    all_voucher = Vouchers.query.filter_by(order_id=order_id).first()
     if all_voucher:
-        return jsonify(all_voucher.json())
+        reply = {"id":id, "status":status}
+        return jsonify(reply)
+
     return jsonify({"message":"Voucher not found."}), 404
+
+def merchant_scan_voucher(id):
+    scaned_voucher = Vouchers.query.filter_by(id=id).first()
+    scan_status= scaned_voucher.status
+    if scaned_voucher:
+        reply = {"order_id":order_id, "status":status}
+        return jsonify(reply)
+
+    return jsonify({"message":"Voucher not found."}), 404
+
+# @app.route("/voucher", methods=['POST'])
+# def merchant_update_redeem_status(id, status):
+#     voucher_status= Vouchers.query.filter_by(id=id).first()
+#     data = request.get_json()
+#     item = CatalogItem(data)
+
+
+
+
 
 # @app.route("/voucher", methods=['POST'])
 # def create_voucher():
@@ -78,6 +116,62 @@ def get_all_voucher(id):
     # except:
     #     return jsonify({"message": "An error occurred creating the catalog item."}), 500
     # return jsonify(item.json()), 201
+    
+def receivePayment():
+
+    hostname = "localhost" # default broker hostname. 
+    port = 5672 # default messaging port.
+    connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port))
+    channel = connection.channel()
+    # set up the exchange if the exchange doesn't exist
+    exchangename="payment_direct"
+    channel.exchange_declare(exchange=exchangename, exchange_type='direct') 
+
+    #empty queue
+    channelqueue = channel.queue_declare(queue='', exclusive=True) 
+
+    channelqueue = channel.queue_declare(queue="voucher", durable=True) 
+    queue_name = channelqueue.method.queue
+
+    channel.queue_bind(exchange=exchangename, queue=queue_name, routing_key='voucher.payment') 
+
+    channel.basic_qos(prefetch_count=1) 
+
+    #consume
+    # channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    channel.basic_consume(queue=queue_name)
+    channel.start_consuming() 
+
+# def callback(channel, method, properties, body): # required signature for the callback; no return
+#     print("Received an order by " + __file__)
+#     result = processOrder(json.loads(body))
+
+#     json.dump(result, sys.stdout, default=str) 
+
+#     # prepare the reply message and send it out
+#     replymessage = json.dumps(result, default=str)
+#     replyqueuename="shipping.reply"
+
+#     channel.queue_declare(queue=replyqueuename, durable=True) 
+#     channel.queue_bind(exchange=exchangename, queue=replyqueuename, routing_key=replyqueuename) 
+#     channel.basic_publish(exchange=exchangename,
+#             routing_key=properties.reply_to, 
+#             body=replymessage, 
+#             properties=pika.BasicProperties(delivery_mode = 2, 
+#                 correlation_id = properties.correlation_id, 
+#             )
+#     )
+#     channel.basic_ack(delivery_tag=method.delivery_tag) # 
+
+# def processOrder(order):
+#     print("Processing an order:")
+#     print(order)
+
+#     result = {}
+#     # add to db
+
+#     return result
 
 if __name__ == '__main__':
     app.run(port=5006, debug=True)
+    receivePayment()

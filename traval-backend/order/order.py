@@ -11,7 +11,6 @@ import requests
 travel_catalog_url = "http://localhost:5004/catalog_items"
 
 load_dotenv()
-
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
@@ -30,7 +29,7 @@ class Orders(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     item_id = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
-    datetime = db.Column(db.Date, nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
     status = db.Column(db.Float(precision=2), nullable=False)
 
     def __init__(self, id, user_id, item_id, quantity, datetime, status):
@@ -45,8 +44,14 @@ class Orders(db.Model):
         return {"id": self.id, "user_id": self.user_id, "item_id": self.item_id,"quantity": self.quantity, "datetime": self.datetime, "status": self.status}
 
 
-def retrieve_order_in_json(id):
+def retrieve_order_by_ID_in_json(id):
     order_item = Orders.query.filter_by(id=id).first()
+    if order_item:
+        return jsonify(order_item.json())
+    return jsonify({"message":"Order not found."}), 404
+
+def retrieve_order_in_json(id):
+    order_item = Orders.query.all()
     if order_item:
         return jsonify(order_item.json())
     return jsonify({"message":"Order not found."}), 404
@@ -87,8 +92,8 @@ def view_order(id):
     #extract json data from catalog
     travel_catalog_url = "http://localhost:5004/catalog_items"
     r = requests.get(travel_catalog_url + "/" + item_id)
-    description = json.loads(r.text)["description"]
-    title = json.loads(r.text)["title"]
+    description = json.loads(r.text)["description"] #unpackage the json
+    title = json.loads(r.text)["title"] 
 
     quantity = order_item.quantity
     datetime = order_item.datetime
