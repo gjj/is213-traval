@@ -25,7 +25,7 @@ Home @stop
             <div class="mb-lg-n16">
                 <div class="card border-0 tab-shadow tab-shadow">
                     <div class="card-body mt-1">
-                        <form action="{{ route('search') }}" method="get">
+                        <form action="{{ route('search') }}">
                             <div class="row d-block nav-select d-lg-flex mb-lg-3 px-3">
                                 <div class="col-sm-12 col-lg-10 mb-4 mb-lg-0 ">
                                     <!-- Input -->

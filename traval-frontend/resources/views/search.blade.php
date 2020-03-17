@@ -22,13 +22,15 @@ Search @stop
                                 <div class="sidebar border border-color-1 rounded-xs">
                                     <div class="p-4 mx-1 mb-1">
                                         <!-- Input -->
-                                        <span class="d-block text-gray-1  font-weight-normal mb-0 text-left">What do you want to do?</span>
-                                        <div class="mb-4">
-                                            <div class="input-group border-bottom border-width-2 border-color-1">
-                                                <i class="flaticon-pin-1 d-flex align-items-center mr-2 text-primary font-weight-semi-bold font-size-22"></i>
-                                                <input type="text" name="q" id="q" class="form-control font-weight-bold font-size-16 shadow-none hero-form font-weight-bold border-0 p-0" placeholder="Search by activity, destination or attraction" aria-label="Keyword or title" />
+                                        <form action="{{ route('search') }}">
+                                            <span class="d-block text-gray-1  font-weight-normal mb-0 text-left">What do you want to do?</span>
+                                            <div class="mb-4">
+                                                <div class="input-group border-bottom border-width-2 border-color-1">
+                                                    <i class="flaticon-pin-1 d-flex align-items-center mr-2 text-primary font-weight-semi-bold font-size-22"></i>
+                                                    <input type="text" name="q" id="q" class="form-control font-weight-bold font-size-16 shadow-none hero-form font-weight-bold border-0 p-0" placeholder="Search by activity, destination or attraction" aria-label="Keyword or title" />
+                                                </div>
                                             </div>
-                                        </div>
+                                        </form>
                                         <!-- End Input -->
 
                                         <div class="text-center">
@@ -150,7 +152,7 @@ Search @stop
                 url: apiUrl + ':5004/catalog_items/search/' + q,
                 success: function(data) {
                     $('#search_count').text(data.count);
-                    
+
                     var tpl = $.templates('#search_results_tpl');
                     $.each(data.catalog_items, function(i, item) {
                         console.log(item)
