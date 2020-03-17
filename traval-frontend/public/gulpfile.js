@@ -118,7 +118,7 @@ function copyVendors() {
         './node_modules/*svg-injector/**/*',
         './node_modules/*typed.js/**/*',
     ])
-    .pipe(gulp.dest('./dist/assets/vendor/'))
+    .pipe(gulp.dest('./assets/vendor/'))
 }
 
 exports.copyVendors = copyVendors;

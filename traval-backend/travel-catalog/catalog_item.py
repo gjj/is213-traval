@@ -74,11 +74,13 @@ def get_all():
 @app.route("/catalog_items/<string:id>")
 def find_by_id(id):
     item = CatalogItem.query.filter_by(id=id).first()
+    
     if item:
         photos = get_photos(item, id)
         updated_item = item.json()
         updated_item.update(photos)
         return jsonify(updated_item)
+    
     return jsonify({"message": "Item not found."}), 404
 
 
@@ -88,28 +90,47 @@ def create_item():
     item = CatalogItem(**data)
     if (CatalogItem.query.filter_by(id = item.id).first()):
         return jsonify({"message": "An item with ID '{}' already exists.".format(item.id)}), 400
+    
     try:
         db.session.add(item)
         db.session.commit()
     except:
         return jsonify({"message": "An error occurred creating the catalog item."}), 500
+    
     return jsonify(item.json()), 201
 
 @app.route("/catalog_photos", methods=['POST'])
 def create_photo():
     data = request.get_json()
     photo = CatalogItemPhoto(**data)
+
     if (CatalogItemPhoto.query.filter_by(id = photo.id).first()):
         return jsonify({"message": "A photo with id '{}' already exists.".format(photo.id)}), 400
     if (CatalogItemPhoto.query.filter_by(item_id = photo.item_id).filter_by(photo_url = photo.photo_url).first()):
         return jsonify({"message": "A photo with url '{}' already exists for this item.".format(photo.photo_url)}), 400
+    
     try:
         db.session.add(item)
         db.session.commit()
     except:
         return jsonify({"message": "An error occurred creating the catalog item."}), 500
+    
     return jsonify(item.json()), 201
 
+@app.route("/catalog_items/search/<string:q>")
+def search(q):
+    q = "%{}%".format(q) # Wildcard search
+    result = {"catalog_items": [item.json() for item in CatalogItem.query.filter(CatalogItem.title.like(q)).all()]}
+    result.update({"count": len(result["catalog_items"])}) # Add search result count to the list above
+
+    # Fetch photo URLs
+    for item_dict in result["catalog_items"]:
+        id = item_dict["id"]
+        item = CatalogItem.query.filter_by(id=id).first()
+        if item:
+            photos = get_photos(item, id)
+            item_dict.update(photos)               
+    return jsonify(result)
 
 if __name__ == '__main__':
     app.run(port=5004, debug=True)

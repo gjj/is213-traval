@@ -7,28 +7,39 @@ Search @stop
 @endsection
 
 @section('content')
+<div id="activity_item">
+</div>
+@endsection
 
+@section('scripts')
+<script id="activity_item_tpl" type="text/x-jsrender">
 <div class="mb-4 mb-lg-8">
-    <img class="img-fluid" src="" alt="Image" id="item-image" />
+    <img class="img-fluid" src="@{{:photo_urls[0]}}" alt="Image" id="item-image" />
 </div>
 <div class="container">
     <div class="row">
-        <div class="col-lg-8 col-xl-9 border-bottom ">
+        <div class="col-lg-8 col-xl-9 border-bottom">
             <div class="d-block d-md-flex flex-center-between align-items-start mb-3">
                 <div class="mb-1">
                     <div class="mb-2 mb-md-0">
                         <h4 class="font-size-23 font-weight-bold mb-1 mr-3" id="item-title">
-                            @{{ title }}
+                            @{{:title}}
                         </h4>
                     </div>
                     <div class="d-block d-md-flex flex-horizontal-center">
                         <div class="mr-4 mb-2 mb-md-0">
-                            <span class="badge badge-pill badge-warning text-lh-sm text-white py-1 px-2 font-size-14 border-radius-3 font-weight-normal">4.6/5</span>
-                            <span class="font-size-14 text-gray-1 ml-2">(1,186 Reviews)</span>
+                            <span class="badge badge-pill badge-warning text-lh-sm text-white py-1 px-2 font-size-14 border-radius-3 font-weight-normal">
+                                @{{if rating}}
+                                    @{{:rating}}/5
+                                @{{else}}
+                                    No ratings
+                                @{{/if}}
+                            </span>
+                            <span class="font-size-14 text-gray-1 ml-2">(@{{:reviews_count}} reviews)</span>
                         </div>
                         <div class="d-block d-md-flex flex-horizontal-center font-size-14 text-gray-1 mb-2 mb-md-0">
                             <i class="icon flaticon-placeholder mr-2 font-size-20"></i>
-                            <div id="item-location">@{{ item_location }}</div>
+                            <div id="item-location">Singapore</div>
                             <a href="#" class="ml-1 d-block d-md-inline"> - View on map</a>
                         </div>
                     </div>
@@ -40,43 +51,8 @@ Search @stop
                     Description
                 </h5>
                 <p id="item-description">
-                    @{{ item_description }}
+                    @{{:description}}
                 </p>
-                <p>Explore one of the world’s best art museums at your own pace with your ticket to the Louvre. Skip the line and walk straight inside, after a security check.</p>
-                <p class="mb-4">Once inside the historic palace located on the Right Bank of the Seine, see unmissable and iconic sights such as the Mona Lisa and Venus de Milo. Discover masterpieces of the Renaissance and ancient Egyptian relics, along with paintings from the 13th to 20th centuries, prints from the Royal Collection, and much more.</p>
-                <p class="mb-4">The museum first opened on August 10 1793 with an exhibition of just 537 paintings. Despite closing in 1796, due to structural problems, it reopened in 1801 as the Musée Napoléon with a larger collection. Many works were seized and returned to their original owners after the defeat of Napoleon at Waterloo.</p>
-                <p class="mb-4">The collection was increased during the reign of Louis XVIII and Charles X, and during the Second French Empire the museum gained 20,000 pieces. Holdings have grown steadily since the Third Republic, and as of 2008, the collection is divided among 8 curatorial departments: Egyptian Antiquities; Near Eastern Antiquities; Greek, Etruscan, and Roman Antiquities; Islamic Art; Sculpture; Decorative Arts; Paintings; and Prints and Drawings.</p>
-            </div>
-            <div class="py-4">
-                <h5 class="font-size-21 font-weight-bold text-dark mb-4">
-                    Experience
-                </h5>
-                <ul class="list-group list-group-borderless list-group-horizontal list-group-flush no-gutters row">
-                    <li class="col-md-2 mb-5 list-group-item pt-0 border-bottom pb-3">
-                        <div class="font-weight-bold text-dark">Highlights</div>
-                    </li>
-                    <li class="col-md-10 mb-5 list-group-item pt-0 border-bottom pb-3">
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="fas fa-circle mr-3 font-size-8 text-primary"></i>Benefit from fast and easy skip-the-line entrance</div>
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="fas fa-circle mr-3 font-size-8 text-primary"></i>Marvel at works of art, from Ancient Egypt to the Renaissance</div>
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="fas fa-circle mr-3 font-size-8 text-primary"></i>Spend as much time as you like inside the museum and explore at your own pace</div>
-                    </li>
-                    <li class="col-md-2 mb-5 mb-md-0 list-group-item pt-0 border-bottom pb-3">
-                        <div class="font-weight-bold text-dark">Includes</div>
-                    </li>
-                    <li class="col-md-5 mb-5 mb-md-0 list-group-item pt-0 border-bottom pb-3">
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="flaticon-tick mr-3 font-size-16 text-primary"></i>Air fares</div>
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="flaticon-tick mr-3 font-size-16 text-primary"></i>3 Nights Hotel Accomodation</div>
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="flaticon-tick mr-3 font-size-16 text-primary"></i>Tour Guide</div>
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="flaticon-tick mr-3 font-size-16 text-primary"></i>Entrance Fees</div>
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="flaticon-tick mr-3 font-size-16 text-primary"></i>All transportation in destination location</div>
-                    </li>
-                    <li class="col-md-5 mb-5 mb-md-0 list-group-item pt-0 border-bottom pb-3">
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="flaticon-close mr-3 font-size-12 text-primary"></i>Guide Service Fee</div>
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="flaticon-close mr-3 font-size-12 text-primary"></i>Driver Service Fee</div>
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="flaticon-close mr-3 font-size-12 text-primary"></i>Any Private Expenses</div>
-                        <div class="flex-horizontal-center mb-3 text-gray-1"><i class="flaticon-close mr-3 font-size-12 text-primary"></i>Room Service Fees</div>
-                    </li>
-                </ul>
             </div>
             <div class="border-bottom py-4">
                 <h5 class="font-size-21 font-weight-bold text-dark mb-4">
@@ -94,9 +70,14 @@ Search @stop
                         <div class="border rounded flex-content-center py-5 border-width-2">
                             <div class="text-center">
                                 <h2 class="font-size-50 font-weight-bold text-primary mb-0 text-lh-sm">
-                                    0<span class="font-size-20">/5</span>
+                                    @{{if rating}}
+                                        @{{:rating}}
+                                    @{{else}}
+                                        -
+                                    @{{/if}}
+                                    <span class="font-size-20">/5</span>
                                 </h2>
-                                <div class="text-gray-1">From @{{ reviews_count }} reviews</div>
+                                <div class="text-gray-1">From @{{:reviews_count}} reviews</div>
                             </div>
                         </div>
                     </div>
@@ -104,7 +85,11 @@ Search @stop
             </div>
             <div class="border-bottom py-4">
                 <h5 class="font-size-21 font-weight-bold text-dark mb-8">
-                    Showing @{{ reviews_count }} reviews
+                    @{{if reviews_count}}
+                        Showing @{{:reviews_count}} reviews
+                    @{{else}}
+                        No reviews
+                    @{{/if}}
                 </h5>
                 <div class="media flex-column flex-md-row align-items-center align-items-md-start mb-4">
                     <div class="mr-md-5">
@@ -129,22 +114,6 @@ Search @stop
                                 <div class="col">
                                     <div class="font-weight-normal font-size-14 text-gray-1 mx-lg-1 my-lg-1 mb-3 mb-md-0">Was This Review...?</div>
                                 </div>
-                                <div class="col-md-6 col-lg-7 col-xl-4">
-                                    <div class="d-flex justify-content-between my-lg-1">
-                                        <a class="text-indigo-light" href="#">
-                                            <i class="flaticon-like-1 font-size-15 mr-1"></i>
-                                            <span class="font-size-14 font-weight-normal">Like</span>
-                                        </a>
-                                        <a class="text-gray-7" href="#">
-                                            <i class="flaticon-dislike font-size-15 mr-1"></i>
-                                            <span class="font-size-14 font-weight-normal">Dislike</span>
-                                        </a>
-                                        <a class="text-red-light-2" href="#">
-                                            <i class="flaticon-like font-size-15 mr-1"></i>
-                                            <span class="font-size-14 font-weight-normal">Love</span>
-                                        </a>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -156,7 +125,7 @@ Search @stop
                 <div class="border border-color-7 rounded mb-5">
                     <div class="border-bottom">
                         <div class="p-4">
-                            <span class="font-size-24 text-gray-6 font-weight-bold ml-1">@{{ price }}</span>
+                            <span class="font-size-24 text-gray-6 font-weight-bold ml-1">S$@{{:price}}</span>
                         </div>
                     </div>
                     <div class="p-4">
@@ -189,20 +158,19 @@ Search @stop
         </div>
     </div>
 </div>
-@endsection
+</script>
 
-@section('scripts')
 <script type="text/javascript">
-    var apiUrl = "http://localhost:5000/catalog_items";
+    var apiUrl = "http://localhost:5004/catalog_items";
     var id = {{ Request()->id }};
 
     $.ajax({
+        method: 'GET',
         url: apiUrl + "/" + id,
         success: function(data) {
-            $('#item-image').attr('src', data.photo_urls[0]); // use first pic for now
-            $('#item-title').text(data.title);
-            $('#item-description').text(data.description);
 
+            var tpl = $.templates('#activity_item_tpl');
+            $('#activity_item').append(tpl.render(data));
         }
     });
 </script>
