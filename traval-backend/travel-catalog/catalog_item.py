@@ -158,7 +158,7 @@ def get_item_reviews(id):
     #         photos = get_photos(review, id)
     #         review_dict.update(photos)               
     # return jsonify(all_reviews)
-    return jsonify(order_ids)
+    # return jsonify(order_ids)
 
 
 
