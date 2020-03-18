@@ -4,6 +4,9 @@ from dotenv import load_dotenv
 # from traval-backend import order
 import os
 
+import requests
+travel_catalog_url = "http://localhost:5001/orders"
+
 load_dotenv()
 
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
@@ -86,24 +89,6 @@ def get_by_order(order_id):
             photos = get_photos(review, id)
             review_dict.update(photos)               
     return jsonify(all_reviews)
-
-# will need to call order class
-@app.route("/catalog_items/<string:item_id>/reviews")
-def get_by_item(item_id):
-    orders_by_item_id = {"order": [order.json() for order in Orders.query.filter_by(item_id=item_id).all()]}
-    order_ids = []
-    for order in orders_by_item_id:
-        order_ids.append(json.loads(order.text)["id"])
-
-    # all_reviews = {"reviews": [review.json() for review in Review.query.filter_by(order_id=order_id).all()]}
-    # for review_dict in all_reviews["reviews"]:
-    #     id = review_dict["id"]
-    #     review = Review.query.filter_by(id=id).first()
-    #     if review:
-    #         photos = get_photos(review, id)
-    #         review_dict.update(photos)               
-    # return jsonify(all_reviews)
-    return jsonify(order_ids)
 
 
 @app.route("/catalog_items/<string:order_id>/reviews", methods=['POST'])
