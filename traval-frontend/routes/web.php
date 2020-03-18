@@ -49,3 +49,10 @@ Route::get('/payment/result', function () {
     return view('payment.result');
 })
 ->name('payment.result');
+
+
+/* Orders */
+Route::get('/order', function () {
+    return view('order.list');
+})
+->name('order.list');
