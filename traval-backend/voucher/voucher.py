@@ -51,7 +51,7 @@ class Vouchers(db.Model):
 def get_all_voucher(order_id):
     all_voucher = Vouchers.query.filter_by(order_id=order_id).first()
     if all_voucher:
-        reply = {"id":Vouchers.id, "status":Vouchers.status}
+        reply = {"id":all_voucher.id, "status":all_voucher.status}
         return jsonify(reply)
     return jsonify({"message":"Voucher not found."}), 404
 
@@ -60,7 +60,7 @@ def get_all_voucher(order_id):
 def merchant_scan_voucher(vouchers_id):
     all_voucher = Vouchers.query.filter_by(vouchers_id=vouchers_id).first()
     if all_voucher:
-        reply = {"id":Vouchers.order_id}
+        reply = {"id":all_voucher.order_id}
         return jsonify(reply)
     return jsonify({"message":"Voucher not found."}), 404
 
