@@ -27,20 +27,20 @@ class Review(db.Model):
     order_id = db.Column(db.Integer, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    message = db.Column(db.String(800), nullable=False)
+    msg = db.Column(db.String(800), nullable=False)
     status = db.Column(db.String(8), nullable=False)
 
-    def __init__(self, id, title, description, price):
+    def __init__(self, id, user_id, order_id, datetime, rating, msg, status):
         self.id = id
         self.user_id = user_id
         self.order_id = order_id
         self.datetime = datetime
         self.rating = rating
-        self.message = message
+        self.msg = msg
         self.status = status
-
+    
     def json(self):
-        return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "datetime": self.datetime, "rating": self.rating, "message": self.message, "status": self.status}
+        return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "datetime": self.datetime, "rating": self.rating, "msg": self.msg, "status": self.status}
 
 class ReviewPhoto(db.Model):
     __tablename__ = 'review_photos'
@@ -91,20 +91,42 @@ def get_by_order(order_id):
     return jsonify(all_reviews)
 
 
-@app.route("/catalog_items/<string:order_id>/reviews", methods=['POST'])
+@app.route("/reviews", methods=['POST'])
 def create_review():
     data = request.get_json()
-    review = Review(**data)
+
+    review = Review(data["id"], data["user_id"], data["order_id"], data["datetime"], data["rating"], data["msg"], data["status"])
     if (Review.query.filter_by(id = review.id).first()):
         return jsonify({"message": "A review with id '{}' already exists.".format(user.id)}), 400
-    if (Review.query.filter_by(order_id = review.order_id).first()):
-        return jsonify({"message": "A review already exists for this order."}), 400
+    if (Review.query.filter_by(user_id = review.user_id).filter_by(order_id = review.order_id).first()):
+        return jsonify({"message": "You have already placed a review for this order."}), 400
     try:
         db.session.add(review)
         db.session.commit()
     except:
         return jsonify({"message": "An error occurred creating the catalog review."}), 500
-    return jsonify(review.json()), 201
+    
+    if "photo_urls" in data:
+        photos = data["photo_urls"]
+        if type(photos)==str and len(photos)>0: #non-empty str
+            try: 
+                db.session.add(photos)
+                db.session.commit()
+            except:
+                return jsonify({"message": "An error occurred uploading the review photo."}), 500 
+        elif type(photos)==list and len(photos)>0:  #non-empty li
+            for i in range(len(photos)):
+                photo = ReviewPhoto(i+1, data["id"], photos[i])   # photo id, review id, photo url
+                try: 
+                    db.session.add(photo)
+                    db.session.commit()
+                except:
+                    if len(photos)==1:     # 1 url
+                        return jsonify({"message": "An error occurred uploading the review photo."}), 500        
+                    else:                  # >1 url
+                        return jsonify({"message": "An error occurred uploading a review photo."}), 500  
+                              
+    return data, 201
 
 
 if __name__ == '__main__':
