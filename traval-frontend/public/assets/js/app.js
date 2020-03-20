@@ -2,7 +2,11 @@
 $(document).on('ready', function () {
     var apiUrl = "http://localhost:5000/";
 
-    $('#signInStatus').text('Hello, Jack Phan');
+    if (sessionStorage.getItem('token')) {
+        var name = sessionStorage.getItem('name');
+        $('#signInStatus').text('Hello, ' + name);
+        $('#signInStatus').attr('href', 'signout');
+    }
 });
 
 

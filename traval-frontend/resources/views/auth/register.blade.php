@@ -44,8 +44,8 @@ Register @stop
                                         <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                                     </div>
                                     <div class="form-group">
-                                        <label for="phone_number">Phone number</label>
-                                        <input type="tel" class="form-control" id="phone_number" name="phone_number" placeholder="+65 9123 8888">
+                                        <label for="phone">Phone number</label>
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="+65 9123 8888">
 
                                         <div class="valid-feedback">
                                             <span id="valid-msg">✓ Valid</span>
@@ -73,7 +73,7 @@ Register @stop
 
 <script type="text/javascript">
     $(document).ready(function() {
-        var input = document.querySelector("#phone_number"),
+        var input = document.querySelector("#phone"),
             errorMsg = document.querySelector("#error-msg"),
             validMsg = document.querySelector("#valid-msg");
 
@@ -121,21 +121,29 @@ Register @stop
         // Handle the registration form
         $('form').on('submit', function(e) {
             e.preventDefault(); // Don't allow it to reload
-
-            $.each($('#myForm').serializeArray(), function(i, field) {
-                values[field.name] = field.value;
-            });
             
-            values['phone_number'] = iti.getNumber();
-            console.log(data);
+            var data = {
+                name: $('#name').val(),
+                email: $('#email').val(),
+                password: $('#password').val(),
+                phone: iti.getNumber() // Replace unformatted number with formatted number
+            }
+            console.log(JSON.stringify(data));
+
+            var apiUrl = "http://localhost";
 
             $.ajax({
                 method: 'POST',
                 url: apiUrl + ':5000/users',
-                success: function(data) {
-                    console.log(data);
-
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(result) {
+                    console.log(result);
+                    
                     // Redirect.
+                },
+                error: function(error) {
+                    console.log(error.responseJSON);
                 }
             });
         });

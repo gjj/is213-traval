@@ -25,11 +25,15 @@ Route::get('/signin', function () {
 })
 ->name('signin');
 
-/* Sign in */
 Route::get('/register', function () {
     return view('auth.register');
 })
 ->name('register');
+
+Route::get('/signout', function () {
+    return view('auth.signout');
+})
+->name('signout');
 
 /* Search */
 Route::get('/search', function () {

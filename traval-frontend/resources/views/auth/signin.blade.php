@@ -19,13 +19,13 @@ Sign in @stop
                                 <h5 class="card-title">Sign in</h5>
 
                                 <form method="post">
-                                    <div class="form-group">
-                                        <label for="exampleInputEmail1">Email address</label>
-                                        <input type="email" class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" placeholder="Enter email">
+                                <div class="form-group">
+                                        <label for="email">Email address</label>
+                                        <input type="email" class="form-control" id="email" name="email" placeholder="Enter email">
                                     </div>
                                     <div class="form-group">
-                                        <label for="exampleInputPassword1">Password</label>
-                                        <input type="password" class="form-control" id="exampleInputPassword1" placeholder="Password">
+                                        <label for="password">Password</label>
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
                                     </div>
                                     <div class="form-group form-check">
                                         <input type="checkbox" class="form-check-input" id="exampleCheck1">
@@ -45,4 +45,39 @@ Sign in @stop
 @endsection
 
 @section('scripts')
+<script type="text/javascript">
+    $(document).ready(function() {
+        // Handle the registration form
+        $('form').on('submit', function(e) {
+            e.preventDefault(); // Don't allow it to reload
+            
+            var data = {
+                email: $('#email').val(),
+                password: $('#password').val(),
+            }
+            console.log(JSON.stringify(data));
+
+            var apiUrl = "http://localhost";
+
+            $.ajax({
+                method: 'POST',
+                url: apiUrl + ':5000/login',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(result) {
+                    sessionStorage.setItem('email', result.email);
+                    sessionStorage.setItem('token', result.token);
+                    sessionStorage.setItem('name', result.name);
+                    
+                    console.log(result);
+                    window.location.replace(".");
+                },
+                error: function(error) {
+                    console.log(error.responseJSON);
+                    window.location.replace("signin#invalid");
+                }
+            });
+        });
+    });
+</script>
 @endsection
