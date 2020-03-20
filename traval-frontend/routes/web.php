@@ -66,3 +66,10 @@ Route::get('/order', function () {
     return view('order.list');
 })
 ->name('order.list');
+
+
+/* review */
+Route::get('/review', function () {
+    return view('review.post');
+})
+->name('review.post');
