@@ -21,9 +21,15 @@ Route::get('/', function () {
 
 /* Sign in */
 Route::get('/signin', function () {
-    return view('signin');
+    return view('auth.signin');
 })
 ->name('signin');
+
+/* Sign in */
+Route::get('/register', function () {
+    return view('auth.register');
+})
+->name('register');
 
 /* Search */
 Route::get('/search', function () {
