@@ -161,7 +161,7 @@ Search @stop
 </script>
 
 <script type="text/javascript">
-    var apiUrl = "http://localhost:5004/catalog_items";
+    var apiUrl = "http://localhost:5001/catalog_items";
     var id = {{ Request()->id }};
 
     $.ajax({
