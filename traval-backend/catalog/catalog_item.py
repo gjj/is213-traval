@@ -5,9 +5,6 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
-order_url = "http://localhost:5001/orders"
-review_url = "http://localhost:5003/reviews"
-
 load_dotenv()
 
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
@@ -162,4 +159,4 @@ def get_item_reviews(id):
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5004, debug=True)
+    app.run(host='0.0.0.0', port=5001, debug=True)
