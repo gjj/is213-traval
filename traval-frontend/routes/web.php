@@ -47,8 +47,6 @@ Route::get('/activity/{id}', function () {
 })
 ->name('activity.item');
 
-
-
 /* Payment */
 Route::get('/payment/checkout', function () {
     return view('payment.checkout');
@@ -60,15 +58,19 @@ Route::get('/payment/result', function () {
 })
 ->name('payment.result');
 
-
 /* Orders */
 Route::get('/order', function () {
     return view('order.list');
 })
 ->name('order.list');
 
+/* Voucher */
+Route::get('/voucher', function () {
+    return view('voucher.item');
+})
+->name('order.item');
 
-/* review */
+/* Review */
 Route::get('/review', function () {
     return view('review.post');
 })
