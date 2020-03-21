@@ -4,7 +4,8 @@
 Register @stop
 
 @section('styles')
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/css/intlTelInput.css" />
+<link rel="stylesheet" type="text/css" href="plugins/star-rating-svg.css">
+
 <style>
     /* Override dispaly: inline-block; */
     .iti {
@@ -32,15 +33,15 @@ Register @stop
 
                                 <form method="post" action="">
                                     <div class="form-group">
-                                        <label for="rating">Rating</label>
-                                        <input type="text" class="form-control" id="rating" name="rating" placeholder="">
-                                    </div>
-
+                                        <label for="rating">Rating</label>  <br>
+                                        <div class="rating" id="rating" name="rating" ></div>
+                                    </div>  <br>
+                                    
                                     <div class="form-group">
-                                        <label for="review">Review</label>
-                                        <input type="text" class="form-control" id="review" name="review" placeholder="How was your experience?">
-                                    </div>
-
+                                        <label for="msg">Review</label>
+                                        <textarea class="form-control" id="msg" name="msg" rows="5" placeholder="How was your experience?"></textarea>
+                                    </div>  <br>
+                                    
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
 
@@ -55,63 +56,28 @@ Register @stop
 @endsection
 
 @section('scripts')
-<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/js/intlTelInput.min.js" integrity="sha256-679hprK8vxlf4fnVBENMDhjXffz6MSULSiah9G9FRZg=" crossorigin="anonymous"></script>
+<script src="plugins/jquery.star-rating-svg.js"></script>
 
 <script type="text/javascript">
     $(document).ready(function() {
-        // var input = document.querySelector("#phone"),
-        //     errorMsg = document.querySelector("#error-msg"),
-        //     validMsg = document.querySelector("#valid-msg");
+ 
+        $("#rating").starRating({
+            initialRating: 4,
+            strokeColor: '#894A00',
+            strokeWidth: 10,
+            ratedColor:'orange',
+            starSize: 25,
+            disableAfterRate: false,
+        });
 
-        // // here, the index maps to the error code returned from getValidationError - see readme
-        // var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
-
-        // // initialise plugin
-        // var iti = window.intlTelInput(input, {
-        //     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/js/utils.js",
-        //     initialCountry: "sg",
-        //     geoIpLookup: function(callback) {
-        //         $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
-        //             var countryCode = (resp && resp.country) ? resp.country : "";
-        //             callback(countryCode);
-        //         });
-        //     },
-        // });
-
-        // var reset = function() {
-        //     input.classList.remove("error");
-        //     errorMsg.innerHTML = "";
-        //     errorMsg.classList.add("hide");
-        //     validMsg.classList.add("hide");
-        // };
-
-        // // on blur: validate
-        // input.addEventListener('blur', function() {
-        //     reset();
-        //     if (input.value.trim()) {
-        //         if (iti.isValidNumber()) {
-        //             validMsg.classList.remove("hide");
-        //         } else {
-        //             input.classList.add("error");
-        //             var errorCode = iti.getValidationError();
-        //             errorMsg.innerHTML = errorMap[errorCode];
-        //             errorMsg.classList.remove("hide");
-        //         }
-        //     }
-        // });
-
-        // // on keyup / change flag: reset
-        // input.addEventListener('change', reset);
-        // input.addEventListener('keyup', reset);
-
-        // Handle the registration form
         $('form').on('submit', function(e) {
             e.preventDefault(); // Don't allow it to reload
             
+            var rate = $('#rating').starRating('getRating');
+
             var data = {
-                rating: $('#rating').val(), // edit
-                review: $('#review').val(),
-                // phone: iti.getNumber() // Replace unformatted number with formatted number
+                rating: rate,
+                msg: $('#msg').val()
             }
             console.log(JSON.stringify(data));
 
@@ -119,7 +85,7 @@ Register @stop
 
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':5000/review',
+                url: apiUrl + ':5003/reviews',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {
