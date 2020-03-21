@@ -71,7 +71,7 @@ Route::get('/voucher', function () {
 ->name('order.item');
 
 /* Review */
-Route::get('/review', function () {
+Route::get('/activity/{activity_id}/review', function () {
     return view('review.post');
 })
 ->name('review.post');

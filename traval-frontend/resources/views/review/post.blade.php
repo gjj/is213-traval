@@ -41,6 +41,10 @@ Register @stop
                                         <label for="msg">Review</label>
                                         <textarea class="form-control" id="msg" name="msg" rows="5" placeholder="How was your experience?"></textarea>
                                     </div>  <br>
+
+                                    <div class="form-group">
+                                        <input type="photo" id="myFile" name="filename"> 
+                                    </div>  <br>
                                     
                                     <button type="submit" class="btn btn-primary">Submit</button>
                                 </form>
