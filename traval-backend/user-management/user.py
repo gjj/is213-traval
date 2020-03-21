@@ -124,7 +124,7 @@ def create_user():
 def login():
     errors = []
     data = request.get_json()
-
+    print(data)
     user = User(id=None, guid=None, name=None, phone=None, **data)
     
     # Validations

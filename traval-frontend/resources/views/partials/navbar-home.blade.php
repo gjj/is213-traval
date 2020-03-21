@@ -68,7 +68,7 @@
                 <!-- End Navigation -->
 
                 <!-- Shopping Cart -->
-                <div class="pl-md-4 ml-auto shopping-cart">
+                <!-- <div class="pl-md-4 ml-auto shopping-cart">
                     <a id="shoppingCartDropdownInvoker" class="btn-text-secondary position-relative py-4" href="javascript:;" role="button" aria-controls="shoppingCartDropdown" aria-haspopup="true" aria-expanded="false" data-unfold-event="hover" data-unfold-target="#shoppingCartDropdown" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-delay="300" data-unfold-hide-on-scroll="true" data-unfold-animation-in="slideInUp" data-unfold-animation-out="fadeOut">
                         <span class="flaticon-shopping-basket font-size-25 text-primary-max-lg"></span>
                     </a>
@@ -78,7 +78,7 @@
                         </span>
                         <span class="d-block">Your cart is empty</span>
                     </div>
-                </div>
+                </div> -->
                 <!-- End Shopping Cart -->
 
                 <!-- Sign in -->
