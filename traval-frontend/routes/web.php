@@ -75,3 +75,8 @@ Route::get('/review', function () {
     return view('review.post');
 })
 ->name('review.post');
+
+Route::get('/reviews', function () {
+    return view('review.list');
+})
+->name('review.list');

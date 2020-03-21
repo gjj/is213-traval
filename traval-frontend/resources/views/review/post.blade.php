@@ -1,49 +1,53 @@
 @extends('partials.master')
 
 @section('title')
-Review @stop
+Register @stop
 
 @section('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/css/intlTelInput.css" />
+<style>
+    /* Override dispaly: inline-block; */
+    .iti {
+        position: relative;
+        display: block;
+    }
+
+    .hide {
+        display: none;
+    }
+</style>
 @endsection
 
 @section('content')
-<main id="content" role="main" class="pt-6 pt-xl-10">
-    <div class="container">
-        <div class="row mb-8">
+<main id="content">
+    <div class="hero-block hero-v6 bg-img-hero-bottom gradient-overlay-half-blue-gradient z-index-2 mb-6 mb-lg-14 mb-xl-17 pb-xl-2" style="background-image: url(assets/img/1920x750/img1.jpg);">
+        <div class="container">
+            <div class="justify-content-md-center py-xl-10">
 
-            <div class="col-lg-12 pb-5 pb-lg-0">
-                <!--  order-md-1 order-lg-2 -->
-                <!-- Shop-control-bar Title -->
-                <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="font-size-21 font-weight-bold mb-0 text-lh-1">
-                        Leave a review
-                    </h3>
+                <div class="mb-lg-n16">
+                    <div class="col-md-6 offset-md-3">
+                        <div class="card border-0 tab-shadow tab-shadow">
+                            <div class="card-body">
+                                <h5 class="card-title">Leave Review</h5>
 
-                </div>
-
-                <div class="u-slick__tab">
-                    <!-- Tab Content -->
-                    <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade mb-5 mb-xl-0 show active" id="pills-one-example1" role="tabpanel" aria-labelledby="pills-one-example1-tab" data-target-group="groups">
-                            <div class="row" id="search_results">
-                                <div class="col-md-12">
-                                    <div class="card bg-light mb-3">
-                                        <div class="card-header">Order Id: @{{:id}}</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">@{{:title}}</h5>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">View voucher</a>
-
-                                        </div>
+                                <form method="post" action="">
+                                    <div class="form-group">
+                                        <label for="rating">Rating</label>
+                                        <input type="text" class="form-control" id="rating" name="rating" placeholder="">
                                     </div>
-                                </div>
-                            </div>
 
+                                    <div class="form-group">
+                                        <label for="review">Review</label>
+                                        <input type="text" class="form-control" id="review" name="review" placeholder="How was your experience?">
+                                    </div>
+
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </form>
+
+                            </div>
                         </div>
                     </div>
-                    <!-- End Tab Content -->
                 </div>
-                <!-- Slick Tab carousel -->
             </div>
         </div>
     </div>
@@ -51,27 +55,84 @@ Review @stop
 @endsection
 
 @section('scripts')
-<script id="search_results_tpl" type="text/x-jsrender">
-    
-</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/js/intlTelInput.min.js" integrity="sha256-679hprK8vxlf4fnVBENMDhjXffz6MSULSiah9G9FRZg=" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
-    $(document).on('ready', function() {
-        var apiUrl = "http://localhost";
+    $(document).ready(function() {
+        // var input = document.querySelector("#phone"),
+        //     errorMsg = document.querySelector("#error-msg"),
+        //     validMsg = document.querySelector("#valid-msg");
 
-        $.ajax({
-            method: 'GET',
-            url: apiUrl + ':5004/catalog_items/search/' + q,
-            success: function(data) {
-                $('#search_count').text(data.count);
+        // // here, the index maps to the error code returned from getValidationError - see readme
+        // var errorMap = ["Invalid number", "Invalid country code", "Too short", "Too long", "Invalid number"];
 
-                var tpl = $.templates('#search_results_tpl');
-                $.each(data.catalog_items, function(i, item) {
-                    console.log(item)
-                    $('#search_results').append(tpl.render(item));
-                });
+        // // initialise plugin
+        // var iti = window.intlTelInput(input, {
+        //     utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/js/utils.js",
+        //     initialCountry: "sg",
+        //     geoIpLookup: function(callback) {
+        //         $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
+        //             var countryCode = (resp && resp.country) ? resp.country : "";
+        //             callback(countryCode);
+        //         });
+        //     },
+        // });
+
+        // var reset = function() {
+        //     input.classList.remove("error");
+        //     errorMsg.innerHTML = "";
+        //     errorMsg.classList.add("hide");
+        //     validMsg.classList.add("hide");
+        // };
+
+        // // on blur: validate
+        // input.addEventListener('blur', function() {
+        //     reset();
+        //     if (input.value.trim()) {
+        //         if (iti.isValidNumber()) {
+        //             validMsg.classList.remove("hide");
+        //         } else {
+        //             input.classList.add("error");
+        //             var errorCode = iti.getValidationError();
+        //             errorMsg.innerHTML = errorMap[errorCode];
+        //             errorMsg.classList.remove("hide");
+        //         }
+        //     }
+        // });
+
+        // // on keyup / change flag: reset
+        // input.addEventListener('change', reset);
+        // input.addEventListener('keyup', reset);
+
+        // Handle the registration form
+        $('form').on('submit', function(e) {
+            e.preventDefault(); // Don't allow it to reload
+            
+            var data = {
+                rating: $('#rating').val(), // edit
+                review: $('#review').val(),
+                // phone: iti.getNumber() // Replace unformatted number with formatted number
             }
+            console.log(JSON.stringify(data));
+
+            var apiUrl = "http://localhost";
+
+            $.ajax({
+                method: 'POST',
+                url: apiUrl + ':5000/review',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(result) {
+                    console.log(result);
+                    
+                    // Redirect.
+                },
+                error: function(error) {
+                    console.log(error.responseJSON);
+                }
+            });
         });
     });
 </script>
+
 @endsection
