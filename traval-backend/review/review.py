@@ -95,7 +95,7 @@ def get_by_order(order_id):
 def create_review():
     data = request.get_json()
 
-    review = Review(data["id"], data["user_id"], data["order_id"], data["datetime"], data["rating"], data["msg"], data["status"])
+    review = Review(None, data["user_id"], data["order_id"], None, data["rating"], data["msg"], data["status"])
     if (Review.query.filter_by(id = review.id).first()):
         return jsonify({"message": "A review with id '{}' already exists.".format(user.id)}), 400
     if (Review.query.filter_by(user_id = review.user_id).filter_by(order_id = review.order_id).first()):
@@ -108,15 +108,9 @@ def create_review():
     
     if "photo_urls" in data:
         photos = data["photo_urls"]
-        if type(photos)==str and len(photos)>0: #non-empty str
-            try: 
-                db.session.add(photos)
-                db.session.commit()
-            except:
-                return jsonify({"message": "An error occurred uploading the review photo."}), 500 
-        elif type(photos)==list and len(photos)>0:  #non-empty li
+        if type(photos)==list and len(photos)>0:  #non-empty li
             for i in range(len(photos)):
-                photo = ReviewPhoto(i+1, data["id"], photos[i])   # photo id, review id, photo url
+                photo = ReviewPhoto(None, data["id"], photos[i])   # photo id (i+1), review id, photo url
                 try: 
                     db.session.add(photo)
                     db.session.commit()
@@ -124,10 +118,16 @@ def create_review():
                     if len(photos)==1:     # 1 url
                         return jsonify({"message": "An error occurred uploading the review photo."}), 500        
                     else:                  # >1 url
-                        return jsonify({"message": "An error occurred uploading a review photo."}), 500  
-                              
+                        return jsonify({"message": "An error occurred uploading a review photo."}), 500            
+        # elif type(photos)==str and len(photos)>0: #non-empty str
+        #     try: 
+        #         db.session.add(photos)
+        #         db.session.commit()
+        #     except:
+        #         return jsonify({"message": "An error occurred uploading the review photo."}), 500 
+       
     return data, 201
 
 
 if __name__ == '__main__':
-    app.run(port=5003, debug=True)
+    app.run(host='0.0.0.0', port=5003, debug=True)
