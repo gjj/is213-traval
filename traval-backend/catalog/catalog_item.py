@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import json
 
 from dotenv import load_dotenv
 import os
@@ -136,19 +137,22 @@ def search(q):
             item_dict.update(photos)               
     return jsonify(result)
 
-
 # will need to call order class
 @app.route("/catalog_items/<string:id>/reviews")
 def get_item_reviews(id):
-        item = CatalogItem.query.filter_by(id=id).first()
-        if not item:
-            return jsonify({"message":"Order not found."}), 404
-        item_id = str(order_item.item_id)
+    item = CatalogItem.query.filter_by(id=id).first()
+    if not item:
+        return jsonify({"message":"Order not found."}), 404
+    item_id = str(item.id)
 
-        orders_by_item_id = {"order": [order.json() for order in Orders.query.filter_by(item_id=item_id).all()]}
-        order_ids = []
-        for order in orders_by_item_id:
-            order_ids.append(json.loads(order.text)["id"])
+    r = requests.get(traval_order_url + "/" + item_id)
+    dicti = r.json()
+
+    # dicti = {}
+    # for i in r:
+    #     dicti['id'] = i.json()["id"]
+
+    return jsonify(r)
 
     # all_reviews = {"reviews": [review.json() for review in Review.query.filter_by(order_id=order_id).all()]}
     # for review_dict in all_reviews["reviews"]:
@@ -159,7 +163,6 @@ def get_item_reviews(id):
     #         review_dict.update(photos)               
     # return jsonify(all_reviews)
     # return jsonify(order_ids)
-
 
 
 if __name__ == '__main__':
