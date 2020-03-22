@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 
 import requests
-travel_catalog_url = "http://localhost:5002/orders"
+
 
 load_dotenv()
 
