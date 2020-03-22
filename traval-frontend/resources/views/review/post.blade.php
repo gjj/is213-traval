@@ -64,7 +64,7 @@ Leave Review @stop
 
 <script type="text/javascript">
     $(document).ready(function() {
- 
+        
         $("#rating").starRating({
             initialRating: 4,
             strokeColor: '#894A00',
@@ -76,20 +76,21 @@ Leave Review @stop
 
         $('form').on('submit', function(e) {
             e.preventDefault(); // Don't allow it to reload
-            
-            var rate = $('#rating').starRating('getRating');
 
+            var apiUrl = "http://localhost";
+            
             var data = {
-                rating: rate,
+                // var userid = // not sure if need to get from order or it is already stored somewhere like session or sth
+                order_id: {{ Request()->orderid }},
+                rating: $('#rating').starRating('getRating'),
                 msg: $('#msg').val()
+                // var status // need? what format anyway
             }
             console.log(JSON.stringify(data));
 
-            var apiUrl = "http://localhost";
-
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':5003/reviews',
+                url: apiUrl + ':5005/reviews',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {
