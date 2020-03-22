@@ -5,9 +5,13 @@ from flask_cors import CORS
 from dotenv import load_dotenv
 import os
 
+import requests
+traval_order_url = "http://localhost:5002/orders"
+
 load_dotenv()
 
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+print(DATABASE_PASSWORD)
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
