@@ -42,9 +42,9 @@ Leave Review @stop
                                         <textarea class="form-control" id="msg" name="msg" rows="5" placeholder="How was your experience?"></textarea>
                                     </div>  <br>
 
-                                    <!-- <div class="form-group">
+                                    <div class="form-group">
                                         <input type="file" id="img" name="img" accept="image/*">
-                                    </div>  <br> -->
+                                    </div>  <br>
                                     
                                     <button type="submit" id="submit" name="submit" class="btn btn-primary">Submit</button>
                                 </form>
@@ -60,7 +60,6 @@ Leave Review @stop
 @endsection
 
 @section('scripts')
-<script async src="https://imgbb.com/upload.js" data-auto-insert="direct-links"></script>
 <script src="plugins/jquery.star-rating-svg.js"></script>
 
 <script type="text/javascript">
