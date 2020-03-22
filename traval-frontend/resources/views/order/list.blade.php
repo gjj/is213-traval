@@ -210,7 +210,7 @@ $(document).on('ready', function() {
     // If query exists
     $.ajax({
         method: 'GET',
-        url: apiUrl + ':5004/orders',
+        url: apiUrl + ':5002/orders',
         success: function(data) {
             console.log(data)
             var tpl = $.templates('#order_results_tpl');
