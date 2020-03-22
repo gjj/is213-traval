@@ -509,6 +509,12 @@ Search @stop
 
                             <div class="tab-pane fade pt-8" id="pills-two-example2" role="tabpanel" aria-labelledby="pills-two-example2-tab">
                                 <form class="js-validate">
+                                    <div id="card-element">
+
+
+                                    </div>
+
+
                                     <!-- Login -->
                                     <div id="login" data-target-group="idForm">
                                         <!-- Form Group -->
@@ -726,4 +732,11 @@ Search @stop
 @endsection
 
 @section('scripts')
+<script type="text/javascript">
+    var stripe = Stripe('pk_test_FlBqXwgBTcD0Cnrg5WtCuqwX00wJVaEIdt');
+
+    var elements = stripe.elements();
+    var cardElement = elements.create('card');
+    cardElement.mount('#card-element');
+</script>
 @endsection

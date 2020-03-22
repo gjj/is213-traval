@@ -37,6 +37,10 @@
 
 <script src="assets/js/app.js"></script>
 
+<!-- StripeJS -->
+<script src="https://js.stripe.com/v3/"></script>
+
+
 <!-- JS Plugins Init. -->
 <script>
     $(window).on('load', function() {

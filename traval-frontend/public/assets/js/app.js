@@ -9,6 +9,9 @@ $(document).on('ready', function () {
     }
 });
 
+// Stripe
+
+
 
 // 'use strict';
 
