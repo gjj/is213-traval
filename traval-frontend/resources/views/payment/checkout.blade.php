@@ -38,7 +38,6 @@ Search @stop
                         <h5 id="scroll-description" class="font-size-21 font-weight-bold text-dark mb-4">
                             Let us know who you are
                         </h5>
-                        <!-- Contacts Form -->
                         <form class="js-validate">
                             <div class="row">
                                 <!-- Input -->
@@ -75,9 +74,7 @@ Search @stop
                                         <input type="email" class="form-control" name="email" placeholder="jacky.phan@gmail.com" aria-label="creativelayers088@gmail.com" required data-msg="Please enter a valid email address." data-error-class="u-has-error" data-success-class="u-has-success">
                                     </div>
                                 </div>
-                                <!-- End Input -->
 
-                                <!-- Input -->
                                 <div class="col-sm-6 mb-4">
                                     <div class="js-form-message">
                                         <label class="form-label">
@@ -396,8 +393,8 @@ Search @stop
                                         <i class="flaticon-tick text-white font-size-15"></i>
                                     </div>
                                     <div class="d-md-flex justify-content-md-center align-items-md-center flex-wrap">
-                                        <img class="img-fluid mb-3" src="assets/img/199x35/img1.jpg" alt="Image-Description">
-                                        <div class="w-100 text-dark">Payment with credit card</div>
+                                        <img class="img-fluid mb-3" style="height:35px;" src="https://cdn.worldvectorlogo.com/logos/stripe-3.svg" alt="Image-Description">
+                                        <div class="w-100 text-dark">Payment with Debit/Credit Card</div>
                                     </div>
                                 </a>
                             </li>
@@ -408,7 +405,7 @@ Search @stop
                                     </div>
                                     <div class="d-md-flex justify-content-md-center align-items-md-center flex-wrap">
                                         <img class="img-fluid mb-3" src="assets/img/199x35/img2.jpg" alt="Image-Description">
-                                        <div class="w-100 text-dark">Payment with paypal</div>
+                                        <div class="w-100 text-dark">Payment with PayPal</div>
                                     </div>
                                 </a>
                             </li>
@@ -419,76 +416,26 @@ Search @stop
                         <div class="tab-content">
                             <div class="tab-pane fade pt-8 show active" id="pills-one-example2" role="tabpanel" aria-labelledby="pills-one-example2-tab">
                                 <!-- Payment Form -->
-                                <form class="js-validate">
+                                <form action="" method="post" id="checkout">
                                     <div class="row">
-                                        <!-- Input -->
-                                        <div class="col-sm-6 mb-4">
-                                            <div class="js-form-message">
-                                                <label class="form-label">
-                                                    Card Holder Name
-                                                </label>
+                                        <div class="col-sm-12 mb-4">
+                                            <label class="form-label">
+                                                Card Holder Name
+                                            </label>
 
-                                                <input type="text" class="form-control" name="Cardname" placeholder="" aria-label="" required data-msg="Please enter card holder name." data-error-class="u-has-error" data-success-class="u-has-success">
-                                            </div>
+                                            <input type="text" class="form-control" name="card_name" placeholder="" required>
                                         </div>
-                                        <!-- End Input -->
-
-                                        <!-- Input -->
-                                        <div class="col-sm-6 mb-4">
-                                            <div class="js-form-message">
-                                                <label class="form-label">
-                                                    Card Number
-                                                </label>
-
-                                                <input type="number" class="form-control" name="Cardnumber" placeholder="" aria-label="" required data-msg="Please enter card number." data-error-class="u-has-error" data-success-class="u-has-success">
-                                            </div>
+                                        <div class="col-md-12 mb-4">
+                                            <label class="form-label">
+                                                Card Details
+                                            </label>
+                                            <span id="card-element" class="form-control"></span>
                                         </div>
-                                        <!-- End Input -->
-
-                                        <div class="w-100"></div>
-
-                                        <!-- Input -->
-                                        <div class="col-sm-6 mb-4">
-                                            <div class="row">
-                                                <div class="col-sm-6 mb-4 mb-md-0">
-                                                    <div class="js-form-message">
-                                                        <label class="form-label">
-                                                            Expiry Month
-                                                        </label>
-
-                                                        <input type="number" class="form-control" name="Expirymonth" placeholder="" aria-label="" required data-msg="Please enter expiry month." data-error-class="u-has-error" data-success-class="u-has-success">
-                                                    </div>
-                                                </div>
-                                                <div class="col-sm-6">
-                                                    <div class="js-form-message">
-                                                        <label class="form-label">
-                                                            Expiry Year
-                                                        </label>
-
-                                                        <input type="number" class="form-control" name="Expiryyear" placeholder="" aria-label="" required data-msg="Please enter expiry year." data-error-class="u-has-error" data-success-class="u-has-success">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <!-- End Input -->
-
-                                        <!-- Input -->
-                                        <div class="col-sm-6 mb-4">
-                                            <div class="js-form-message">
-                                                <label class="form-label">
-                                                    CCV
-                                                </label>
-
-                                                <input type="number" class="form-control" name="ccvnumber" placeholder="" aria-label="" required data-msg="Please enter ccv number." data-error-class="u-has-error" data-success-class="u-has-success">
-                                            </div>
-                                        </div>
-                                        <!-- End Input -->
 
                                         <div class="w-100"></div>
 
                                         <div class="col">
-                                            <!-- Checkbox -->
-                                            <div class="js-form-message mb-5">
+                                            <!-- <div class="js-form-message mb-5">
                                                 <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
                                                     <input type="checkbox" class="custom-control-input" id="termsCheckbox" name="termsCheckbox" required data-msg="Please accept our Terms and Conditions." data-error-class="u-has-error" data-success-class="u-has-success">
                                                     <label class="custom-control-label" for="termsCheckbox">
@@ -498,23 +445,15 @@ Search @stop
                                                         </small>
                                                     </label>
                                                 </div>
-                                            </div>
-                                            <!-- End Checkbox -->
+                                            </div> -->
                                             <button type="submit" class="btn btn-primary w-100 rounded-sm transition-3d-hover font-size-16 font-weight-bold py-3">CONFIRM BOOKING</button>
                                         </div>
                                     </div>
                                 </form>
-                                <!-- End Payment Form -->
                             </div>
 
                             <div class="tab-pane fade pt-8" id="pills-two-example2" role="tabpanel" aria-labelledby="pills-two-example2-tab">
                                 <form class="js-validate">
-                                    <div id="card-element">
-
-
-                                    </div>
-
-
                                     <!-- Login -->
                                     <div id="login" data-target-group="idForm">
                                         <!-- Form Group -->
@@ -566,9 +505,9 @@ Search @stop
                         <a href="#" class="d-block mb-3">
                             <img class="img-fluid rounded-sm" src="assets/img/240x160/img5.jpg" alt="Image-Description">
                         </a>
-                        <a href="#" class="text-dark font-weight-bold mb-2 d-block">5-Day Oahu Tour: Honolulu, Pearl Harbor, & Diamond Head</a>
+                        <a href="#" class="text-dark font-weight-bold mb-2 d-block">@{{:item}}</a>
                         <div class="mb-1 flex-horizontal-center text-gray-1">
-                            <i class="icon flaticon-pin-1 mr-2 font-size-15"></i> United Kingdom
+                            <i class="icon flaticon-pin-1 mr-2 font-size-15"></i> @{{:location}}
                         </div>
                     </div>
                     <!-- Basics Accordion -->
@@ -578,7 +517,7 @@ Search @stop
                             <div class="card-header card-collapse bg-transparent border-0" id="basicsHeadingOne">
                                 <h5 class="mb-0">
                                     <button type="button" class="btn btn-link border-0 btn-block d-flex justify-content-between card-btn py-3 px-4 font-size-17 font-weight-bold text-dark" data-toggle="collapse" data-target="#basicsCollapseOne" aria-expanded="true" aria-controls="basicsCollapseOne">
-                                        Booking Detail
+                                        Order Details
 
                                         <span class="card-btn-arrow font-size-14 text-dark">
                                             <i class="fas fa-chevron-down"></i>
@@ -588,87 +527,16 @@ Search @stop
                             </div>
                             <div id="basicsCollapseOne" class="collapse show" aria-labelledby="basicsHeadingOne" data-parent="#basicsAccordion">
                                 <div class="card-body px-4 pt-0">
-                                    <!-- Fact List -->
                                     <ul class="list-unstyled font-size-1 mb-0 font-size-16">
                                         <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Date <br> 22/09/2020</span>
-                                            <span class="text-secondary"><a href="#" class="text-underline">Edit</a></span>
-                                        </li>
-
-                                        <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Duration</span>
-                                            <span class="text-secondary">26 days</span>
-                                        </li>
-
-                                        <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Activity Type</span>
-                                            <span class="text-secondary">Dailty Activity</span>
-                                        </li>
-
-                                        <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Max People</span>
+                                            <span class="font-weight-medium">Quantity</span>
                                             <span class="text-secondary">10</span>
                                         </li>
                                     </ul>
-                                    <!-- End Fact List -->
                                 </div>
                             </div>
                         </div>
-                        <!-- End Card -->
 
-                        <!-- Card -->
-                        <div class="card rounded-0 border-top-0 border-left-0 border-right-0">
-                            <div class="card-header card-collapse bg-transparent border-0" id="basicsHeadingTwo">
-                                <h5 class="mb-0">
-                                    <button type="button" class="btn btn-link border-0 btn-block d-flex justify-content-between card-btn py-3 px-4 font-size-17 font-weight-bold text-dark" data-toggle="collapse" data-target="#basicsCollapseTwo" aria-expanded="false" aria-controls="basicsCollapseTwo">
-                                        Extra
-
-                                        <span class="card-btn-arrow font-size-14 text-dark">
-                                            <i class="fas fa-chevron-down"></i>
-                                        </span>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="basicsCollapseTwo" class="collapse" aria-labelledby="basicsHeadingTwo" data-parent="#basicsAccordion">
-                                <div class="card-body px-4 pt-0">
-                                    Anim pariatur cliche reprehenderit, enim eiusmod high life accusamus terry richardson ad squid.
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End Card -->
-
-                        <!-- Card -->
-                        <div class="card rounded-0 border-top-0 border-left-0 border-right-0">
-                            <div class="card-header card-collapse bg-transparent border-0" id="basicsHeadingThree">
-                                <h5 class="mb-0">
-                                    <button type="button" class="btn btn-link border-0 btn-block d-flex justify-content-between card-btn py-3 px-4 font-size-17 font-weight-bold text-dark" data-toggle="collapse" data-target="#basicsCollapseThree" aria-expanded="false" aria-controls="basicsCollapseThree">
-                                        Coupon Code
-
-                                        <span class="card-btn-arrow font-size-14 text-dark">
-                                            <i class="fas fa-chevron-down"></i>
-                                        </span>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="basicsCollapseThree" class="collapse show" aria-labelledby="basicsHeadingThree" data-parent="#basicsAccordion">
-                                <div class="card-body px-4 pt-0 pb-4">
-                                    <!-- Subscribe Form -->
-                                    <form class="js-focus-state">
-                                        <label class="sr-only" for="CouponCodeExample1">Coupon Code</label>
-                                        <div class="input-group">
-                                            <input type="number" class="form-control" name="email" id="CouponCodeExample1" placeholder="" aria-label="" aria-describedby="CouponCodeExample2" required>
-                                            <div class="input-group-append">
-                                                <button class="btn btn-primary py-2" type="button" id="CouponCodeExample2">Apply</button>
-                                            </div>
-                                        </div>
-                                    </form>
-                                    <!-- End Subscribe Form -->
-                                </div>
-                            </div>
-                        </div>
-                        <!-- End Card -->
-
-                        <!-- Card -->
                         <div class="card rounded-0 border-top-0 border-left-0 border-right-0">
                             <div class="card-header card-collapse bg-transparent border-0" id="basicsHeadingFour">
                                 <h5 class="mb-0">
@@ -686,48 +554,24 @@ Search @stop
                                     <!-- Fact List -->
                                     <ul class="list-unstyled font-size-1 mb-0 font-size-16">
                                         <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Adult Price</span>
-                                            <span class="text-secondary">€580,00</span>
-                                        </li>
-
-                                        <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Children Price</span>
-                                            <span class="text-secondary">€0,00</span>
-                                        </li>
-
-                                        <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Infant Price</span>
-                                            <span class="text-secondary">€0,00</span>
-                                        </li>
-
-                                        <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Subtotal</span>
-                                            <span class="text-secondary">€580,00</span>
-                                        </li>
-
-                                        <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Tax</span>
-                                            <span class="text-secondary">0 %</span>
+                                            <span class="font-weight-medium">@{{:item_name}}</span>
+                                            <span class="text-secondary">S$10.00</span>
                                         </li>
 
                                         <li class="d-flex justify-content-between py-2 font-size-17 font-weight-bold">
                                             <span class="font-weight-bold">Pay Amount</span>
-                                            <span class="">€580,00</span>
+                                            <span class="">S$10.00</span>
                                         </li>
                                     </ul>
-                                    <!-- End Fact List -->
                                 </div>
                             </div>
                         </div>
-                        <!-- End Card -->
                     </div>
-                    <!-- End Basics Accordion -->
                 </div>
             </div>
         </div>
     </div>
 </main>
-<!-- ========== END MAIN CONTENT ========== -->
 
 @endsection
 
@@ -736,7 +580,31 @@ Search @stop
     var stripe = Stripe('pk_test_FlBqXwgBTcD0Cnrg5WtCuqwX00wJVaEIdt');
 
     var elements = stripe.elements();
-    var cardElement = elements.create('card');
+
+    var cardStyle = {
+        base: {
+            color: '#32325d',
+            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+            fontSmoothing: 'antialiased',
+            fontSize: '16px',
+            '::placeholder': {
+                color: '#aab7c4'
+            }
+        },
+        invalid: {
+            color: '#fa755a',
+            iconColor: '#fa755a'
+        }
+    };
+
+    var cardElement = elements.create('card', {
+        style: cardStyle,
+    });
     cardElement.mount('#card-element');
+
+    $('#checkout').on('submit', function(e) {
+        e.preventDefault();
+
+    });
 </script>
 @endsection
