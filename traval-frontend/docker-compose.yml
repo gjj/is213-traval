@@ -1,9 +1,12 @@
 version: '3'
 services:
-  # PHP
+  # Our Laravel app
   app:
     build:
-      context: .
+      args:
+        user: traval
+        uid: 1000
+      context: ./
       dockerfile: Dockerfile
     container_name: app
     restart: unless-stopped
@@ -11,22 +14,23 @@ services:
     environment:
       SERVICE_NAME: app
       SERVICE_TAGS: dev
+    working_dir: /var/www
     volumes:
       - ./:/var/www
-    working_dir: /var/www
     networks:
       - app-network
 
   # Nginx
-  webserver:
+  nginx:
     image: nginx:alpine
-    container_name: webserver
+    container_name: nginx
     restart: unless-stopped
     tty: true
     volumes:
+      - ./:/var/www
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
     ports:
-      - "80:80"
+      - "8000:80"
       - "443:443"
     networks:
       - app-network
