@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 import os
 
 import requests
-travel_catalog_url = "http://localhost:5001/orders"
+travel_catalog_url = "http://localhost:5002/orders"
 
 load_dotenv()
 
@@ -130,4 +130,4 @@ def create_review():
 
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5003, debug=True)
+    app.run(host='0.0.0.0', port=5005, debug=True)
