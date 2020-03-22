@@ -1,7 +1,7 @@
 @extends('partials.master')
 
 @section('title')
-Register @stop
+Leave Review @stop
 
 @section('styles')
 <link rel="stylesheet" type="text/css" href="plugins/star-rating-svg.css">
@@ -42,11 +42,11 @@ Register @stop
                                         <textarea class="form-control" id="msg" name="msg" rows="5" placeholder="How was your experience?"></textarea>
                                     </div>  <br>
 
-                                    <div class="form-group">
-                                        <input type="photo" id="myFile" name="filename"> 
-                                    </div>  <br>
+                                    <!-- <div class="form-group">
+                                        <input type="file" id="img" name="img" accept="image/*">
+                                    </div>  <br> -->
                                     
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" id="submit" name="submit" class="btn btn-primary">Submit</button>
                                 </form>
 
                             </div>
@@ -60,6 +60,7 @@ Register @stop
 @endsection
 
 @section('scripts')
+<script async src="https://imgbb.com/upload.js" data-auto-insert="direct-links"></script>
 <script src="plugins/jquery.star-rating-svg.js"></script>
 
 <script type="text/javascript">
