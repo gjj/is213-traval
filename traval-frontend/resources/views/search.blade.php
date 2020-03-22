@@ -12,7 +12,9 @@ Search @stop
         <div class="row mb-8">
             <div class="col-lg-4 col-xl-3 order-lg-1 width-md-50">
                 <div class="navbar-expand-lg navbar-expand-lg-collapse-block">
-                    <button class="btn d-lg-none mt-3 mb-4 p-0 collapsed" type="button" data-toggle="collapse" data-target="#sidebar" aria-controls="sidebar" aria-expanded="false" aria-label="Toggle navigation">
+                    <button class="btn d-lg-none mt-3 mb-4 p-0 collapsed" type="button" data-toggle="collapse"
+                        data-target="#sidebar" aria-controls="sidebar" aria-expanded="false"
+                        aria-label="Toggle navigation">
                         <i class="far fa-caret-square-down text-primary font-size-20 card-btn-arrow ml-0"></i>
                         <span class="text-primary ml-2">Sidebar</span>
                     </button>
@@ -23,18 +25,25 @@ Search @stop
                                     <div class="p-4 mx-1 mb-1">
                                         <!-- Input -->
                                         <form action="{{ route('search') }}">
-                                            <span class="d-block text-gray-1  font-weight-normal mb-0 text-left">What do you want to do?</span>
+                                            <span class="d-block text-gray-1  font-weight-normal mb-0 text-left">What do
+                                                you want to do?</span>
                                             <div class="mb-4">
                                                 <div class="input-group border-bottom border-width-2 border-color-1">
-                                                    <i class="flaticon-pin-1 d-flex align-items-center mr-2 text-primary font-weight-semi-bold font-size-22"></i>
-                                                    <input type="text" name="q" id="q" class="form-control font-weight-bold font-size-16 shadow-none hero-form font-weight-bold border-0 p-0" placeholder="Search by activity, destination or attraction" aria-label="Keyword or title" />
+                                                    <i
+                                                        class="flaticon-pin-1 d-flex align-items-center mr-2 text-primary font-weight-semi-bold font-size-22"></i>
+                                                    <input type="text" name="q" id="q"
+                                                        class="form-control font-weight-bold font-size-16 shadow-none hero-form font-weight-bold border-0 p-0"
+                                                        placeholder="Search by activity, destination or attraction"
+                                                        aria-label="Keyword or title" />
                                                 </div>
                                             </div>
                                         </form>
                                         <!-- End Input -->
 
                                         <div class="text-center">
-                                            <button type="submit" class="btn btn-primary height-60 w-100 font-weight-bold mb-xl-0 mb-lg-1 transition-3d-hover"><i class="flaticon-magnifying-glass mr-2 font-size-17"></i>Search</button>
+                                            <button type="submit"
+                                                class="btn btn-primary height-60 w-100 font-weight-bold mb-xl-0 mb-lg-1 transition-3d-hover"><i
+                                                    class="flaticon-magnifying-glass mr-2 font-size-17"></i>Search</button>
                                         </div>
                                     </div>
                                 </div>
@@ -46,7 +55,8 @@ Search @stop
             <div class="col-lg-8 col-xl-9 order-md-1 order-lg-2 pb-5 pb-lg-0">
                 <!-- Shop-control-bar Title -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
-                    <h3 class="font-size-21 font-weight-bold mb-0 text-lh-1"><span id="search_count">@{{ results_count }}</span> activities found</h3>
+                    <h3 class="font-size-21 font-weight-bold mb-0 text-lh-1"><span
+                            id="search_count">@{{ results_count }}</span> activities found</h3>
 
                 </div>
                 <!-- End shop-control-bar Title -->
@@ -55,7 +65,8 @@ Search @stop
                 <div class="u-slick__tab">
                     <!-- Tab Content -->
                     <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade mb-5 mb-xl-0 show active" id="pills-one-example1" role="tabpanel" aria-labelledby="pills-one-example1-tab" data-target-group="groups">
+                        <div class="tab-pane fade mb-5 mb-xl-0 show active" id="pills-one-example1" role="tabpanel"
+                            aria-labelledby="pills-one-example1-tab" data-target-group="groups">
                             <div class="row" id="search_results">
                             </div>
                             <!-- <div class="text-center text-md-left font-size-14 mb-3 text-lh-1">Showing 1–15</div>
@@ -138,29 +149,29 @@ Search @stop
 </script>
 
 <script type="text/javascript">
-    $(document).on('ready', function() {
-        var apiUrl = "http://localhost";
+$(document).on('ready', function() {
+    var apiUrl = "http://localhost";
 
-        var urlParams = new URLSearchParams(window.location.search);
+    var urlParams = new URLSearchParams(window.location.search);
 
-        // If query exists
-        if (urlParams.has('q')) {
-            var q = urlParams.get('q');
+    // If query exists
+    if (urlParams.has('q')) {
+        var q = urlParams.get('q');
 
-            $.ajax({
-                method: 'GET',
-                url: apiUrl + ':5001/catalog_items/search/' + q,
-                success: function(data) {
-                    $('#search_count').text(data.count);
+        $.ajax({
+            method: 'GET',
+            url: apiUrl + ':5001/catalog_items/search/' + q,
+            success: function(data) {
+                $('#search_count').text(data.count);
 
-                    var tpl = $.templates('#search_results_tpl');
-                    $.each(data.catalog_items, function(i, item) {
-                        console.log(item)
-                        $('#search_results').append(tpl.render(item));
-                    });
-                }
-            });
-        }
-    });
+                var tpl = $.templates('#search_results_tpl');
+                $.each(data.catalog_items, function(i, item) {
+                    console.log(item)
+                    $('#search_results').append(tpl.render(item));
+                });
+            }
+        });
+    }
+});
 </script>
 @endsection

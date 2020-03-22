@@ -24,19 +24,131 @@ My Order @stop
                 <div class="u-slick__tab">
                     <!-- Tab Content -->
                     <div class="tab-content" id="pills-tabContent">
-                        <div class="tab-pane fade mb-5 mb-xl-0 show active" id="pills-one-example1" role="tabpanel" aria-labelledby="pills-one-example1-tab" data-target-group="groups">
-                            <div class="row" id="search_results">
-                                <div class="col-md-12">
-                                    <div class="card bg-light mb-3">
-                                        <div class="card-header">Order Id: @{{:id}}</div>
-                                        <div class="card-body">
-                                            <h5 class="card-title">@{{:title}}</h5>
-                                            <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
-                                            <a href="#" class="btn btn-primary active" role="button" aria-pressed="true">View voucher</a>
+                        <div class="tab-pane fade mb-5 mb-xl-0 show active" id="pills-one-example1" role="tabpanel"
+                            aria-labelledby="pills-one-example1-tab" data-target-group="groups">
+                            <div class="row" id="order_results">
 
-                                        </div>
+
+                                <!-- Order row 1 -->
+                                <div class="card bg-light mb-3">
+                                    <div class="card-header">Order Id: @{{:id}}</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">@{{:title}}</h5>
+                                        <p class="card-text">Some quick example text to build on the card title and
+                                            make up the bulk of the card's content.</p>
+                                        <a href="#" class="btn btn-primary active" role="button"
+                                            aria-pressed="true">View voucher</a>
                                     </div>
                                 </div>
+
+                                <!-- Order row 2 -->
+                                <div class="card bg-light mb-3">
+                                    <div class="card-header">Order Id: @{{:1}}</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">@{{:Gardens by the Bay Ticket in Singapore}}</h5>
+                                        <p class="card-text">Some quick example text to build on the card title and
+                                            make up the bulk of the card's content.</p>
+
+                                        <div class="container border border-success">
+                                            <!-- Header -->
+                                            <div class="row mx-md-n5">
+
+                                                <div class="container border border-danger">
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <strong></strong>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <strong>Description</strong>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <strong>Price</strong>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            <strong>Quantity</strong>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <!-- Body -->
+                                            <div class="row">
+                                                <div class="container border border-warning">
+                                                    <div class="row">
+                                                        <div class="col-sm-3">
+                                                            <div class="m_bg m_radius_box rounded">
+                                                                <a href="./"
+                                                                    class="d-block gradient-overlay-half-bg-gradient-v5">
+                                                                    <img class="img-fluid rounded"
+                                                                        src="https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1920,h_720,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/9658ba79-Gardens-by-the-Bay/GardensbytheBayTicketinSingapore.webp">
+                                                                </a>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            One of three columns
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            One of three columns
+                                                        </div>
+                                                        <div class="col-sm-3">
+                                                            One of three columns
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                        </div>
+
+                                        <a href="#" class="btn btn-primary active" role="button"
+                                            aria-pressed="true">View voucher</a>
+                                    </div>
+                                </div>
+
+                                <!-- Order row 3 -->
+                                <div class="card bg-light mb-3">
+                                    <div class="card-header">Order Id: @{{:1}}</div>
+                                    <div class="card-body">
+                                        <h5 class="card-title">@{{:Gardens by the Bay Ticket in Singapore}}</h5>
+                                        <p class="card-text">Some quick example text to build on the card title
+                                            and
+                                            make up the bulk of the card's content.</p>
+
+                                        <table class="table border">
+                                            <thead>
+                                                <tr classs="">
+                                                    <th scope="col">Thumbnail</th>
+                                                    <th scope="col">Description</th>
+                                                    <th scope="col">Date</th>
+                                                    <th scope="col">Quantity</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td scope="col">
+                                                        <div class="m_bg m_radius_box">
+                                                            <a href="./"
+                                                                class="d-block gradient-overlay-half-bg-gradient-v5">
+                                                                <img class="img-fluid rounded"
+                                                                    src="https://res.klook.com/images/fl_lossy.progressive,q_65/c_fill,w_1920,h_720,f_auto/w_80,x_15,y_15,g_south_west,l_klook_water/activities/9658ba79-Gardens-by-the-Bay/GardensbytheBayTicketinSingapore.webp">
+                                                            </a>
+                                                        </div>
+                                                    </td>
+                                                    <td scope="col">description here</td>
+                                                    <td scope="col">2020/03/30</td>
+                                                    <td scope="col">4</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+
+                                        <a href="#" class="btn btn-primary active" role="button"
+                                            aria-pressed="true">View voucher</a>
+                                    </div>
+                                </div>
+
+                                <!-- Order row with Laravel -->
+                                <div class=>
+                                </div>
+
                             </div>
 
                         </div>
@@ -51,76 +163,65 @@ My Order @stop
 @endsection
 
 @section('scripts')
-<script id="search_results_tpl" type="text/x-jsrender">
-    <div class="col-md-6 col-xl-4 mb-3 mb-md-4 pb-1">
-        <div class="card transition-3d-hover shadow-hover-2 h-100">
-            <div class="position-relative">
-                <a href="activity/@{{:id}}" class="d-block gradient-overlay-half-bg-gradient-v5">
-                    <img class="min-height-230 card-img-top" src="@{{:photo_urls[0]}}">
-                </a>
-                <div class="position-absolute bottom-0 left-0 right-0">
-                    <div class="px-4 pb-3">
-                        <a href="activity/@{{:id}}" class="d-block">
-                            <div class="d-flex align-items-center font-size-14 text-white">
-                                <i class="icon flaticon-placeholder mr-2 font-size-20"></i> Singapore
+<script id="order_results_tpl" type="text/x-jsrender">
+    <div class="card bg-light mb-3">
+        <div class="card-header">Order Id: @{{:id}}</div>
+        <div class="card-body">
+            <h5 class="card-title">@{{:title}}</h5>
+            <p class="card-text">@{{:description}}</p>
+
+            <table class="table border">
+                <thead>
+                    <tr classs="">
+                        <th scope="col">Thumbnail</th>
+                        <th scope="col">Description</th>
+                        <th scope="col">Date</th>
+                        <th scope="col">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td scope="col">
+                            <div class="m_bg m_radius_box">
+                                <a href="./"
+                                    class="d-block gradient-overlay-half-bg-gradient-v5">
+                                    <img class="img-fluid rounded"
+                                        src="@{{:photo_urls[0]}}">
+                                </a>
                             </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
-            <div class="card-body px-4 py-3">
-                <a href="../activities/activities-single-v1.html" class="card-title font-size-17 font-weight-medium text-dark d-inline-block mb-1">
-                    @{{:title}}
-                </a>
-                <div class="mt-2 mb-3">
-                    <span class="badge badge-pill badge-warning text-lh-sm text-white py-1 px-2 font-size-14 border-radius-3 font-weight-normal">
-                        @{{if rating}}
-                            @{{:rating}}/5
-                        @{{else}}
-                            No ratings
-                        @{{/if}}
-                    </span>
-                    <span class="font-size-14 text-gray-1 ml-2">
-                        @{{if reviews_count}}
-                            (@{{:reviews_count}} reviews)
-                        @{{else}}
-                            (No reviews)
-                        @{{/if}}
-                    </span>
-                </div>
-                <div class="mb-0">
-                    <span class="mr-1 font-size-14 text-gray-1">From</span>
-                    <span class="font-weight-bold">S$@{{:price}}</span>
-                </div>
-            </div>
+                        </td>
+                        <td scope="col">description here</td>
+                        <td scope="col">@{{:datetime}}</td>
+                        <td scope="col">@{{:quantity}}</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <a href="#" class="btn btn-primary active" role="button"
+                aria-pressed="true">View voucher</a>
         </div>
     </div>
 </script>
 
 <script type="text/javascript">
-    $(document).on('ready', function() {
-        var apiUrl = "http://localhost";
+$(document).on('ready', function() {
+    var apiUrl = "http://localhost";
 
-        var urlParams = new URLSearchParams(window.location.search);
+    // If query exists
+    $.ajax({
+        method: 'GET',
+        url: apiUrl + ':5002/orders',
+        success: function(data) {
+            console.log(data)
+            var tpl = $.templates('#order_results_tpl');
 
-        // If query exists
-        if (urlParams.has('q')) {
-            var q = urlParams.get('q');
-
-            $.ajax({
-                method: 'GET',
-                url: apiUrl + ':5004/catalog_items/search/' + q,
-                success: function(data) {
-                    $('#search_count').text(data.count);
-
-                    var tpl = $.templates('#search_results_tpl');
-                    $.each(data.catalog_items, function(i, item) {
-                        console.log(item)
-                        $('#search_results').append(tpl.render(item));
-                    });
-                }
+            $.each(data.order_items, function(i, item) {
+                console.log(item)
+                $('#order_results').append(tpl.render(item));
             });
         }
     });
+
+});
 </script>
 @endsection

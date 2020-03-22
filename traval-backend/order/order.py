@@ -54,15 +54,16 @@ def retrieve_order_by_ID_in_json(id):
     return jsonify({"message": "Order not found."}), 404
 
 
-def retrieve_order_in_json(id):
-    order_item = Orders.query.all()
+def retrieve_order_in_json():
+    order_item = {"order_items": [item.json() for item in Orders.query.all()]}
     if order_item:
-        return jsonify(order_item.json())
-    return jsonify({"message": "Order not found."}), 404
+        return jsonify(order_item)
+    return jsonify({"message":"Order not found."}), 404
 
+travel_catalog_url = "http://localhost:5001/catalog_items"
 
-# UC1
-# Creating order
+#UC1
+#Creating order
 """ Test POST with this format
 {
 	"id": "1",
@@ -118,6 +119,33 @@ def get_orders(user_id):
         return jsonify(reply)
     return jsonify({"message": "Order not found."}), 404
 
+
+#Get All Orders
+@app.route("/orders")
+def get_all_orders():
+    order_query_item = Orders.query.all()
+    order_list = []
+    for item in order_query_item:
+        item_id = str(item.item_id)
+        r = requests.get(travel_catalog_url + "/" + item_id)
+        description = r.json()["description"]
+        title = r.json()["title"]
+        price = r.json()["price"]
+        photo_urls = r.json()["photo_urls"]
+        id = item.id
+        user_id = item.user_id
+        item_id = item.item_id
+        quantity = item.quantity
+        datetime = item.datetime
+        status = item.status
+
+        new_item = {"id":id, "user_id":user_id, "item_id":item_id, "quantity": quantity, "datetime":datetime, "status":status, "decription":description, "title":title, "price":price, "photo_urls":photo_urls}
+        order_list.append(new_item)
+
+    order_item = {"order_items": order_list}
+    if order_item:
+        return jsonify(order_item)
+    return jsonify({"message":"Order not found."}), 404
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
