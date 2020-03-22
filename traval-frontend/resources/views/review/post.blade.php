@@ -1,7 +1,7 @@
 @extends('partials.master')
 
 @section('title')
-Register @stop
+Leave Review @stop
 
 @section('styles')
 <link rel="stylesheet" type="text/css" href="plugins/star-rating-svg.css">
@@ -43,10 +43,10 @@ Register @stop
                                     </div>  <br>
 
                                     <div class="form-group">
-                                        <input type="photo" id="myFile" name="filename"> 
+                                        <input type="file" id="img" name="img" accept="image/*">
                                     </div>  <br>
                                     
-                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                    <button type="submit" id="submit" name="submit" class="btn btn-primary">Submit</button>
                                 </form>
 
                             </div>
