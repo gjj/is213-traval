@@ -81,7 +81,7 @@ def AMQP():
     connection.close()
 
 
-@app.route("/payment", methods=['POST'])
+@app.route("/payments", methods=['POST'])
 def create_payment():
     data = request.get_json()
     id = data["id"]
@@ -91,19 +91,62 @@ def create_payment():
     AMQP()
     return {"payment_price": payment_price}
 
+@app.route("/payments/stripe/test", methods=['GET'])
+def create_payment_intent_test():
+    data = request.get_data()
 
-@app.route("/payment/stripe", methods=['GET'])
-def payment_stripe():
-    stripe.api_key = STRIPE_SECRET_KEY
-
-    data = stripe.PaymentIntent.create(
-        amount=2850,
+    payload = stripe.PaymentIntent.create(
+        amount=2880,
         currency="sgd",
-        payment_method_types=["card"],
+        payment_method_types=["card"]
     )
 
-    return data
+    return payload
 
+@app.route("/payments/stripe", methods=['POST'])
+def create_payment_intent():
+    data = request.get_data()
+
+    payload = stripe.PaymentIntent.create(
+        amount=data["amount"],
+        currency="sgd",
+        payment_method_types=["card"]
+    )
+
+    return payload
+
+@app.route("/payments/stripe", methods=['PUT'])
+def update_payment_intent():
+    data = request.get_data()
+
+    payload = stripe.PaymentIntent.modify(
+        data["pi_id"],
+        amount=data["amount"],
+        currency="sgd",
+        payment_method_types=["card"],
+        metadata={"order_id": "1"}
+    )
+
+    return payload
+
+@app.route("/payments/stripe/webhook", methods=['POST'])
+def payment_stripe_webhook():
+    payload = request.get_data()
+
+    event = None
+
+    try:
+        event = stripe.Event.construct_from(
+            json.loads(payload), stripe.api_key
+        )
+    except ValueError as e:
+        return jsonify({'status': 'error', 'messages': ['Invalid payload.']}), 400
+    
+    if event.type == 'payment_intent.succeeded':
+        payment_intent = event.data.object 
+    
+    return jsonify({'status': 'success', 'messages': ['payment_intent.succeeded event acknowledged.']}), 200
 
 if __name__ == '__main__':
+    stripe.api_key = STRIPE_SECRET_KEY
     app.run(host='0.0.0.0', port=5003, debug=True)
