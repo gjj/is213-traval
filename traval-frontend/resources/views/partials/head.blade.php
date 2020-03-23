@@ -24,4 +24,4 @@
 <link rel="stylesheet" href="assets/vendor/fancybox/jquery.fancybox.css">
 
 <!-- CSS MyTravel Template -->
-<link rel="stylesheet" href="assets/css/theme.css">
+<link rel="stylesheet" href="assets/css/theme.min.css">

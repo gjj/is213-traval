@@ -90,3 +90,65 @@
         $.HSCore.components.HSGoTo.init('.js-go-to');
     });
 </script>
+
+
+<script id="tpl_cart_items" type="text/x-jsrender">
+    <div class="card-body p-0">
+    <div class="px-2 px-md-3 py-2 py-md-1 border-bottom border-color-8">
+        <div class="media p-2 p-md-3">
+            <div class="media-body position-relative pl-md-1">
+                <div class="d-flex justify-content-between align-items-start mb-2 mb-md-3">
+                    <span class="d-block text-dark font-weight-bold">
+                        @{{:title}}
+                    </span>
+                    <button type="button" class="close close-rounded position-md-absolute right-0 ml-2" aria-label="Close">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+                <span class="d-block text-gray-1">Price: S$@{{:price}}</span>
+                <span class="d-block text-gray-1">Quantity: @{{:quantity}}</span>
+            </div>
+        </div>
+    </div>
+</div>
+</script>
+
+<script id="tpl_cart_checkout" type="text/x-jsrender">
+    <div class="card-footer border-0 p-3 px-md-5 py-md-4">
+    <div class="mb-4 pb-md-1">
+        <span class="d-block font-weight-semi-bold">Subtotal: S$@{{:total_price}}</span>
+    </div>
+    <div class="d-md-flex button-inline-group-md mb-1">
+        <a class="btn btn-block btn-md btn-gray-1 rounded-xs font-weight-bold transition-3d-hover" href="{{ route('payment.checkout') }}">
+            View cart
+        </a>
+        <a class="btn btn-block btn-md btn-blue-1 rounded-xs font-weight-bold transition-3d-hover mt-md-0 ml-md-5" href="{{ route('payment.checkout') }}">
+            Checkout
+        </a>
+    </div>
+</div>
+</script>
+
+<script type="text/javascript">
+    $(document).on('ready', function() {
+        var apiUrl = "http://localhost";
+
+        $.ajax({
+            method: 'GET',
+            url: apiUrl + ":5002/orders/cart/2",
+            success: function(response) {
+                var tpl = $.templates('#tpl_cart_items');
+                var tpl_checkout = $.templates('#tpl_cart_checkout');
+
+                $.each(response.items, function(i, item) {
+                    $('#cart_items').append(tpl.render(item));
+                });
+
+                $('#cart_checkout').append(tpl_checkout.render(response));
+            },
+            error: function(error) {
+                console.log("Error.", error);
+            }
+        });
+    });
+</script>

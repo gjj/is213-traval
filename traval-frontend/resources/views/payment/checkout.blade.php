@@ -1,7 +1,7 @@
 @extends('partials.master')
 
 @section('title')
-Search @stop
+Checkout @stop
 
 @section('styles')
 @endsection
@@ -398,7 +398,7 @@ Search @stop
                                     </div>
                                 </a>
                             </li>
-                            <li class="nav-item mx-3">
+                            <!-- <li class="nav-item mx-3">
                                 <a class="rounded py-5 border-width-2 border nav-link font-weight-medium" id="pills-two-example2-tab" data-toggle="pill" href="#pills-two-example2" role="tab" aria-controls="pills-two-example2" aria-selected="false">
                                     <div class="height-25 width-25 flex-content-center bg-primary rounded-circle position-absolute left-0 top-0 ml-2 mt-2">
                                         <i class="flaticon-tick text-white font-size-15"></i>
@@ -408,11 +408,9 @@ Search @stop
                                         <div class="w-100 text-dark">Payment with PayPal</div>
                                     </div>
                                 </a>
-                            </li>
+                            </li> -->
                         </ul>
-                        <!-- End Nav Classic -->
 
-                        <!-- Tab Content -->
                         <div class="tab-content">
                             <div class="tab-pane fade pt-8 show active" id="pills-one-example2" role="tabpanel" aria-labelledby="pills-one-example2-tab">
                                 <!-- Payment Form -->
@@ -430,23 +428,15 @@ Search @stop
                                                 Card Details
                                             </label>
                                             <span id="card-element" class="form-control"></span>
+                                            <div id="card-errors" role="alert"></div>
                                         </div>
 
                                         <div class="w-100"></div>
 
                                         <div class="col">
-                                            <!-- <div class="js-form-message mb-5">
-                                                <div class="custom-control custom-checkbox d-flex align-items-center text-muted">
-                                                    <input type="checkbox" class="custom-control-input" id="termsCheckbox" name="termsCheckbox" required data-msg="Please accept our Terms and Conditions." data-error-class="u-has-error" data-success-class="u-has-success">
-                                                    <label class="custom-control-label" for="termsCheckbox">
-                                                        <small>
-                                                            By continuing, you agree to the
-                                                            <a class="link-muted" href="../pages/terms.html">Terms and Conditions</a>
-                                                        </small>
-                                                    </label>
-                                                </div>
-                                            </div> -->
-                                            <button type="submit" class="btn btn-primary w-100 rounded-sm transition-3d-hover font-size-16 font-weight-bold py-3">CONFIRM BOOKING</button>
+                                            <button type="submit" class="btn btn-primary w-100 rounded-sm transition-3d-hover font-size-16 font-weight-bold py-3">
+                                                Pay Now
+                                            </button>
                                         </div>
                                     </div>
                                 </form>
@@ -486,7 +476,6 @@ Search @stop
                                                 </div>
                                             </div>
                                         </div>
-                                        <!-- End Form Group -->
 
                                         <div class="mb-2">
                                             <button type="submit" class="btn btn-block btn-primary transition-3d-hover">Login</button>
@@ -495,79 +484,13 @@ Search @stop
                                 </form>
                             </div>
                         </div>
-                        <!-- End Tab Content -->
                     </div>
                 </div>
             </div>
+
             <div class="col-lg-4 col-xl-3">
-                <div class="shadow-soft bg-white rounded-sm">
-                    <div class="pt-5 pb-3 px-5 border-bottom">
-                        <a href="#" class="d-block mb-3">
-                            <img class="img-fluid rounded-sm" src="assets/img/240x160/img5.jpg" alt="Image-Description">
-                        </a>
-                        <a href="#" class="text-dark font-weight-bold mb-2 d-block">@{{:item}}</a>
-                        <div class="mb-1 flex-horizontal-center text-gray-1">
-                            <i class="icon flaticon-pin-1 mr-2 font-size-15"></i> @{{:location}}
-                        </div>
-                    </div>
-                    <!-- Basics Accordion -->
-                    <div id="basicsAccordion">
-                        <!-- Card -->
-                        <div class="card rounded-0 border-top-0 border-left-0 border-right-0">
-                            <div class="card-header card-collapse bg-transparent border-0" id="basicsHeadingOne">
-                                <h5 class="mb-0">
-                                    <button type="button" class="btn btn-link border-0 btn-block d-flex justify-content-between card-btn py-3 px-4 font-size-17 font-weight-bold text-dark" data-toggle="collapse" data-target="#basicsCollapseOne" aria-expanded="true" aria-controls="basicsCollapseOne">
-                                        Order Details
-
-                                        <span class="card-btn-arrow font-size-14 text-dark">
-                                            <i class="fas fa-chevron-down"></i>
-                                        </span>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="basicsCollapseOne" class="collapse show" aria-labelledby="basicsHeadingOne" data-parent="#basicsAccordion">
-                                <div class="card-body px-4 pt-0">
-                                    <ul class="list-unstyled font-size-1 mb-0 font-size-16">
-                                        <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">Quantity</span>
-                                            <span class="text-secondary">10</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="card rounded-0 border-top-0 border-left-0 border-right-0">
-                            <div class="card-header card-collapse bg-transparent border-0" id="basicsHeadingFour">
-                                <h5 class="mb-0">
-                                    <button type="button" class="btn btn-link border-0 btn-block d-flex justify-content-between card-btn py-3 px-4 font-size-17 font-weight-bold text-dark" data-toggle="collapse" data-target="#basicsCollapseFour" aria-expanded="false" aria-controls="basicsCollapseFour">
-                                        Payment
-
-                                        <span class="card-btn-arrow font-size-14 text-dark">
-                                            <i class="fas fa-chevron-down"></i>
-                                        </span>
-                                    </button>
-                                </h5>
-                            </div>
-                            <div id="basicsCollapseFour" class="collapse show" aria-labelledby="basicsHeadingFour" data-parent="#basicsAccordion">
-                                <div class="card-body px-4 pt-0">
-                                    <!-- Fact List -->
-                                    <ul class="list-unstyled font-size-1 mb-0 font-size-16">
-                                        <li class="d-flex justify-content-between py-2">
-                                            <span class="font-weight-medium">@{{:item_name}}</span>
-                                            <span class="text-secondary">S$10.00</span>
-                                        </li>
-
-                                        <li class="d-flex justify-content-between py-2 font-size-17 font-weight-bold">
-                                            <span class="font-weight-bold">Pay Amount</span>
-                                            <span class="">S$10.00</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div id="checkout_items"></div>
+                <div id="checkout_payment"></div>
             </div>
         </div>
     </div>
@@ -576,35 +499,187 @@ Search @stop
 @endsection
 
 @section('scripts')
+<script id="checkout_items_tpl" type="text/x-jsrender">
+    <div class="shadow-soft bg-white rounded-sm mb-2">
+    <div class="pt-3 pb-1 px-4 border-bottom">
+        <a href="activity/@{{:item_id}}" class="text-dark font-weight-bold mb-2 d-block">@{{:title}}</a>
+    </div>
+    <div class="card rounded-0 border-top-0 border-left-0 border-right-0">
+        <div class="card-body px-4 pt-1">
+            <ul class="list-unstyled font-size-1 mb-0 font-size-16">
+                <li class="d-flex justify-content-between py-2">
+                    <span class="font-weight-medium">Quantity</span>
+                    <span class="text-secondary">@{{:quantity}}</span>
+                </li>
+                <li class="d-flex justify-content-between py-2">
+                    <span class="font-weight-medium">Price</span>
+                    <span class="text-secondary">S$@{{:price}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="card rounded-0 border-top-0 border-left-0 border-right-0">
+        <div class="card-body px-4 pt-1">
+            <ul class="list-unstyled font-size-1 mb-0 font-size-16">
+                <li class="d-flex justify-content-between py-2">
+                    <span class="font-weight-medium">Subtotal</span>
+                    <span class="font-weight-medium">S$@{{:subtotal}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</script>
+
+<script id="checkout_payment_tpl" type="text/x-jsrender">
+    <div class="shadow-soft bg-white rounded-sm mb-2">
+    <div class="card rounded-0 border-top-0 border-left-0 border-right-0">
+        <div class="card-body px-4 pt-1">
+            <ul class="list-unstyled font-size-1 mb-0 font-size-16">
+                <li class="d-flex justify-content-between py-2">
+                    <span class="font-weight-bold">Payment Amount</span>
+                    <span class="font-weight-bold">S$@{{:total_price}}</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+</script>
+
 <script type="text/javascript">
-    var stripe = Stripe('pk_test_FlBqXwgBTcD0Cnrg5WtCuqwX00wJVaEIdt');
+    var apiUrl = "http://localhost";
 
-    var elements = stripe.elements();
+    function updatePaymentIntent(data) {
+        // If no token and on page first visit
+        if (!localStorage.getItem('stripe_clientSecret')) {
+            $.ajax({
+                method: 'POST',
+                url: apiUrl + ':5003/payments/stripe',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    localStorage.setItem('stripe_paymentIntentId', response.id);
+                    localStorage.setItem('stripe_clientSecret', response.client_secret);
 
-    var cardStyle = {
-        base: {
-            color: '#32325d',
-            fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-            fontSmoothing: 'antialiased',
-            fontSize: '16px',
-            '::placeholder': {
-                color: '#aab7c4'
-            }
-        },
-        invalid: {
-            color: '#fa755a',
-            iconColor: '#fa755a'
+                    console.log("PaymentIntent created.", response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
+        } else {
+            console.log("PaymentIntent has already been created. Attempting to update it...", localStorage);
+            data.pi_id = localStorage.getItem('stripe_paymentIntentId');
+            $.ajax({
+                method: 'POST',
+                url: apiUrl + ':5003/payments/update',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
         }
-    };
+    }
 
-    var cardElement = elements.create('card', {
-        style: cardStyle,
-    });
-    cardElement.mount('#card-element');
+    $(document).on('ready', function() {
+        var data = {
+            user_id: 2
+        };
 
-    $('#checkout').on('submit', function(e) {
-        e.preventDefault();
+        $.ajax({
+            method: 'GET',
+            url: apiUrl + ':5002/orders/cart/2',
+            success: function(response) {
 
+                var tpl = $.templates('#checkout_items_tpl');
+                $.each(response.items, function(i, item) {
+                    item.subtotal = item.price * item.quantity;
+                    $('#checkout_items').append(tpl.render(item));
+                });
+
+                var tpl = $.templates('#checkout_payment_tpl');
+                $('#checkout_payment').append(tpl.render(response));
+
+                //updatePaymentIntent(data);
+            },
+            error: function(error) {
+                console.log(error.responseJSON);
+            }
+        });
+
+        updatePaymentIntent(data);
+
+        var stripe = Stripe('pk_test_FlBqXwgBTcD0Cnrg5WtCuqwX00wJVaEIdt');
+
+        var elements = stripe.elements();
+
+        var cardStyle = {
+            base: {
+                color: '#32325d',
+                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                fontSmoothing: 'antialiased',
+                fontSize: '16px',
+                '::placeholder': {
+                    color: '#aab7c4'
+                }
+            },
+            invalid: {
+                color: '#fa755a',
+                iconColor: '#fa755a'
+            }
+        };
+
+        var card = elements.create('card', {
+            style: cardStyle,
+        });
+        card.mount('#card-element');
+
+        card.addEventListener('change', function(event) {
+            var displayError = document.getElementById('card-errors');
+            if (event.error) {
+                displayError.textContent = event.error.message;
+            } else {
+                displayError.textContent = '';
+            }
+        });
+
+        $('#checkout').on('submit', function(e) {
+            e.preventDefault();
+            var clientSecret = localStorage.getItem('stripe_clientSecret');
+
+            stripe.confirmCardPayment(clientSecret, {
+                payment_method: {
+                    card: card,
+                    billing_details: {
+                        name: $('input[name=card_name]').val()
+                    }
+                }
+            }).then(function(result) {
+                if (result.error) {
+                    // Show error to your customer (e.g., insufficient funds)
+                    console.log(result.error.message);
+                    console.log(result.paymentIntent);
+                } else {
+                    // The payment has been processed!
+                    if (result.paymentIntent.status === 'succeeded') {
+                        console.log(result.paymentIntent);
+                        // Show a success message to your customer
+                        // There's a risk of the customer closing the window before callback
+                        // execution. Set up a webhook or plugin to listen for the
+                        // payment_intent.succeeded event that handles any business critical
+                        // post-payment actions.
+                        localStorage.removeItem('stripe_paymentIntentId');
+                        localStorage.removeItem('stripe_clientSecret');
+                        window.location.replace('payment/result');
+                    }
+                }
+            });
+        });
     });
 </script>
 @endsection

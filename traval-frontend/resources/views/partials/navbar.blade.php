@@ -40,53 +40,22 @@
                 </div>
 
                 <div class="pl-2 pl-md-4 ml-auto shopping-cart">
-                    <!--
+
                     <a id="shoppingCartDropdownInvoker" class="btn-text-secondary py-4 position-relative" href="javascript:;" role="button" aria-controls="shoppingCartDropdown" aria-haspopup="true" aria-expanded="false" data-unfold-event="hover" data-unfold-target="#shoppingCartDropdown" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-delay="300" data-unfold-hide-on-scroll="true" data-unfold-animation-in="slideInUp" data-unfold-animation-out="fadeOut">
                         <span class="flaticon-shopping-basket font-size-25 text-primary-max-lg"></span>
                     </a>
-
-                    
+                    <div id="tpl_cart"></div>
                     <div id="shoppingCartDropdown" class="dropdown-menu dropdown-unfold dropdown-menu-right dropdown-menu-right-fix-wd-10 p-0 mt-0 w-max-sm-100 u-unfold--css-animation font-size-16" aria-labelledby="shoppingCartDropdownInvoker" style="width: 500px; animation-duration: 300ms; right: 0px;">
                         <div class="card">
                             <div class="card-header border-color-8 py-3 px-5">
                                 <span class="font-weight-semi-bold">Your Cart</span>
                             </div>
-                            
-                            <div class="card-body p-0">
-                                <div class="px-2 px-md-3 py-2 py-md-1 border-bottom border-color-8">
-                                    <div class="media p-2 p-md-3">
-                                        <div class="u-avatar u-lg-avatar-md mr-2 mr-md-3">
-                                            <img class="img-fluid rounded-pill" src=assets/img/80x80/img1.jpg" alt="Image Description">
-                                        </div>
-                                        <div class="media-body position-relative pl-md-1">
-                                            <div class="d-flex justify-content-between align-items-start mb-2 mb-md-3">
-                                                <span class="d-block text-dark font-weight-bold">Hyatt Centric Times Square</span>
-                                                <button type="button" class="close close-rounded position-md-absolute right-0 ml-2" aria-label="Close">
-                                                    <i class="fas fa-trash"></i>
-                                                </button>
-                                            </div>
-                                            <span class="d-block text-gray-1">Price S$23.00</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <div class="card-footer border-0 p-3 px-md-5 py-md-4">
-                                <div class="mb-4 pb-md-1">
-                                    <span class="d-block font-weight-semi-bold">Subtotal: S$23.00</span>
-                                </div>
-                                <div class="d-md-flex button-inline-group-md mb-1">
-                                    <a class="btn btn-block btn-md btn-gray-1 rounded-xs font-weight-bold transition-3d-hover" href="#">
-                                        View cart
-                                    </a>
-                                    <a class="btn btn-block btn-md btn-blue-1 rounded-xs font-weight-bold transition-3d-hover mt-md-0 ml-md-5" href="#">
-                                        Check Out
-                                    </a>
-                                </div>
-                            </div>
+
+                            <div id="cart_items"></div>
+
+                            <div id="cart_checkout"></div>
                         </div>
                     </div>
-                    -->
                 </div>
 
                 <div class="pl-4 ml-1 u-header__last-item-btn u-header__last-item-btn-xl">

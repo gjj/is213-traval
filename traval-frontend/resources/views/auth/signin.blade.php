@@ -65,9 +65,9 @@ Sign in @stop
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {
-                    sessionStorage.setItem('email', result.email);
-                    sessionStorage.setItem('token', result.token);
-                    sessionStorage.setItem('name', result.name);
+                    localStorage.setItem('email', result.email);
+                    localStorage.setItem('token', result.token);
+                    localStorage.setItem('name', result.name);
                     
                     console.log(result);
                     window.location.replace(".");

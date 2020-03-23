@@ -1,7 +1,7 @@
 @extends('partials.master')
 
 @section('title')
-Search @stop
+Activity @stop
 
 @section('styles')
 @endsection
@@ -138,7 +138,7 @@ Search @stop
                                         <a class="js-minus font-size-10 text-dark" href="javascript:;">
                                             <i class="fas fa-chevron-down"></i>
                                         </a>
-                                        <input class="js-result form-control h-auto width-30 font-weight-bold font-size-16 shadow-none bg-tranparent border-0 rounded p-0 mx-1 text-center" type="text" value="1" min="1" max="100">
+                                        <input name="quantity" class="js-result form-control h-auto width-30 font-weight-bold font-size-16 shadow-none bg-tranparent border-0 rounded p-0 mx-1 text-center" type="text" value="1" min="1" max="100">
                                         <a class="js-plus font-size-10 text-dark" href="javascript:;">
                                             <i class="fas fa-chevron-up"></i>
                                         </a>
@@ -146,9 +146,17 @@ Search @stop
                                 </div>
                             </div>
                         </div>
-                        <!-- End Input -->
+
                         <div class="text-center">
-                            <a href="{{ route('payment.checkout') }}" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
+                            <a href="javascript:;" id="btn_addToCart" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
+                                Add to Cart
+                            </a>
+                        </div>
+
+                        <div class="pb-1"></div>
+                        
+                        <div class="text-center">
+                            <a href="javascript:;" id="btn_bookNow" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
                                 Book Now
                             </a>
                         </div>
@@ -161,17 +169,43 @@ Search @stop
 </script>
 
 <script type="text/javascript">
-    var apiUrl = "http://localhost:5001/catalog_items";
-    var id = {{ Request()->id }};
-
-    $.ajax({
-        method: 'GET',
-        url: apiUrl + "/" + id,
-        success: function(data) {
-
-            var tpl = $.templates('#activity_item_tpl');
-            $('#activity_item').append(tpl.render(data));
+    $(document).on('ready', function() {
+        var apiUrl = "http://localhost";
+        var activity = {
+            user_id: 2, // Hardcoded for now...
+            item_id: $(location).attr('pathname').split('/')[2], // Vulnerable to XSS
+            quantity: 0,
         }
+
+        $.ajax({
+            method: 'GET',
+            url: apiUrl + ":5001/catalog_items/" + activity.item_id,
+            success: function(data) {
+
+                var tpl = $.templates('#activity_item_tpl');
+                $('#activity_item').append(tpl.render(data));
+            }
+        });
+
+        $(document).on('click', '#btn_addToCart', function() {
+            activity.quantity = $('input[name=quantity]').val();
+
+            $.ajax({
+                method: 'POST',
+                url: apiUrl + ":5002/orders/cart",
+                data: JSON.stringify(activity),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    console.log("Success.", response);
+                    // Add success message.
+                },
+                error: function(error) {
+                    console.log("Error.", error);
+                    // Add error message.
+                }
+            });
+            // {{ route('payment.checkout') }}
+        });
     });
 </script>
 @endsection
