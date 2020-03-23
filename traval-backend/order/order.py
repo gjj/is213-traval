@@ -8,6 +8,7 @@ from dotenv import load_dotenv
 import os
 
 import requests
+
 travel_catalog_url = "http://localhost:5001/catalog_items"
 
 load_dotenv()
@@ -25,105 +26,241 @@ app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
 
-class Orders(db.Model):
+class Order(db.Model):
     __tablename__ = 'orders'
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
-    item_id = db.Column(db.Integer, nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.Float(precision=2), nullable=False)
+    status = db.Column(db.String(20), nullable=False)
 
-    def __init__(self, id, user_id, item_id, quantity, datetime, status):
+    def __init__(self, id, user_id, datetime, status):
         self.id = id
         self.user_id = user_id
-        self.item_id = item_id
-        self.quantity = quantity
         self.datetime = datetime
         self.status = status
 
     def json(self):
-        return {"id": self.id, "user_id": self.user_id, "item_id": self.item_id, "quantity": self.quantity, "datetime": self.datetime, "status": self.status}
+        return {"id": self.id, "user_id": self.user_id, "datetime": self.datetime, "status": self.status}
+
+
+class OrderItem(db.Model):
+    __tablename__ = 'order_items'
+
+    id = db.Column(db.Integer, primary_key=True)
+    order_id = db.Column(db.Integer, nullable=False)
+    item_id = db.Column(db.Integer, nullable=False)
+    price = db.Column(db.Float(precision=2), nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, id, order_id, item_id, title, price, quantity, photo_urls):
+        self.id = id
+        self.order_id = order_id
+        self.item_id = item_id
+        self.title = title
+        self.price = price
+        self.quantity = quantity
+        self.photo_urls = photo_urls
+
+    def json(self):
+        #return {"id": self.id, "order_id": self.order_id, "item_id": self.item_id, "price": self.price, "quantity": self.quantity}
+        return {"item_id": self.item_id, "title": self.title, "price": self.price, "quantity": self.quantity, "photo_urls": self.photo_urls}
+
+class CartItem(db.Model):
+    __tablename__ = 'cart_items'
+
+    user_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    item_id = db.Column(db.Integer, primary_key=True, nullable=False)
+    quantity = db.Column(db.Integer, nullable=False)
+
+    def __init__(self, user_id, item_id, title, price, quantity):
+        self.user_id = user_id
+        self.item_id = item_id
+        self.title = title # Added on-the-fly
+        self.price = price # Added on-the-fly
+        self.quantity = quantity
+
+    def json(self):
+        return {"item_id": self.item_id, "title": self.title, "price": self.price, "quantity": self.quantity}
 
 
 def retrieve_order_by_ID_in_json(id):
-    order_item = Orders.query.filter_by(id=id).first()
+    order_item = Order.query.filter_by(id=id).first()
     if order_item:
         return jsonify(order_item.json())
-    return jsonify({"message": "Order not found."}), 404
+    return jsonify({"status": "error", "message": "Order not found."}), 404
 
 
 def retrieve_order_in_json():
-    order_item = {"order_items": [item.json() for item in Orders.query.all()]}
+    order_item = {"order_items": [item.json() for item in Order.query.all()]}
     if order_item:
         return jsonify(order_item)
-    return jsonify({"message":"Order not found."}), 404
+    return jsonify({"status": "error", "message": "Order not found."}), 404
 
-travel_catalog_url = "http://localhost:5001/catalog_items"
+# ADD or Update Cart Item
+@app.route("/orders/cart", methods=['POST'])
+def add_cart_item():
+    data = request.get_json()
 
-#UC1
-#Creating order
+    # Handle empty JSON query
+    print(data)
+    if not data:
+        return jsonify({"status": "error", "message": "No cart item found in the request."}), 500
+    if int(data["quantity"]) < 0:
+        return jsonify({"status": "error", "message": "Item quantity cannot be less than 0."}), 500
+
+    cart_item = CartItem(title=None, price=None, **data)
+    
+    try:
+        if int(data["quantity"]) == 0:
+            # Delete if quantity is set to zero
+            CartItem.query.filter_by(user_id=data["user_id"]).filter_by(item_id=data["item_id"]).delete()
+        else:
+            # Insert or update if exists, when quantity > 0
+            db.session.merge(cart_item) 
+        db.session.commit()
+
+    except Exception as error:
+        print(error)
+        return jsonify({"status": "error", "message": "An error occurred when adding the item to cart."}), 500
+
+    return jsonify({"user_id": data["user_id"], "item_id": data["item_id"], "quantity": data["quantity"]}), 201
+
+# List all card items by user
+@app.route("/orders/cart/<string:user_id>")
+def get_cart_items_by_user_id(user_id):
+    items = get_cart_items(user_id)
+    total_price = sum([item.price * item.quantity for item in items])
+    items = [item.json() for item in items]
+
+    #store in dictionary
+    reply = {
+        "items": items,
+        "total_price": total_price
+    }
+
+    return jsonify(reply), 200
+
+# Helper function to get cart items (with title, desc and price)
+def get_cart_items(user_id):
+    items = CartItem.query.filter_by(user_id=user_id).all()
+    
+    for item in items:
+        item_id = str(item.item_id)
+
+        # extract json data from catalog
+        r = requests.get(travel_catalog_url + "/" + item_id)
+        data = json.loads(r.text)
+        item.title = data["title"]
+        item.description = data["description"]
+        item.price = data["price"]
+
+    return items
+
+# UC1
+# Creating order
 """ Test POST with this format
 {
-	"id": "1",
   "user_id": "2",
-  "item_id": "3",
-  "quantity": "4",
-  "datetime": "2020-03-15",
-  "status": 200
+  "status": "Pending Payment",
+  "items": {
+    "item_id": "3",
+    "quantity": "4",
+  }
 }
 """
 @app.route("/orders", methods=['POST'])
-def create_orders():
+def create_order():
     data = request.get_json()
-    order = Orders(**data)
+
+    # Handle empty JSON query
+    print(data)
+    if not data:
+        return jsonify({"status": "error", "message": "No order details!"}), 500
+
+    time_now = datetime.datetime.now() # Get current timestamp
+
+    order = Order(id=None, user_id=data['user_id'], datetime=time_now, status='Pending Payment')
+
+    if len(data['items']) <= 0:
+        return jsonify({"status": "error", "message": "Unable to create order as there are no items in this order list."}), 500
     try:
         db.session.add(order)
         db.session.commit()
-    except:
-        return jsonify({"message": "An error occurred when creating the order"}), 500
+        print(order.id)
+
+        for item in data["items"]:
+            r = requests.get(travel_catalog_url + "/" + str(item['item_id']))
+            catalog_item = json.loads(r.text)
+            price = catalog_item['price']
+                        
+            order_item = OrderItem(id=None, title=None, photo_urls=None, order_id=order.id, item_id=item['item_id'], price=price, quantity=item['quantity'])
+            db.session.add(order_item)
+            db.session.commit()
+            
+    except Exception as error:
+        db.session.rollback()
+        print(error)
+        return jsonify({"status": "error", "message": "An error occurred when creating the order."}), 500
 
     return jsonify(order.json()), 201
 
 # USC2
 # view all information of order + catalog
-@app.route("/orders/view/<string:id>")
+@app.route("/orders/<string:id>")
 def view_order(id):
-    order_item = Orders.query.filter_by(id=id).first()
-    if not order_item:
+    order = Order.query.filter_by(id=id).first()
+    if not order:
         return jsonify({"message": "Order not found."}), 404
-    item_id = str(order_item.item_id)
 
-    # extract json data from catalog
-    r = requests.get(travel_catalog_url + "/" + item_id)
-    description = json.loads(r.text)["description"]  # unpackage the json
-    title = json.loads(r.text)["title"]
-
-    quantity = order_item.quantity
-    datetime = order_item.datetime
+    items = get_order_items(id)
+    total_price = sum([item.price * item.quantity for item in items])
+    items = [item.json() for item in items]
 
     #store in dictionary
-    reply = {"title": title, "description": description,
-             "quantity": quantity, "datetime": datetime}
+    reply = {
+        "id": order.id,
+        "user_id": order.user_id,
+        "datetime": order.datetime,
+        "status": order.status,
+        #"currency": "SGD",
+        "total_price": total_price,
+        "items": items
+    }
 
-    return jsonify(reply)
+    return jsonify(reply), 200
+
+
+def get_order_items(order_id):
+    items = OrderItem.query.filter_by(order_id=order_id).all()
+
+    for item in items:
+        item_id = str(item.item_id)
+
+        # extract json data from catalog
+        r = requests.get(travel_catalog_url + "/" + item_id)
+        data = json.loads(r.text)
+        item.title = data["title"]
+        item.description = data["description"]
+        item.photo_urls = data["photo_urls"]
+
+    return items
 
 # UC3
 # Retrieving order data based on given order.id
 @app.route("/orders/user/<string:user_id>")
 def get_orders(user_id):
-    order_item = Orders.query.filter_by(user_id=user_id).first()
+    order_item = Order.query.filter_by(user_id=user_id).first()
     if order_item:
         reply = {"id": str(order_item.id)}
         return jsonify(reply)
     return jsonify({"message": "Order not found."}), 404
 
 
-#Get All Orders
+# Get All Order
 @app.route("/orders")
 def get_all_orders():
-    order_query_item = Orders.query.all()
+    order_query_item = Order.query.all()
     order_list = []
     for item in order_query_item:
         item_id = str(item.item_id)
@@ -139,13 +276,15 @@ def get_all_orders():
         datetime = item.datetime
         status = item.status
 
-        new_item = {"id":id, "user_id":user_id, "item_id":item_id, "quantity": quantity, "datetime":datetime, "status":status, "decription":description, "title":title, "price":price, "photo_urls":photo_urls}
+        new_item = {"id": id, "user_id": user_id, "item_id": item_id, "quantity": quantity, "datetime": datetime,
+                    "status": status, "decription": description, "title": title, "price": price, "photo_urls": photo_urls}
         order_list.append(new_item)
 
     order_item = {"order_items": order_list}
     if order_item:
         return jsonify(order_item)
-    return jsonify({"message":"Order not found."}), 404
+    return jsonify({"message": "Order not found."}), 404
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)
