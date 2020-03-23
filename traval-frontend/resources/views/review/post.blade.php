@@ -67,6 +67,7 @@ Leave Review @stop
         
         $("#rating").starRating({
             initialRating: 4,
+            useFullStars: true,
             strokeColor: '#894A00',
             strokeWidth: 10,
             ratedColor:'orange',
@@ -80,15 +81,14 @@ Leave Review @stop
             var apiUrl = "http://localhost";
             
             var data = {
-                // var userid = // not sure if need to get from order or it is already stored somewhere like session or sth
                 order_id: {{ Request()->orderid }},
                 rating: $('#rating').starRating('getRating'),
                 msg: $('#msg').val()
-                // var status // need? what format anyway
             }
             console.log(JSON.stringify(data));
 
             $.ajax({
+                crossDomain: true,
                 method: 'POST',
                 url: apiUrl + ':5005/reviews',
                 data: JSON.stringify(data),
