@@ -147,5 +147,19 @@ def get_all_orders():
         return jsonify(order_item)
     return jsonify({"message":"Order not found."}), 404
 
+# get orders by item_id
+@app.route("/orders/item/<string:id>")
+def find_by_itemid(id):
+    orders = [order.json() for order in Orders.query.filter_by(item_id=id)]
+
+    if orders:
+        order_dic = {'id': []}
+        for order in orders:
+            order_dic['id'].append(order['id'])
+        return jsonify(order_dic)
+    
+    return jsonify({"message": "Order not found."}), 404
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5002, debug=True)

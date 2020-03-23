@@ -8,7 +8,7 @@ import os
 
 import requests
 traval_order_url = "http://localhost:5002/orders"
-traval_review_url = "http://localhost:5005/reviews"
+traval_review_url = "http://localhost:5005"
 
 load_dotenv()
 
@@ -140,30 +140,24 @@ def search(q):
 # will need to call order class
 @app.route("/catalog_items/<string:id>/reviews")
 def get_item_reviews(id):
+    reviews = {'reviews':[]}
+
     item = CatalogItem.query.filter_by(id=id).first()
     if not item:
-        return jsonify({"message":"Order not found."}), 404
+        return jsonify({"message":"Item not found."}), 404
     item_id = str(item.id)
 
-    r = requests.get(traval_order_url + "/" + item_id)
-    dicti = r.json()
-
-    # dicti = {}
-    # for i in r:
-    #     dicti['id'] = i.json()["id"]
-
-    return jsonify(r)
-
-    # all_reviews = {"reviews": [review.json() for review in Review.query.filter_by(order_id=order_id).all()]}
-    # for review_dict in all_reviews["reviews"]:
-    #     id = review_dict["id"]
-    #     review = Review.query.filter_by(id=id).first()
-    #     if review:
-    #         photos = get_photos(review, id)
-    #         review_dict.update(photos)               
-    # return jsonify(all_reviews)
-    # return jsonify(order_ids)
-
+    r = requests.get(traval_order_url + "/item/" + item_id)
+    
+    orders = r.json()['id']
+    for order in orders:
+        review_r = requests.get(traval_review_url + '/catalog_items/' + str(order) + '/reviews')
+        if review_r:
+            reviews_json = review_r.json()['reviews']
+            reviews['reviews'] = reviews['reviews'] + reviews_json
+            return jsonify(reviews)
+        return jsonify({"message":"Reviews not found."}), 404
+    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
