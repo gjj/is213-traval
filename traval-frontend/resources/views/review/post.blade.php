@@ -16,12 +16,17 @@ Leave Review @stop
     .hide {
         display: none;
     }
+
+    .hero-block {
+        background-image: url(assets/img/1920x750/img1.jpg);
+    }
+
 </style>
 @endsection
 
 @section('content')
 <main id="content">
-    <div class="hero-block hero-v6 bg-img-hero-bottom gradient-overlay-half-blue-gradient z-index-2 mb-6 mb-lg-14 mb-xl-17 pb-xl-2" style="background-image: url(assets/img/1920x750/img1.jpg);">
+    <div class="hero-block img-fluid hero-v6 bg-img-hero-bottom gradient-overlay-half-blue-gradient z-index-2 mb-6 mb-lg-14 mb-xl-17 pb-xl-2">
         <div class="container">
             <div class="justify-content-md-center py-xl-10">
 
@@ -29,7 +34,7 @@ Leave Review @stop
                     <div class="col-md-6 offset-md-3">
                         <div class="card border-0 tab-shadow tab-shadow">
                             <div class="card-body">
-                                <h5 class="card-title">Leave Review</h5>
+                                <h5 class="card-title">Review for <span id="activity">@{{activity}}</span></h5>
 
                                 <form method="post" action="">
                                     <div class="form-group">
@@ -63,33 +68,47 @@ Leave Review @stop
 <script src="plugins/jquery.star-rating-svg.js"></script>
 
 <script type="text/javascript">
+
+    var apiUrl = "http://localhost";
+    orderid = {{ Request()->orderid }};
+
+    $.ajax({
+        method: 'GET',
+        url: apiUrl + ':5002/orders/dets/' + orderid,
+        async: false,
+        success: function(data) {
+            console.log(data)
+            $("#activity").text(data.title);
+            $(".hero-block").css("background-image", "url("+data.photo+")");
+        }
+    });
+
+    $("#rating").starRating({
+        initialRating: 4,
+        useFullStars: true,
+        strokeColor: '#894A00',
+        strokeWidth: 10,
+        ratedColor:'orange',
+        starSize: 25,
+        disableAfterRate: false,
+    });
+    
     $(document).ready(function() {
- 
-        $("#rating").starRating({
-            initialRating: 4,
-            strokeColor: '#894A00',
-            strokeWidth: 10,
-            ratedColor:'orange',
-            starSize: 25,
-            disableAfterRate: false,
-        });
 
         $('form').on('submit', function(e) {
             e.preventDefault(); // Don't allow it to reload
-            
-            var rate = $('#rating').starRating('getRating');
-
+         
             var data = {
-                rating: rate,
+                order_id: orderid,
+                rating: $('#rating').starRating('getRating'),
                 msg: $('#msg').val()
             }
             console.log(JSON.stringify(data));
 
-            var apiUrl = "http://localhost";
-
             $.ajax({
+                crossDomain: true,
                 method: 'POST',
-                url: apiUrl + ':5003/reviews',
+                url: apiUrl + ':5005/reviews',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {

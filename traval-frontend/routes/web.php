@@ -71,12 +71,12 @@ Route::get('/voucher', function () {
 ->name('order.item');
 
 /* Review */
-Route::get('/activity/{activity_id}/review', function () {
+Route::get('/order/{orderid}/review', function () {
     return view('review.post');
 })
 ->name('review.post');
 
-Route::get('/reviews', function () {
+Route::get('/activity/{id}/reviews', function () {
     return view('review.list');
 })
 ->name('review.list');

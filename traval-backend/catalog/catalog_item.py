@@ -1,13 +1,14 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import json
 
 from dotenv import load_dotenv
 import os
 
 import requests
 traval_order_url = "http://localhost:5002/orders"
-traval_review_url = "http://localhost:5005/reviews"
+traval_review_url = "http://localhost:5005"
 
 load_dotenv()
 
@@ -136,31 +137,37 @@ def search(q):
             item_dict.update(photos)               
     return jsonify(result)
 
-
 # will need to call order class
 @app.route("/catalog_items/<string:id>/reviews")
 def get_item_reviews(id):
-        item = CatalogItem.query.filter_by(id=id).first()
-        if not item:
-            return jsonify({"message":"Order not found."}), 404
-        item_id = str(order_item.item_id)
+    reviews = {'reviews':[], 'Avgrating': 0}
 
-        orders_by_item_id = {"order": [order.json() for order in Orders.query.filter_by(item_id=item_id).all()]}
-        order_ids = []
-        for order in orders_by_item_id:
-            order_ids.append(json.loads(order.text)["id"])
+    item = CatalogItem.query.filter_by(id=id).first()
+    if not item:
+        return jsonify({"message":"Item not found."}), 404
+    item_id = str(item.id)
 
-    # all_reviews = {"reviews": [review.json() for review in Review.query.filter_by(order_id=order_id).all()]}
-    # for review_dict in all_reviews["reviews"]:
-    #     id = review_dict["id"]
-    #     review = Review.query.filter_by(id=id).first()
-    #     if review:
-    #         photos = get_photos(review, id)
-    #         review_dict.update(photos)               
-    # return jsonify(all_reviews)
-    # return jsonify(order_ids)
-
-
+    r = requests.get(traval_order_url + "/item/" + item_id)
+    
+    total = 0
+    count = 0
+    orders = r.json()['id']
+    if len(orders) < 1:
+        return jsonify({"message":"Reviews not found."}), 404
+    
+    for order in orders:
+        review_r = requests.get(traval_review_url + '/catalog_items/' + str(order) + '/reviews')
+        if review_r:
+            count += 1
+            reviews_json = review_r.json()['reviews']
+            print(reviews_json)
+            reviews['reviews'] = reviews['reviews'] + reviews_json
+            total += reviews_json[0]['rating']
+    reviews['Avgrating'] = total/count
+    print(total, count)
+    return jsonify(reviews)
+        
+    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)
