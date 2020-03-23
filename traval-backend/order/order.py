@@ -109,6 +109,24 @@ def view_order(id):
 
     return jsonify(reply)
 
+# testing 
+@app.route("/orders/dets/<string:id>")
+def view_order_dets(id):
+    order_item = Orders.query.filter_by(id=id).first()
+    if not order_item:
+        return jsonify({"message": "Order not found."}), 404
+    item_id = str(order_item.item_id)
+
+    r = requests.get(travel_catalog_url + "/" + item_id)
+
+    title = json.loads(r.text)["title"]
+    photo = json.loads(r.text)["photo_urls"][0]
+
+    reply = {"title": title, "photo": photo}
+
+    return jsonify(reply)
+
+
 # UC3
 # Retrieving order data based on given order.id
 @app.route("/orders/user/<string:user_id>")
