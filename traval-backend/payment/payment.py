@@ -91,61 +91,79 @@ def create_payment():
     AMQP()
     return {"payment_price": payment_price}
 
-@app.route("/payments/stripe/test", methods=['GET'])
-def create_payment_intent_test():
-    data = request.get_data()
-
-    payload = stripe.PaymentIntent.create(
-        amount=2880,
-        currency="sgd",
-        payment_method_types=["card"]
-    )
-
-    return payload
-
+# Create new PaymentIntent
 @app.route("/payments/stripe", methods=['POST'])
 def create_payment_intent():
-    data = request.get_data()
+    data = request.get_json()
+
+    # extract json data from catalog
+    r = requests.get("http://localhost:5002/orders/cart/" + str(data["user_id"]))
+    cart = json.loads(r.text)
 
     payload = stripe.PaymentIntent.create(
-        amount=data["amount"],
+        amount=int(cart["total_price"]) * 100,  # make sure to validate this
         currency="sgd",
         payment_method_types=["card"]
     )
 
-    return payload
+    return payload, 200
 
-@app.route("/payments/stripe", methods=['PUT'])
+# Update existing PaymentIntent by user's cart items
+@app.route("/payments/update", methods=['POST'])
 def update_payment_intent():
-    data = request.get_data()
+    data = request.get_json()
 
-    payload = stripe.PaymentIntent.modify(
+    # extract json data from catalog
+    r = requests.get("http://localhost:5002/orders/cart/" + str(data["user_id"]))
+    cart = json.loads(r.text)
+
+    payload=stripe.PaymentIntent.modify(
         data["pi_id"],
-        amount=data["amount"],
-        currency="sgd",
-        payment_method_types=["card"],
-        metadata={"order_id": "1"}
+        amount = int(cart["total_price"]) * 100,
+        currency = "sgd",
+        payment_method_types = ["card"],
+        # metadata={"order_id": "1"}
     )
 
-    return payload
+    return payload, 200
 
-@app.route("/payments/stripe/webhook", methods=['POST'])
+
+@app.route("/payments/stripe/lookup/<string:payment_intent_id>", methods = ['GET'])
+def retrieve_payment_intent(payment_intent_id):
+    payload=stripe.PaymentIntent.retrieve(
+        payment_intent_id
+    )
+
+    return payload, 200
+
+
+@app.route("/payments/stripe/webhook", methods = ['POST'])
 def payment_stripe_webhook():
-    payload = request.get_data()
+    payload=request.get_data()
 
-    event = None
+    event=None
 
     try:
-        event = stripe.Event.construct_from(
+        event=stripe.Event.construct_from(
             json.loads(payload), stripe.api_key
         )
     except ValueError as e:
         return jsonify({'status': 'error', 'messages': ['Invalid payload.']}), 400
-    
+
     if event.type == 'payment_intent.succeeded':
-        payment_intent = event.data.object 
-    
-    return jsonify({'status': 'success', 'messages': ['payment_intent.succeeded event acknowledged.']}), 200
+        payment_intent = event.data.object
+
+        # mg = requests.post(
+        #     "https://api.mailgun.net/v3/mailgun.traval.app/messages",
+        #     auth=("api", ""),
+        #     data={"from": "The Traval App <payments@traval.app>",
+        #           "to": ["Goi Jia Jian", "jiajiannn@gmail.com"],
+        #           "subject": "💳✅ Payment success event",
+        #           "text": "payment_intent.success event is acknowledged."})
+        # print(str(mg))
+
+    return jsonify({'status': 'success', 'messages': ['payment_intent event acknowledged.']}), 200
+
 
 if __name__ == '__main__':
     stripe.api_key = STRIPE_SECRET_KEY
