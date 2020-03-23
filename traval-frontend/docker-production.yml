@@ -30,7 +30,7 @@ services:
       - ./:/var/www
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
     ports:
-      - "8080:80"
+      - "8000:80"
       - "443:443"
     networks:
       - app-network
