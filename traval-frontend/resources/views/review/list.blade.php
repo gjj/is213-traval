@@ -18,7 +18,7 @@ Review @stop
                 <!-- Shop-control-bar Title -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="font-size-21 font-weight-bold mb-0 text-lh-1">
-                        Leave a review
+                        Reviews
                     </h3>
 
                 </div>

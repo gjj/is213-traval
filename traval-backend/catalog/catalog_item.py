@@ -140,7 +140,7 @@ def search(q):
 # will need to call order class
 @app.route("/catalog_items/<string:id>/reviews")
 def get_item_reviews(id):
-    reviews = {'reviews':[]}
+    reviews = {'reviews':[], 'Avgrating': 0}
 
     item = CatalogItem.query.filter_by(id=id).first()
     if not item:
@@ -149,14 +149,24 @@ def get_item_reviews(id):
 
     r = requests.get(traval_order_url + "/item/" + item_id)
     
+    total = 0
+    count = 0
     orders = r.json()['id']
+    if len(orders) < 1:
+        return jsonify({"message":"Reviews not found."}), 404
+    
     for order in orders:
         review_r = requests.get(traval_review_url + '/catalog_items/' + str(order) + '/reviews')
         if review_r:
+            count += 1
             reviews_json = review_r.json()['reviews']
+            print(reviews_json)
             reviews['reviews'] = reviews['reviews'] + reviews_json
-            return jsonify(reviews)
-        return jsonify({"message":"Reviews not found."}), 404
+            total += reviews_json[0]['rating']
+    reviews['Avgrating'] = total/count
+    print(total, count)
+    return jsonify(reviews)
+        
     
 
 if __name__ == '__main__':
