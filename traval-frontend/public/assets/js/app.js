@@ -2,8 +2,8 @@
 $(document).on('ready', function () {
     var apiUrl = "http://localhost:5000/";
 
-    if (sessionStorage.getItem('token')) {
-        var name = sessionStorage.getItem('name');
+    if (localStorage.getItem('token')) {
+        var name = localStorage.getItem('name');
         $('#signInStatus').text('Hello, ' + name);
         $('#signInStatus').attr('href', 'signout');
     }
