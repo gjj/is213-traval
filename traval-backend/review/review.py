@@ -1,25 +1,26 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import datetime
+import json
 
 from dotenv import load_dotenv
 import os
 
 import requests
-
+travel_order_url = "http://localhost:5002/orders"
 
 load_dotenv()
-
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
+app.config['JSON_SORT_KEYS'] = False
 CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_reviews'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 db = SQLAlchemy(app)
-
 
 class Review(db.Model):
     __tablename__ = 'reviews'
@@ -43,7 +44,6 @@ class Review(db.Model):
     
     def json(self):
         return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "datetime": self.datetime, "rating": self.rating, "msg": self.msg, "status": self.status}
-
 
 class ReviewPhoto(db.Model):
     __tablename__ = 'review_photos'
@@ -98,21 +98,24 @@ def get_by_order(order_id):
 def create_review():
     data = request.get_json()
 
-                        # user id - from order_id?
-    review = Review(None, 3, data["order_id"], None, int(float(data["rating"])), data["msg"], "Success")
+    # r = requests.get(travel_order_url + "/orders/view/" + str(data["order_id"]))
+    # user_id = json.loads(r.text)["user_id"]
+    user_id = 3    
+    # print(user_id)
 
     # if (Review.query.filter_by(id = review.id).first()):
     #     return jsonify({"message": "A review with id '{}' already exists.".format(review.id)}), 400
 
-    ## edit ##
     # if (Review.query.filter_by(user_id = review.user_id).filter_by(order_id = review.order_id).first()):
-        # return jsonify({"message": "You have already placed a review for this order."}), 400
+    #     return jsonify({"message": "You have already placed a review for this order."}), 400
+
+    review = Review(None, user_id, data["order_id"], None, int(float(data["rating"])), data["msg"], "Success")
 
     try:
         db.session.add(review)
         db.session.commit()
     except:
-        return jsonify({"message": "An error occurred creating the catalog review."}), 500
+        return jsonify({"message": "An error occurred creating the review."}), 500
     
     if "photo_urls" in data:
         photos = data["photo_urls"]
