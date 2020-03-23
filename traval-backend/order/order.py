@@ -33,7 +33,7 @@ class Orders(db.Model):
     item_id = db.Column(db.Integer, nullable=False)
     quantity = db.Column(db.Integer, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)
-    status = db.Column(db.Float(precision=2), nullable=False)
+    status = db.Column(db.String(10), nullable=False)
 
     def __init__(self, id, user_id, item_id, quantity, datetime, status):
         self.id = id
@@ -109,7 +109,15 @@ def view_order(id):
 
     return jsonify(reply)
 
-# testing 
+# for Post review: retrieve user id
+@app.route("/orders/<string:id>/user")
+def view_order_user(id):
+    order_item = Orders.query.filter_by(id=id).first()
+    if not order_item:
+        return jsonify({"message": "Order not found."}), 404
+    return jsonify({"user_id":order_item.user_id})
+
+# for Post review: retrieve title & photo
 @app.route("/orders/dets/<string:id>")
 def view_order_dets(id):
     order_item = Orders.query.filter_by(id=id).first()

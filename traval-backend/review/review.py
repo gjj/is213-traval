@@ -98,16 +98,11 @@ def get_by_order(order_id):
 def create_review():
     data = request.get_json()
 
-    # r = requests.get(travel_order_url + "/orders/view/" + str(data["order_id"]))
-    # user_id = json.loads(r.text)["user_id"]
-    user_id = 3    
-    # print(user_id)
+    r = requests.get(travel_order_url + "/" + str(data["order_id"]) + "/user")
+    user_id = json.loads(r.text)["user_id"]
 
-    # if (Review.query.filter_by(id = review.id).first()):
-    #     return jsonify({"message": "A review with id '{}' already exists.".format(review.id)}), 400
-
-    # if (Review.query.filter_by(user_id = review.user_id).filter_by(order_id = review.order_id).first()):
-    #     return jsonify({"message": "You have already placed a review for this order."}), 400
+    if (Review.query.filter_by(user_id = user_id).filter_by(order_id = data["order_id"]).first()):
+        return jsonify({"message": "You have already placed a review for this order."}), 400
 
     review = Review(None, user_id, data["order_id"], None, int(float(data["rating"])), data["msg"], "Success")
 
