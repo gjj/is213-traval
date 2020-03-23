@@ -1,7 +1,8 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
+from flask_cors import CORS
+
 from dotenv import load_dotenv
-# from traval-backend import order
 import os
 
 import requests
@@ -12,6 +13,7 @@ load_dotenv()
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 
 app = Flask(__name__)
+CORS(app)
 
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_reviews'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -27,7 +29,7 @@ class Review(db.Model):
     order_id = db.Column(db.Integer, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    msg = db.Column(db.String(800), nullable=False)
+    msg = db.Column(db.String(800), nullable=True)
     status = db.Column(db.String(8), nullable=False)
 
     def __init__(self, id, user_id, order_id, datetime, rating, msg, status):
@@ -41,6 +43,7 @@ class Review(db.Model):
     
     def json(self):
         return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "datetime": self.datetime, "rating": self.rating, "msg": self.msg, "status": self.status}
+
 
 class ReviewPhoto(db.Model):
     __tablename__ = 'review_photos'
@@ -95,11 +98,16 @@ def get_by_order(order_id):
 def create_review():
     data = request.get_json()
 
-    review = Review(None, data["user_id"], data["order_id"], None, data["rating"], data["msg"], data["status"])
-    if (Review.query.filter_by(id = review.id).first()):
-        return jsonify({"message": "A review with id '{}' already exists.".format(user.id)}), 400
-    if (Review.query.filter_by(user_id = review.user_id).filter_by(order_id = review.order_id).first()):
-        return jsonify({"message": "You have already placed a review for this order."}), 400
+                        # user id - from order_id?
+    review = Review(None, 3, data["order_id"], None, int(float(data["rating"])), data["msg"], "Success")
+
+    # if (Review.query.filter_by(id = review.id).first()):
+    #     return jsonify({"message": "A review with id '{}' already exists.".format(review.id)}), 400
+
+    ## edit ##
+    # if (Review.query.filter_by(user_id = review.user_id).filter_by(order_id = review.order_id).first()):
+        # return jsonify({"message": "You have already placed a review for this order."}), 400
+
     try:
         db.session.add(review)
         db.session.commit()
