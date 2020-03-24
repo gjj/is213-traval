@@ -13,10 +13,10 @@ services:
       - kong-net
     #restart: on-failure
     environment:
-      KONG_PG_HOST: traval-api.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com
+      KONG_PG_HOST: "${AWS_RDS_HOST}"
       KONG_PG_DATABASE: kong
       KONG_PG_USER: traval
-      KONG_PG_PASSWORD: u3FhUJ4UyTNUGTC4_2020
+      KONG_PG_PASSWORD: "${AWS_RDS_PASSWORD}"
       KONG_PG_SSL: "true"
   
   # Kong: The API Gateway
@@ -26,10 +26,10 @@ services:
     networks:
       - kong-net
     environment:
-      KONG_PG_HOST: traval-api.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com
+      KONG_PG_HOST: "${AWS_RDS_HOST}"
       KONG_PG_DATABASE: kong
       KONG_PG_USER: traval
-      KONG_PG_PASSWORD: u3FhUJ4UyTNUGTC4_2020
+      KONG_PG_PASSWORD: "${AWS_RDS_PASSWORD}"
       KONG_PG_SSL: "true"
       KONG_PROXY_LISTEN: 0.0.0.0:8000
       KONG_PROXY_LISTEN_SSL: 0.0.0.0:8443
@@ -48,7 +48,7 @@ services:
   # Konga database prepare
   konga-prepare:
     image: pantsel/konga:next
-    command: "-c prepare -a postgres -u postgresql://traval:u3FhUJ4UyTNUGTC4_2020@traval-api.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:5432/konga_db"
+    command: "-c prepare -a postgres -u postgresql://${AWS_RDS_USERNAME}:${AWS_RDS_PASSWORD}@${AWS_RDS_HOST}:5432/konga_db"
     networks:
       - kong-net
     #restart: on-failure
@@ -61,9 +61,9 @@ services:
         - kong-net
     environment:
       DB_ADAPTER: postgres
-      DB_HOST: traval-api.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com
-      DB_USER: traval
-      DB_PASSWORD: u3FhUJ4UyTNUGTC4_2020
+      DB_HOST: "${AWS_RDS_HOST}"
+      DB_USER: "${AWS_RDS_USERNAME}"
+      DB_PASSWORD: "${AWS_RDS_PASSWORD}"
       TOKEN_SECRET: km1GUr4RkcQD7DewhJPNXrCuZwcKmqjb
       DB_DATABASE: konga_db
       NODE_ENV: production
