@@ -7,12 +7,11 @@ from dotenv import load_dotenv
 import os
 
 import requests
-traval_order_url = "http://localhost:5002/orders"
-traval_review_url = "http://localhost:5005"
 
 load_dotenv()
 
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+API_URL = os.getenv("API_URL")
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -147,7 +146,7 @@ def get_item_reviews(id):
         return jsonify({"message":"Item not found."}), 404
     item_id = str(item.id)
 
-    r = requests.get(traval_order_url + "/item/" + item_id)
+    r = requests.get(API_URL + ":5003/order/item/" + item_id)
     
     total = 0
     count = 0

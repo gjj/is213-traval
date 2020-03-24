@@ -1,0 +1,97 @@
+# For Development Only
+version: "3"
+
+networks:
+ traval-net:
+  driver: bridge
+
+services:
+  # User microservice
+  user:
+    build:
+      context: ./user-management
+      dockerfile: Dockerfile
+    container_name: user
+    restart: unless-stopped
+    command: "python /usr/src/app/user.py"
+    volumes:
+      - ./user-management:/usr/src/app
+    ports:
+      - "5000:5000"
+    networks:
+      - traval-net
+
+  # Catalog microservice
+  catalog:
+    build:
+      context: ./catalog
+      dockerfile: Dockerfile
+    container_name: catalog
+    restart: unless-stopped
+    command: "python /usr/src/app/catalog_item.py"
+    volumes:
+      - ./catalog:/usr/src/app
+    ports:
+      - "5001:5001"
+    networks:
+      - traval-net
+
+  # Order microservice
+  order:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    container_name: order
+    restart: unless-stopped
+    command: "python /usr/src/app/order.py"
+    volumes:
+      - ./order:/usr/src/app
+    ports:
+      - "5002:5002"
+    networks:
+      - traval-net
+
+  # Payment microservice
+  payment:
+    build:
+      context: ./payment
+      dockerfile: Dockerfile
+    container_name: payment
+    restart: unless-stopped
+    command: "python /usr/src/app/payment.py"
+    volumes:
+      - ./payment:/usr/src/app
+    ports:
+      - "5003:5003"
+    networks:
+      - traval-net
+
+  # Voucher microservice
+  voucher:
+    build:
+      context: ./voucher
+      dockerfile: Dockerfile
+    container_name: voucher
+    restart: unless-stopped
+    command: "python /usr/src/app/voucher.py"
+    volumes:
+      - ./voucher:/usr/src/app
+    ports:
+      - "5004:5004"
+    networks:
+      - traval-net
+
+  # Review microservice
+  review:
+    build:
+      context: ./review
+      dockerfile: Dockerfile
+    container_name: review
+    restart: unless-stopped
+    command: "python /usr/src/app/review.py"
+    volumes:
+      - ./review:/usr/src/app
+    ports:
+      - "5005:5005"
+    networks:
+      - traval-net

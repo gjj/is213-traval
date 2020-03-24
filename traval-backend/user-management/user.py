@@ -11,6 +11,7 @@ import uuid
 load_dotenv()
 
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+API_URL = os.getenv("API_URL")
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False

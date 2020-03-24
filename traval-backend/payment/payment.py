@@ -17,7 +17,9 @@ import csv
 import sys
 
 load_dotenv()
+
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+API_URL = os.getenv("API_URL")
 STRIPE_PUBLISHABLE_KEY = os.getenv("STRIPE_PUBLISHABLE_KEY")
 STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
@@ -97,7 +99,7 @@ def create_payment_intent():
     data = request.get_json()
 
     # extract json data from catalog
-    r = requests.get("http://localhost:5002/orders/cart/" + str(data["user_id"]))
+    r = requests.get(API_URL + ":5002/orders/cart/" + str(data["user_id"]))
     cart = json.loads(r.text)
 
     payload = stripe.PaymentIntent.create(
@@ -114,7 +116,7 @@ def update_payment_intent():
     data = request.get_json()
 
     # extract json data from catalog
-    r = requests.get("http://localhost:5002/orders/cart/" + str(data["user_id"]))
+    r = requests.get(API_URL + ":5002/orders/cart/" + str(data["user_id"]))
     cart = json.loads(r.text)
 
     payload=stripe.PaymentIntent.modify(

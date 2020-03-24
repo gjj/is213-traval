@@ -8,10 +8,12 @@ from dotenv import load_dotenv
 import os
 
 import requests
-travel_order_url = "http://localhost:5002/orders"
 
 load_dotenv()
+
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+API_URL = os.getenv("API_URL")
+travel_order_url = API_URL + ":5002/orders"
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
