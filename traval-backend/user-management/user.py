@@ -110,7 +110,7 @@ def create_user():
 
     if len(errors) > 0:
         print("Error", errors)
-        return jsonify({"message": errors}), 400
+        return jsonify({"messages": errors}), 400
 
     try:
         # make a UUID based on the host ID and current time, since we're not using for crypto, it's ok I guess
@@ -144,7 +144,7 @@ def login():
         print("Error", errors)
         return jsonify({"message": errors}), 400
 
-    return jsonify({"status": "success", "token": "eyGE5F45S4F", "email": user_result.email, "name": user_result.name}), 201
+    return jsonify({"status": "success", "token": "eyGE5F45S4F", "id": user_result.id, "guid": user_result.guid, "email": user_result.email, "name": user_result.name, "phone": user_result.phone}), 201
 
     # try:
     #     # make a UUID based on the host ID and current time, since we're not using for crypto, it's ok I guess
