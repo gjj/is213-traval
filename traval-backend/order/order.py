@@ -9,10 +9,12 @@ import os
 
 import requests
 
-travel_catalog_url = "http://localhost:5001/catalog_items"
 
 load_dotenv()
+
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
+API_URL = os.getenv("API_URL")
+travel_catalog_url = API_URL + ":5001/catalog_items"
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
@@ -246,32 +248,6 @@ def get_order_items(order_id):
 
     return items
 
-# for Post review: retrieve user id
-@app.route("/orders/<string:id>/user")
-def view_order_user(id):
-    order_item = Orders.query.filter_by(id=id).first()
-    if not order_item:
-        return jsonify({"message": "Order not found."}), 404
-    return jsonify({"user_id":order_item.user_id})
-
-# for Post review: retrieve title & photo
-@app.route("/orders/dets/<string:id>")
-def view_order_dets(id):
-    order_item = Orders.query.filter_by(id=id).first()
-    if not order_item:
-        return jsonify({"message": "Order not found."}), 404
-    item_id = str(order_item.item_id)
-
-    r = requests.get(travel_catalog_url + "/" + item_id)
-
-    title = json.loads(r.text)["title"]
-    photo = json.loads(r.text)["photo_urls"][0]
-
-    reply = {"title": title, "photo": photo}
-
-    return jsonify(reply)
-
-
 # UC3
 # Retrieving order data based on given order.id
 @app.route("/orders/user/<string:user_id>")
@@ -309,20 +285,6 @@ def get_all_orders():
     order_item = {"order_items": order_list}
     if order_item:
         return jsonify(order_item)
-    return jsonify({"message": "Order not found."}), 404
-
-
-# get orders by item_id
-@app.route("/orders/item/<string:id>")
-def find_by_itemid(id):
-    orders = [order.json() for order in Orders.query.filter_by(item_id=id)]
-
-    if orders:
-        order_dic = {'id': []}
-        for order in orders:
-            order_dic['id'].append(order['id'])
-        return jsonify(order_dic)
-    
     return jsonify({"message": "Order not found."}), 404
 
 
