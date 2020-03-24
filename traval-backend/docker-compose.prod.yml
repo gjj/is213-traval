@@ -1,0 +1,44 @@
+version: "3"
+
+services:
+  # User microservice
+  user:
+    build:
+      context: ./user-management
+      dockerfile: Dockerfile
+    command: "python /usr/src/app/user.py"
+
+  # Catalog microservice
+  catalog:
+    build:
+      context: ./catalog
+      dockerfile: Dockerfile
+    command: "python /usr/src/app/catalog_item.py"
+
+  # Order microservice
+  order:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    command: "python /usr/src/app/order.py"
+
+  # Payment microservice
+  payment:
+    build:
+      context: ./payment
+      dockerfile: Dockerfile
+    command: "python /usr/src/app/payment.py"
+
+  # Voucher microservice
+  voucher:
+    build:
+      context: ./voucher
+      dockerfile: Dockerfile
+    command: "python /usr/src/app/voucher.py"
+
+  # Review microservice
+  review:
+    build:
+      context: ./review
+      dockerfile: Dockerfile
+    command: "python /usr/src/app/review.py"
