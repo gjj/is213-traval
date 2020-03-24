@@ -64,7 +64,6 @@ services:
       DB_HOST: "${AWS_RDS_HOST}"
       DB_USER: "${AWS_RDS_USERNAME}"
       DB_PASSWORD: "${AWS_RDS_PASSWORD}"
-      TOKEN_SECRET: km1GUr4RkcQD7DewhJPNXrCuZwcKmqjb
       DB_DATABASE: konga_db
       NODE_ENV: production
     ports:
