@@ -1,0 +1,70 @@
+version: "3"
+
+networks:
+ kong-net:
+  driver: bridge
+
+services:
+  # Kong database migration
+  kong-migration:
+    image: kong:latest
+    command: "kong migrations bootstrap"
+    networks:
+      - kong-net
+    #restart: on-failure
+    environment:
+      KONG_PG_HOST: "${AWS_RDS_HOST}"
+      KONG_PG_DATABASE: kong
+      KONG_PG_USER: traval
+      KONG_PG_PASSWORD: "${AWS_RDS_PASSWORD}"
+      KONG_PG_SSL: "true"
+  
+  # Kong: The API Gateway
+  kong:
+    image: kong:latest
+    #restart: always
+    networks:
+      - kong-net
+    environment:
+      KONG_PG_HOST: "${AWS_RDS_HOST}"
+      KONG_PG_DATABASE: kong
+      KONG_PG_USER: traval
+      KONG_PG_PASSWORD: "${AWS_RDS_PASSWORD}"
+      KONG_PG_SSL: "true"
+      KONG_PROXY_LISTEN: 0.0.0.0:8000
+      KONG_PROXY_LISTEN_SSL: 0.0.0.0:8443
+      KONG_ADMIN_LISTEN: 0.0.0.0:8001
+    depends_on:
+      - kong-migration
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://kong:8001"]
+      interval: 5s
+      timeout: 2s
+      retries: 15
+    ports:
+      - "8001:8001"
+      - "8000:8000"
+  
+  # Konga database prepare
+  konga-prepare:
+    image: pantsel/konga:next
+    command: "-c prepare -a postgres -u postgresql://${AWS_RDS_USERNAME}:${AWS_RDS_PASSWORD}@${AWS_RDS_HOST}:5432/konga_db"
+    networks:
+      - kong-net
+    #restart: on-failure
+      
+  # Konga: Kong GUI
+  konga:
+    image: pantsel/konga:next
+    #restart: always
+    networks:
+        - kong-net
+    environment:
+      DB_ADAPTER: postgres
+      DB_HOST: "${AWS_RDS_HOST}"
+      DB_USER: "${AWS_RDS_USERNAME}"
+      DB_PASSWORD: "${AWS_RDS_PASSWORD}"
+      DB_DATABASE: konga_db
+      NODE_ENV: production
+    ports:
+      - "1337:1337"
