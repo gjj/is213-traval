@@ -41,11 +41,11 @@ Register @stop
                                     </div>
                                     <div class="form-group">
                                         <label for="password">Password</label>
-                                        <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+                                        <input type="password" class="form-control" id="password" name="password" placeholder="Enter password">
                                     </div>
                                     <div class="form-group">
                                         <label for="phone">Phone number</label>
-                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="+65 9123 8888">
+                                        <input type="tel" class="form-control" id="phone" name="phone" placeholder="My phone number">
 
                                         <div class="valid-feedback">
                                             <span id="valid-msg">✓ Valid</span>

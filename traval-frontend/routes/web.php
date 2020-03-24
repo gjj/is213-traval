@@ -48,6 +48,11 @@ Route::get('/activity/{id}', function () {
 ->name('activity.item');
 
 /* Payment */
+Route::get('/cart', function () {
+    return view('cart.cart');
+})
+->name('cart');
+
 Route::get('/payment/checkout', function () {
     return view('payment.checkout');
 })

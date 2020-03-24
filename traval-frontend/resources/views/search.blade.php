@@ -102,7 +102,7 @@ Search @stop
 @endsection
 
 @section('scripts')
-<script id="search_results_tpl" type="text/x-jsrender">
+<script id="tpl_search_results" type="text/x-jsrender">
     <div class="col-md-6 col-xl-4 mb-3 mb-md-4 pb-1">
         <div class="card transition-3d-hover shadow-hover-2 h-100">
             <div class="position-relative">
@@ -164,7 +164,7 @@ $(document).on('ready', function() {
             success: function(data) {
                 $('#search_count').text(data.count);
 
-                var tpl = $.templates('#search_results_tpl');
+                var tpl = $.templates('#tpl_search_results');
                 $.each(data.catalog_items, function(i, item) {
                     console.log(item)
                     $('#search_results').append(tpl.render(item));

@@ -97,6 +97,9 @@ def create_payment():
 @app.route("/payments/stripe", methods=['POST'])
 def create_payment_intent():
     data = request.get_json()
+    print(data)
+    if not data:
+        return jsonify({'status': 'error', 'message': 'Invalid payload.'}), 400
 
     # extract json data from catalog
     r = requests.get(API_URL + ":5002/orders/cart/" + str(data["user_id"]))
@@ -124,7 +127,7 @@ def update_payment_intent():
         amount = int(cart["total_price"]) * 100,
         currency = "sgd",
         payment_method_types = ["card"],
-        # metadata={"order_id": "1"}
+        # metadata={"order_id": "1"} 
     )
 
     return payload, 200
@@ -143,14 +146,14 @@ def retrieve_payment_intent(payment_intent_id):
 def payment_stripe_webhook():
     payload=request.get_data()
 
-    event=None
+    event = None
 
     try:
         event=stripe.Event.construct_from(
             json.loads(payload), stripe.api_key
         )
     except ValueError as e:
-        return jsonify({'status': 'error', 'messages': ['Invalid payload.']}), 400
+        return jsonify({'status': 'error', 'message': 'Invalid payload.'}), 400
 
     if event.type == 'payment_intent.succeeded':
         payment_intent = event.data.object
@@ -164,7 +167,7 @@ def payment_stripe_webhook():
         #           "text": "payment_intent.success event is acknowledged."})
         # print(str(mg))
 
-    return jsonify({'status': 'success', 'messages': ['payment_intent event acknowledged.']}), 200
+    return jsonify({'status': 'success', 'message': 'payment_intent event acknowledged.'}), 200
 
 
 if __name__ == '__main__':

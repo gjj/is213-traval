@@ -30,7 +30,7 @@ Sign in @stop
 @section('scripts')
 <script type="text/javascript">
     $(document).ready(function() {
-        sessionStorage.clear();
+        localStorage.clear();
         window.location.replace(".");
     });
 </script>

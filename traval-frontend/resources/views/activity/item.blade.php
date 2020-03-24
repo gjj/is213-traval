@@ -12,8 +12,8 @@ Activity @stop
 @endsection
 
 @section('scripts')
-<script id="activity_item_tpl" type="text/x-jsrender">
-<div class="mb-4 mb-lg-8">
+<script id="tpl_activity_item" type="text/x-jsrender">
+    <div class="mb-4 mb-lg-8">
     <img class="img-fluid" src="@{{:photo_urls[0]}}" alt="Image" id="item-image" />
 </div>
 <div class="container">
@@ -156,7 +156,7 @@ Activity @stop
                         <div class="pb-1"></div>
                         
                         <div class="text-center">
-                            <a href="javascript:;" id="btn_bookNow" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
+                            <a href="{{ route('payment.checkout') }}" id="btn_bookNow" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
                                 Book Now
                             </a>
                         </div>
@@ -182,7 +182,7 @@ Activity @stop
             url: apiUrl + ":5001/catalog_items/" + activity.item_id,
             success: function(data) {
 
-                var tpl = $.templates('#activity_item_tpl');
+                var tpl = $.templates('#tpl_activity_item');
                 $('#activity_item').append(tpl.render(data));
             }
         });
@@ -197,14 +197,37 @@ Activity @stop
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {
                     console.log("Success.", response);
-                    // Add success message.
+
+                    // Update cart UI
+                    $.ajax({
+                        method: 'GET',
+                        url: apiUrl + ":5002/orders/cart/2",
+                        success: function(response) {
+                            $('#cart_items').html("");
+                            $('#cart_checkout').html("");
+                            var tpl_cart_items = $.templates('#tpl_cart_items');
+                            var tpl_cart_checkout = $.templates('#tpl_cart_checkout');
+
+                            $.each(response.items, function(i, item) {
+                                $('#cart_items').append(tpl_cart_items.render(item));
+                            });
+
+                            $('#cart_checkout').append(tpl_cart_checkout.render(response));
+                            
+                            data.total_price = response.total_price;
+                            // And update Payment Intent
+                            updatePaymentIntent(data)
+                        },
+                        error: function(error) {
+                            console.log("Error retrieving cart items.", error);
+                        }
+                    });
                 },
                 error: function(error) {
                     console.log("Error.", error);
                     // Add error message.
                 }
             });
-            // {{ route('payment.checkout') }}
         });
     });
 </script>

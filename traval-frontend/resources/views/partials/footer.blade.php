@@ -101,9 +101,9 @@
                     <span class="d-block text-dark font-weight-bold">
                         @{{:title}}
                     </span>
-                    <button type="button" class="close close-rounded position-md-absolute right-0 ml-2" aria-label="Close">
+                    <!-- <button type="button" class="close close-rounded position-md-absolute right-0 ml-2" aria-label="Close">
                         <i class="fas fa-trash"></i>
-                    </button>
+                    </button> -->
                 </div>
                 <span class="d-block text-gray-1">Price: S$@{{:price}}</span>
                 <span class="d-block text-gray-1">Quantity: @{{:quantity}}</span>
@@ -137,17 +137,17 @@
             method: 'GET',
             url: apiUrl + ":5002/orders/cart/2",
             success: function(response) {
-                var tpl = $.templates('#tpl_cart_items');
-                var tpl_checkout = $.templates('#tpl_cart_checkout');
+                var tpl_cart_items = $.templates('#tpl_cart_items');
+                var tpl_cart_checkout = $.templates('#tpl_cart_checkout');
 
                 $.each(response.items, function(i, item) {
-                    $('#cart_items').append(tpl.render(item));
+                    $('#cart_items').append(tpl_cart_items.render(item));
                 });
 
-                $('#cart_checkout').append(tpl_checkout.render(response));
+                $('#cart_checkout').append(tpl_cart_checkout.render(response));
             },
             error: function(error) {
-                console.log("Error.", error);
+                console.log("Error retrieving cart items.", error);
             }
         });
     });

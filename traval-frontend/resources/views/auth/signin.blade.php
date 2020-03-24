@@ -68,6 +68,7 @@ Sign in @stop
                     localStorage.setItem('email', result.email);
                     localStorage.setItem('token', result.token);
                     localStorage.setItem('name', result.name);
+                    localStorage.setItem('user_id', result.id);
                     
                     console.log(result);
                     window.location.replace(".");
