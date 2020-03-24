@@ -15,7 +15,7 @@ services:
     environment:
       KONG_PG_HOST: "${AWS_RDS_HOST}"
       KONG_PG_DATABASE: kong
-      KONG_PG_USER: traval
+      KONG_PG_USER: "${AWS_RDS_USERNAME}"
       KONG_PG_PASSWORD: "${AWS_RDS_PASSWORD}"
       KONG_PG_SSL: "true"
   
@@ -28,7 +28,7 @@ services:
     environment:
       KONG_PG_HOST: "${AWS_RDS_HOST}"
       KONG_PG_DATABASE: kong
-      KONG_PG_USER: traval
+      KONG_PG_USER: "${AWS_RDS_USERNAME}"
       KONG_PG_PASSWORD: "${AWS_RDS_PASSWORD}"
       KONG_PG_SSL: "true"
       KONG_PROXY_LISTEN: 0.0.0.0:8000
