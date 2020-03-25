@@ -566,6 +566,8 @@ Checkout @stop
             }
         });
 
+        var cartItems = [];
+
         // Get cart items.
         $.ajax({
             method: 'GET',
@@ -584,6 +586,8 @@ Checkout @stop
                 data.total_price = response.total_price;
                 console.log(response);
                 updatePaymentIntent(data);
+
+                cartItems = response;
             },
             error: function(error) {
                 console.log(error.responseJSON);
@@ -628,33 +632,53 @@ Checkout @stop
             e.preventDefault();
             var clientSecret = localStorage.getItem('stripe_clientSecret');
 
-            stripe.confirmCardPayment(clientSecret, {
-                payment_method: {
-                    card: card,
-                    billing_details: {
-                        name: $('input[name=card_name]').val()
-                    }
-                }
-            }).then(function(result) {
-                if (result.error) {
-                    // Show error to your customer (e.g., insufficient funds)
-                    console.log(result.error.message);
-                } else {
-                    // The payment has been processed!
-                    if (result.paymentIntent.status === 'succeeded') {
-                        console.log(result.paymentIntent);
-                        // Show a success message to your customer
-                        // There's a risk of the customer closing the window before callback
-                        // execution. Set up a webhook or plugin to listen for the
-                        // payment_intent.succeeded event that handles any business critical
-                        // post-payment actions.
+            data.items = cartItems.items;
+            data.pi_id = localStorage.getItem("stripe_paymentIntentId");
 
+            console.log("Sending data...", data);
+            $.ajax({
+                method: 'POST',
+                url: apiUrl + ':5002/orders',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(response) {
+                    console.log(response);
 
+                    data.order_id = response.id;
+                    console.log("Checkout.", data);
 
-                        localStorage.removeItem('stripe_paymentIntentId');
-                        localStorage.removeItem('stripe_clientSecret');
-                        window.location.replace('payment/result');
-                    }
+                    updatePaymentIntent(data); // Attach order ID to this payment intent.
+
+                    stripe.confirmCardPayment(clientSecret, {
+                        payment_method: {
+                            card: card,
+                            billing_details: {
+                                name: $('input[name=card_name]').val()
+                            }
+                        }
+                    }).then(function(result) {
+                        if (result.error) {
+                            // Show error to your customer (e.g., insufficient funds)
+                            console.log(result.error.message);
+                        } else {
+                            // The payment has been processed!
+                            if (result.paymentIntent.status === 'succeeded') {
+                                console.log(result.paymentIntent);
+                                // Show a success message to your customer
+                                // There's a risk of the customer closing the window before callback
+                                // execution. Set up a webhook or plugin to listen for the
+                                // payment_intent.succeeded event that handles any business critical
+                                // post-payment actions.
+
+                                localStorage.removeItem('stripe_paymentIntentId');
+                                localStorage.removeItem('stripe_clientSecret');
+                                window.location.replace('payment/result');
+                            }
+                        }
+                    });
+                },
+                error: function(error) {
+                    console.log(error.responseJSON);
                 }
             });
         });

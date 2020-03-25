@@ -176,7 +176,6 @@ def create_order():
     data = request.get_json()
 
     # Handle empty JSON query
-    print(data)
     if not data:
         return jsonify({"status": "error", "message": "No order details!"}), 500
 
@@ -201,7 +200,7 @@ def create_order():
             db.session.commit()
             
     except Exception as error:
-        db.session.rollback()
+        #db.session.rollback()
         print(error)
         return jsonify({"status": "error", "message": "An error occurred when creating the order."}), 500
 
