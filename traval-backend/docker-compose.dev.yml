@@ -4,42 +4,54 @@ version: "3"
 services:
   # User microservice
   user:
-    image: 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend-base
+    build:
+      context: ./user-management
+      dockerfile: Dockerfile
     command: "python /usr/src/app/user.py"
     volumes:
       - ./user-management:/usr/src/app
 
   # Catalog microservice
   catalog:
-    image: 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend-base
+    build:
+      context: ./catalog
+      dockerfile: Dockerfile
     command: "python /usr/src/app/catalog_item.py"
     volumes:
       - ./catalog:/usr/src/app
 
   # Order microservice
   order:
-    image: 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend-base
+    build:
+      context: ./order
+      dockerfile: Dockerfile
     command: "python /usr/src/app/order.py"
     volumes:
       - ./order:/usr/src/app
     
   # Payment microservice
   payment:
-    image: 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend-base
+    build:
+      context: ./payment
+      dockerfile: Dockerfile
     command: "python /usr/src/app/payment.py"
     volumes:
       - ./payment:/usr/src/app
 
   # Voucher microservice
   voucher:
-    image: 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend-base
+    build:
+      context: ./voucher
+      dockerfile: Dockerfile
     command: "python /usr/src/app/voucher.py"
     volumes:
       - ./voucher:/usr/src/app
 
   # Review microservice
   review:
-    image: 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend-base
+    build:
+      context: ./review
+      dockerfile: Dockerfile
     command: "python /usr/src/app/review.py"
     volumes:
       - ./review:/usr/src/app
