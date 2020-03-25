@@ -2,6 +2,7 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from dotenv import load_dotenv
+from payment_publisher import PaymentPublisher
 import datetime
 import json
 import os
@@ -166,31 +167,36 @@ def payment_stripe_webhook():
 
     if event.type == 'payment_intent.succeeded':
         payment_intent = event.data.object
+        
 
-        hostname = "localhost"
-        port = 5672  # default messaging port.
+        # Connect to localhost:5672 as guest with the password guest and virtual host "/" (%2F)
+        # publisher = PaymentPublisher(
+        #     'amqp://guest:guest@localhost:5672/%2F?connection_attempts=3&heartbeat=3600'
+        # )
+        # publisher.run()
 
-        # connect to the broker and set up a communication channel in the connection
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host=hostname, port=port))
-        channel = connection.channel()
+        # # connect to the broker and set up a communication channel in the connection
+        # publisher.open_channel()
 
-        # set up the exchange if the exchange doesn't exist
-        exchangename="traval_payments"
-        channel.exchange_declare(exchange=exchangename, exchange_type='topic')
+        # # set up the exchange if the exchange doesn't exist
+        # publisher.setup_exchange(exchange='traval_payments', exchange_type='topic') # Defaulted to topic
 
-        # prepare the message body content
-        data = {
-            'pi_id': payment_intent.id,
-            'order_id': payment_intent.metadata.order_id
-        }
-        message = json.dumps(data, default=str) # convert a JSON object to a string
+        # # prepare the message body content
+        # data = {
+        #     'pi_id': payment_intent.id,
+        #     'order_id': payment_intent.metadata.order_id
+        # }
+        # message = json.dumps(data, default=str) # convert a JSON object to a string
 
-        channel.queue_declare(queue='payment_record', durable=True) # make sure the queue used by the error handler exist and durable
-        channel.queue_bind(exchange=exchangename, queue='payment_record', routing_key='*.payment') # make sure the queue is bound to the exchange
-        channel.basic_publish(exchange=exchangename, routing_key="shipping.error", body=message,
-            properties=pika.BasicProperties(delivery_mode = 2) # make message persistent within the matching queues until it is received by some receiver (the matching queues have to exist and be durable and bound to the exchange)
-        )
+        # # make sure the queue exist and durable
+        # publisher.setup_queue(queue='payment_record', durable=True)
+        # publisher.publish_message(message)
+
+        # channel.queue_declare(queue='payment_record', durable=True) # make sure the queue used by the error handler exist and durable
+        # channel.queue_bind(exchange=exchangename, queue='payment_record', routing_key='payment.*') # make sure the queue is bound to the exchange
+        # channel.basic_publish(exchange=exchangename, routing_key="shipping.error", body=message,
+        #     properties=pika.BasicProperties(delivery_mode = 2) # make message persistent within the matching queues until it is received by some receiver (the matching queues have to exist and be durable and bound to the exchange)
+        # )
 
     # mg = requests.post(
     #     "https://api.mailgun.net/v3/mailgun.traval.app/messages",
