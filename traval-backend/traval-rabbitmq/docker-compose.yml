@@ -11,5 +11,5 @@ services:
     networks:
       - rabbitmq-net
     ports:
-    - "5672:5672" # The standard AMQP protocol port
-    - "15672:15672" # HTTP management UI
+      - "5672:5672" # The standard AMQP protocol port
+      - "15672:15672" # HTTP management UI
