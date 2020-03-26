@@ -126,16 +126,12 @@ def update_payment_intent():
             payload = stripe.PaymentIntent.modify(
                 data["pi_id"],
                 amount=int(float(cart["total_price"]) * 100),
-                currency="sgd",
-                payment_method_types=["card"],
                 metadata={"order_id": data["order_id"]}
             )
         else:
             payload = stripe.PaymentIntent.modify(
                 data["pi_id"],
-                amount=int(float(cart["total_price"]) * 100),
-                currency="sgd",
-                payment_method_types=["card"]
+                amount=int(float(cart["total_price"]) * 100)
             )
 
         return payload, 200
@@ -168,44 +164,45 @@ def payment_stripe_webhook():
     if event.type == 'payment_intent.succeeded':
         payment_intent = event.data.object
         
+        # default username / password to the borker are both 'guest'
+        hostname = "host.docker.internal" # default broker hostname. Web management interface default at http://localhost:15672
+        port = 5672 # default messaging port.
+        exchangename = "traval.payments"
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port))
+        channel = connection.channel()
 
-        # Connect to localhost:5672 as guest with the password guest and virtual host "/" (%2F)
-        # publisher = PaymentPublisher(
-        #     'amqp://guest:guest@localhost:5672/%2F?connection_attempts=3&heartbeat=3600'
-        # )
-        # publisher.run()
+        channel.exchange_declare(exchange=exchangename, exchange_type='topic')
 
-        # # connect to the broker and set up a communication channel in the connection
-        # publisher.open_channel()
+        channel.queue_declare(queue='payment_success', durable=True)
+        # make sure the queue is bound to the exchange
+        channel.queue_bind(exchange=exchangename, queue='payment_success', routing_key='payment.*')
 
-        # # set up the exchange if the exchange doesn't exist
-        # publisher.setup_exchange(exchange='traval_payments', exchange_type='topic') # Defaulted to topic
 
-        # # prepare the message body content
-        # data = {
-        #     'pi_id': payment_intent.id,
-        #     'order_id': payment_intent.metadata.order_id
-        # }
-        # message = json.dumps(data, default=str) # convert a JSON object to a string
+        # prepare the message body content
+        data = {
+            'pi_id': payment_intent.id,
+            'order_id': payment_intent.metadata.order_id
+        }
 
-        # # make sure the queue exist and durable
-        # publisher.setup_queue(queue='payment_record', durable=True)
-        # publisher.publish_message(message)
+        message = json.dumps(data, default=str) # convert a JSON object to a string
 
-        # channel.queue_declare(queue='payment_record', durable=True) # make sure the queue used by the error handler exist and durable
-        # channel.queue_bind(exchange=exchangename, queue='payment_record', routing_key='payment.*') # make sure the queue is bound to the exchange
-        # channel.basic_publish(exchange=exchangename, routing_key="shipping.error", body=message,
-        #     properties=pika.BasicProperties(delivery_mode = 2) # make message persistent within the matching queues until it is received by some receiver (the matching queues have to exist and be durable and bound to the exchange)
-        # )
+        channel.basic_publish(
+            exchange='traval_payments',
+            routing_key='payment.success',
+            body=message,
+            properties=pika.BasicProperties(
+                delivery_mode=2,  # make message persistent
+            ))
+        connection.close()
 
-    # mg = requests.post(
-    #     "https://api.mailgun.net/v3/mailgun.traval.app/messages",
-    #     auth=("api", ""),
-    #     data={"from": "The Traval App <payments@traval.app>",
-    #           "to": ["Goi Jia Jian", "jiajiannn@gmail.com"],
-    #           "subject": "💳✅ Payment success event",
-    #           "text": "payment_intent.success event is acknowledged."})
-    # print(str(mg))
+        # mg = requests.post(
+        #     "https://api.mailgun.net/v3/mailgun.traval.app/messages",
+        #     auth=("api", ""),
+        #     data={"from": "The Traval App <payments@traval.app>",
+        #           "to": ["Goi Jia Jian", "jiajiannn@gmail.com"],
+        #           "subject": "💳✅ Payment success event",
+        #           "text": "payment_intent.success event is acknowledged."})
+        # print(str(mg))
 
     return jsonify({'status': 'success', 'message': 'payment_intent event acknowledged.'}), 200
 
