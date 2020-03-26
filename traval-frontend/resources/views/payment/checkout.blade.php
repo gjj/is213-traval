@@ -633,7 +633,7 @@ Checkout @stop
             var clientSecret = localStorage.getItem('stripe_clientSecret');
 
             data.items = cartItems.items;
-            data.pi_id = localStorage.getItem("stripe_paymentIntentId");
+            data.payment_intent_id = localStorage.getItem("stripe_paymentIntentId");
 
             console.log("Sending data...", data);
             $.ajax({
@@ -704,7 +704,7 @@ Checkout @stop
             });
         } else {
             console.log("PaymentIntent has already been created. Attempting to update it...", localStorage);
-            data.pi_id = localStorage.getItem('stripe_paymentIntentId');
+            data.payment_intent_id = localStorage.getItem('stripe_paymentIntentId');
             $.ajax({
                 method: 'POST',
                 url: apiUrl + ':5003/payments/update',

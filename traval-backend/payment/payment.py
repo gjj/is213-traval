@@ -2,7 +2,6 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from dotenv import load_dotenv
-from payment_publisher import PaymentPublisher
 import datetime
 import json
 import os
@@ -37,18 +36,22 @@ class Payment(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
     order_id = db.Column(db.Integer, nullable=False)
-    price = db.Column(db.Float(precision=2), nullable=False)
+    payment_intent_id = db.Column(db.String(50), nullable=False)
+    amount = db.Column(db.Float(precision=2), nullable=False)
     status = db.Column(db.String(10), nullable=False)
+    datetime = db.Column(db.DateTime, nullable=False)
 
-    def __init__(self, id, user_id, order_id, price, status):
+    def __init__(self, id, user_id, order_id, payment_intent_id, amount, status, datetime):
         self.id = id
         self.user_id = user_id
         self.order_id = order_id
-        self.price = price
+        self.payment_intent_id = payment_intent_id
+        self.amount = amount
         self.status = status
+        self.datetime = datetime
 
     def json(self):
-        return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "price": self.price, "status": self.status}
+        return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "payment_intent_id": self.payment_intent_id, "amount": self.amount, "status": self.status, "datetime": self.datetime}
 
 
 def AMQP():
@@ -94,7 +97,7 @@ def create_payment():
 @app.route("/payments/stripe", methods=['POST'])
 def create_payment_intent():
     data = request.get_json()
-    print(data)
+    
     if not data:
         return jsonify({'status': 'error', 'message': 'Invalid payload.'}), 400
 
@@ -103,7 +106,7 @@ def create_payment_intent():
     cart = json.loads(r.text)
 
     payload = stripe.PaymentIntent.create(
-        amount=int(cart["total_price"]) * 100,  # make sure to validate this
+        amount=int(float(cart["total_price"]) * 100),  # make sure to validate this
         currency="sgd",
         payment_method_types=["card"]
     )
@@ -115,8 +118,6 @@ def create_payment_intent():
 def update_payment_intent():
     data = request.get_json()
 
-    print(data)
-
     try:
         # extract json data from catalog
         r = requests.get(API_URL + ":5002/orders/cart/" + str(data["user_id"]))
@@ -124,13 +125,13 @@ def update_payment_intent():
 
         if "order_id" in data:
             payload = stripe.PaymentIntent.modify(
-                data["pi_id"],
+                data["payment_intent_id"],
                 amount=int(float(cart["total_price"]) * 100),
                 metadata={"order_id": data["order_id"]}
             )
         else:
             payload = stripe.PaymentIntent.modify(
-                data["pi_id"],
+                data["payment_intent_id"],
                 amount=int(float(cart["total_price"]) * 100)
             )
 
@@ -172,28 +173,33 @@ def payment_stripe_webhook():
         channel = connection.channel()
 
         channel.exchange_declare(exchange=exchangename, exchange_type='topic')
-
-        channel.queue_declare(queue='payment_success', durable=True)
+        channel.queue_declare(queue='order.update_status', durable=True)
         # make sure the queue is bound to the exchange
-        channel.queue_bind(exchange=exchangename, queue='payment_success', routing_key='payment.*')
-
-
+        channel.queue_bind(exchange=exchangename, queue='order.update_status', routing_key='order.update.*')
+        
         # prepare the message body content
         data = {
-            'pi_id': payment_intent.id,
-            'order_id': payment_intent.metadata.order_id
+            'payment_intent_id': payment_intent.id,
+            'order_id': payment_intent.metadata.order_id,
+            'status': 'success'
         }
 
         message = json.dumps(data, default=str) # convert a JSON object to a string
 
         channel.basic_publish(
-            exchange='traval_payments',
-            routing_key='payment.success',
+            exchange=exchangename,
+            routing_key='order.update_status',
             body=message,
             properties=pika.BasicProperties(
                 delivery_mode=2,  # make message persistent
             ))
         connection.close()
+
+        time_now = datetime.datetime.now() # Get current timestamp
+        payment = Payment(
+            id=None, user_id=2, order_id=payment_intent.metadata.order_id,
+            payment_intent_id=payment_intent.id, amount=int(payment_intent.amount)/100,
+            status="Success", datetime=time_now)
 
         # mg = requests.post(
         #     "https://api.mailgun.net/v3/mailgun.traval.app/messages",
