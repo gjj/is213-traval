@@ -2,8 +2,8 @@
 version: "3"
 
 networks:
- traval-net:
-  driver: bridge
+  traval-net:
+    driver: bridge
 
 services:
   # User microservice
