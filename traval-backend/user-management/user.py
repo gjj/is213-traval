@@ -89,7 +89,7 @@ def create_user():
     errors = []
     data = request.get_json()
 
-    guid = str(uuid.uuid1())
+    guid = str(uuid.uuid4())
     user = User(None, guid, **data)
     
     salt = bcrypt.gensalt()

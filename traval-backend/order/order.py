@@ -66,7 +66,10 @@ class OrderItem(db.Model):
 
     def json(self):
         #return {"id": self.id, "order_id": self.order_id, "item_id": self.item_id, "price": self.price, "quantity": self.quantity}
-        return {"item_id": self.item_id, "title": self.title, "price": self.price, "quantity": self.quantity, "photo_urls": self.photo_urls}
+        if hasattr(self, 'voucher_guid'):
+            return {"id": self.id, "item_id": self.item_id, "title": self.title, "price": self.price, "quantity": self.quantity, "voucher_guid": self.voucher_guid, "photo_urls": self.photo_urls}
+        else:
+            return {"id": self.id, "item_id": self.item_id, "title": self.title, "price": self.price, "quantity": self.quantity, "photo_urls": self.photo_urls}
 
 class CartItem(db.Model):
     __tablename__ = 'cart_items'
@@ -85,13 +88,11 @@ class CartItem(db.Model):
     def json(self):
         return {"item_id": self.item_id, "title": self.title, "price": self.price, "quantity": self.quantity}
 
-
 def retrieve_order_by_ID_in_json(id):
     order_item = Order.query.filter_by(id=id).first()
     if order_item:
         return jsonify(order_item.json())
     return jsonify({"status": "error", "message": "Order not found."}), 404
-
 
 def retrieve_order_in_json():
     order_item = {"order_items": [item.json() for item in Order.query.all()]}
@@ -105,7 +106,6 @@ def add_cart_item():
     data = request.get_json()
 
     # Handle empty JSON query
-    print(data)
     if not data:
         return jsonify({"status": "error", "message": "No cart item found in the request."}), 500
     if int(data["quantity"]) < 0:
@@ -122,8 +122,7 @@ def add_cart_item():
             db.session.merge(cart_item) 
         db.session.commit()
 
-    except Exception as error:
-        print(error)
+    except error:
         return jsonify({"status": "error", "message": "An error occurred when adding the item to cart."}), 500
 
     return jsonify({"user_id": data["user_id"], "item_id": data["item_id"], "quantity": data["quantity"]}), 201
@@ -206,6 +205,23 @@ def create_order():
 
     return jsonify(order.json()), 201
 
+@app.route("/orders/<string:id>", methods=['POST'])
+def update_order(id):
+    data = request.get_json()
+    
+    # Handle empty JSON query
+    if not data:
+        return jsonify({"status": "error", "message": "No order details were given."}), 500
+    try:
+        order = Order(id=id, status=data['status'], user_id=None, datetime=None)
+        db.session.query(Order).filter_by(id=order.id).update({"status": order.status})
+        db.session.commit()
+        
+    except Exception as error:
+        return jsonify({"status": "error", "message": "An error occurred when updating the order."}), 500
+
+    return jsonify(order.json()), 201
+
 # USC2
 # view all information of order + catalog
 @app.route("/orders/<string:id>")
@@ -237,7 +253,7 @@ def get_order_items(order_id):
 
     for item in items:
         item_id = str(item.item_id)
-
+        voucher_guid = get_voucher(str(item.id)) # Get by order item ID rather than item ID
         # extract json data from catalog
         r = requests.get(travel_catalog_url + "/" + item_id)
         data = json.loads(r.text)
@@ -245,46 +261,86 @@ def get_order_items(order_id):
         item.description = data["description"]
         item.photo_urls = data["photo_urls"]
 
+        if voucher_guid:
+            item.voucher_guid = voucher_guid
+
     return items
 
+def get_voucher(order_item_id):
+    r = requests.get(API_URL + ":5004/vouchers/item/" + order_item_id)
+    data = json.loads(r.text)
+    
+    if 'guid' in data:
+        return data["guid"]
+    return None
+
 # UC3
-# Retrieving order data based on given order.id
+# Retrieving all paid orders by user ID
 @app.route("/orders/user/<string:user_id>")
-def get_orders(user_id):
-    order_item = Order.query.filter_by(user_id=user_id).first()
-    if order_item:
-        reply = {"id": str(order_item.id)}
-        return jsonify(reply)
-    return jsonify({"message": "Order not found."}), 404
+def get_paid_orders_by_user(user_id):
+    # Show only paid orders
+    orders = Order.query.filter_by(user_id=user_id).filter_by(status='Paid').all()
+    orders_json = []
+    for order in orders:
+        items = get_order_items(order.id)
+        total_price = sum([item.price * item.quantity for item in items])
+        items = [item.json() for item in items]
 
+        # store in dictionary
+        order_json = {
+            "id": order.id,
+            "user_id": order.user_id,
+            "datetime": order.datetime,
+            "status": order.status,
+            #"currency": "SGD",
+            "total_price": total_price,
+            "items": items
+        }
 
-# Get All Order
+        orders_json.append(order_json)
+        
+    return jsonify(orders_json), 200
+
+# Get order item by ID
+@app.route("/orders/item/<string:id>")
+def get_order_item(id):
+    item = OrderItem.query.filter_by(id=id).first()
+    
+    if item:
+        r = requests.get(travel_catalog_url + "/" + str(item.item_id))
+        data = json.loads(r.text)
+        item.title = data["title"]
+        item.description = data["description"]
+        item.photo_urls = data["photo_urls"]
+
+        return jsonify(item.json()), 200
+    else:
+        return jsonify({"message": "An order item is not found with this ID."}), 404
+
+# Get all orders
 @app.route("/orders")
 def get_all_orders():
-    order_query_item = Order.query.all()
-    order_list = []
-    for item in order_query_item:
-        item_id = str(item.item_id)
-        r = requests.get(travel_catalog_url + "/" + item_id)
-        description = r.json()["description"]
-        title = r.json()["title"]
-        price = r.json()["price"]
-        photo_urls = r.json()["photo_urls"]
-        id = item.id
-        user_id = item.user_id
-        item_id = item.item_id
-        quantity = item.quantity
-        datetime = item.datetime
-        status = item.status
+    orders = Order.query.all()
+    orders_json = []
+    for order in orders:
+        items = get_order_items(order.id)
+        total_price = sum([item.price * item.quantity for item in items])
+        items = [item.json() for item in items]
 
-        new_item = {"id": id, "user_id": user_id, "item_id": item_id, "quantity": quantity, "datetime": datetime,
-                    "status": status, "decription": description, "title": title, "price": price, "photo_urls": photo_urls}
-        order_list.append(new_item)
+        # store in dictionary
+        order_json = {
+            "id": order.id,
+            "user_id": order.user_id,
+            "datetime": order.datetime,
+            "status": order.status,
+            #"currency": "SGD",
+            "total_price": total_price,
+            "items": items
+        }
 
-    order_item = {"order_items": order_list}
-    if order_item:
-        return jsonify(order_item)
-    return jsonify({"message": "Order not found."}), 404
+        orders_json.append(order_json)
+        
+    return jsonify(orders_json), 200
 
 
 if __name__ == '__main__':

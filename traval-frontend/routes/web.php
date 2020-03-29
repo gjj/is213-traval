@@ -70,13 +70,13 @@ Route::get('/order', function () {
 ->name('order.list');
 
 /* Voucher */
-Route::get('/voucher', function () {
+Route::get('/voucher/view/{guid}', function () {
     return view('voucher.item');
 })
-->name('order.item');
+->name('voucher.item');
 
 /* Review */
-Route::get('/order/{orderid}/review', function () {
+Route::get('/order/item/{orderItemId}/review', function () {
     return view('review.post');
 })
 ->name('review.post');
@@ -85,3 +85,8 @@ Route::get('/activity/{id}/reviews', function () {
     return view('review.list');
 })
 ->name('review.list');
+
+Route::get('/merchant/scan', function () {
+    return view('merchant.scan');
+})
+->name('merchant.scan');

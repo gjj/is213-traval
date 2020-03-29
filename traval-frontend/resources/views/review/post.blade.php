@@ -70,7 +70,7 @@ Leave Review @stop
 <script type="text/javascript">
 
     var apiUrl = "http://localhost";
-    orderid = {{ Request()->orderid }};
+    orderid = {{ Request()->order_item_id }};
 
     $.ajax({
         method: 'GET',

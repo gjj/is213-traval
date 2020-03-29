@@ -181,14 +181,14 @@ def payment_stripe_webhook():
         data = {
             'payment_intent_id': payment_intent.id,
             'order_id': payment_intent.metadata.order_id,
-            'status': 'success'
+            'status': 'Paid'
         }
 
         message = json.dumps(data, default=str) # convert a JSON object to a string
 
         channel.basic_publish(
             exchange=exchangename,
-            routing_key='order.update_status',
+            routing_key='order.update.success',
             body=message,
             properties=pika.BasicProperties(
                 delivery_mode=2,  # make message persistent
@@ -200,6 +200,8 @@ def payment_stripe_webhook():
             id=None, user_id=2, order_id=payment_intent.metadata.order_id,
             payment_intent_id=payment_intent.id, amount=int(payment_intent.amount)/100,
             status="Success", datetime=time_now)
+        db.session.add(payment)
+        db.session.commit()
 
         # mg = requests.post(
         #     "https://api.mailgun.net/v3/mailgun.traval.app/messages",
