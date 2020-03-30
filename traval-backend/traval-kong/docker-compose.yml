@@ -51,7 +51,6 @@ services:
     command: "-c prepare -a postgres -u postgresql://${AWS_RDS_USERNAME}:${AWS_RDS_PASSWORD}@${AWS_RDS_HOST}:5432/konga_db"
     networks:
       - kong-net
-      - traval-net
     #restart: on-failure
       
   # Konga: Kong GUI
@@ -60,7 +59,6 @@ services:
     #restart: always
     networks:
         - kong-net
-        - traval-net
     environment:
       DB_ADAPTER: postgres
       DB_HOST: "${AWS_RDS_HOST}"
