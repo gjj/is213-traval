@@ -3,8 +3,6 @@ version: "3"
 networks:
   kong-net:
     driver: bridge
-  traval-net:
-    driver: external
 
 services:
   # Kong database migration
