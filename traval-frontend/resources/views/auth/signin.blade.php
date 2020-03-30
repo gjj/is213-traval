@@ -52,7 +52,7 @@ Sign in @stop
             e.preventDefault(); // Don't allow it to reload
             
             var data = {
-                email: $('#email').val(),
+                email:    $('#email').val(),
                 password: $('#password').val(),
             }
             console.log(JSON.stringify(data));

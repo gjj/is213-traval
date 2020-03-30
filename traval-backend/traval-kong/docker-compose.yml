@@ -3,6 +3,9 @@ version: "3"
 networks:
   kong-net:
     driver: bridge
+  traval-net:
+    external:
+      name: traval-backend_traval-net
 
 services:
   # Kong database migration
@@ -25,6 +28,7 @@ services:
     #restart: always
     networks:
       - kong-net
+      - traval-net
     environment:
       KONG_PG_HOST: "${AWS_RDS_HOST}"
       KONG_PG_DATABASE: kong
@@ -59,6 +63,7 @@ services:
     #restart: always
     networks:
         - kong-net
+        - traval-net
     environment:
       DB_ADAPTER: postgres
       DB_HOST: "${AWS_RDS_HOST}"

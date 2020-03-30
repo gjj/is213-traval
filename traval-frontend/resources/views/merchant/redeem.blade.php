@@ -16,7 +16,7 @@ Search @stop
                 <!-- Shop-control-bar Title -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="font-size-21 font-weight-bold mb-0 text-lh-1">
-                        Voucher
+                        Voucher Redemption
                     </h3>
 
                 </div>
@@ -57,7 +57,7 @@ Search @stop
             </p>
         </div>
         <div class="card-body">
-            <img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=@{{:guid}}" />
+            <a href="#" class="btn btn-success" role="button">Redeem</a>
         </div>
     </div>
 </div>
@@ -66,7 +66,6 @@ Search @stop
 <script type="text/javascript">
     var apiUrl = "http://localhost";
     var guid = $(location).attr('pathname').split('/')[3];
-    console.log(guid);
 
     $(document).on('ready', function() {
         $.ajax({

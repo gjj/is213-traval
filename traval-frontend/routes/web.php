@@ -86,7 +86,13 @@ Route::get('/activity/{id}/reviews', function () {
 })
 ->name('review.list');
 
+/* Merchant */
 Route::get('/merchant/scan', function () {
     return view('merchant.scan');
 })
 ->name('merchant.scan');
+
+Route::get('/merchant/redeem/{guid}', function () {
+    return view('merchant.redeem');
+})
+->name('merchant.redeem');
