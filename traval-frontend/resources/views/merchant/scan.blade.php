@@ -24,7 +24,7 @@ Merchant QR Code Scanner @stop
                 <!-- Shop-control-bar Title -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="font-size-21 font-weight-bold mb-0 text-lh-1">
-                        Merchant
+                        Merchant QR Code Scanner
                     </h3>
                 </div>
 
@@ -37,8 +37,16 @@ Merchant QR Code Scanner @stop
                                     <div id="cam-qr-result"></div>
                                     <div id="cam-qr-result-timestamp"></div>
                                 </div>
-                                <div class="embed-responsive embed-responsive-4by3">
+                                <div class="embed-responsive embed-responsive-4by3 qr-code-scanner">
                                     <video id="qr-video" class="embed-responsive-item" muted playsinline></video>
+                                </div>
+                                <div class="col-md-12">
+                                    <div class="alert alert-warning" role="alert">
+                                        If your device does not have access to a camera (or unable to use the WebRTC API), you may upload the QR code photo here.
+                                    </div>
+                                    <input type="file" id="file-selector" />
+                                    <b>Detected QR code: </b>
+                                    <span id="file-qr-result">None</span>
                                 </div>
                             </div>
                         </div>
@@ -70,18 +78,18 @@ Merchant QR Code Scanner @stop
         clearTimeout(label.highlightTimeout);
         label.highlightTimeout = setTimeout(() => label.style.color = 'inherit', 100);
 
-        window.location.replace("http://192.168.30.10:8080/merchant/redeem/" + result);
+        window.location.href = "/merchant/redeem/" + result;
     }
 
     // Scan using phone camera
-    QrScanner.hasCamera().then(hasCamera => camHasCamera.textContent = hasCamera);
+    QrScanner.hasCamera().then(function(hasCamera) {
+        if (!hasCamera) {
+            $('.qr-code-scanner').hide();
+        }
+    });
 
     const scanner = new QrScanner(video, result => setResult(camQrResult, result));
     scanner.start();
-
-    document.getElementById('inversion-mode-select').addEventListener('change', event => {
-        scanner.setInversionMode(event.target.value);
-    });
     
     // Scan using file upload
     fileSelector.addEventListener('change', event => {
@@ -94,22 +102,5 @@ Merchant QR Code Scanner @stop
             .catch(e => setResult(fileQrResult, e || 'No QR code found.'));
     });
 
-</script>
-
-<script type="text/javascript">
-    
-    var guid = $(location).attr('pathname').split('/')[3];
-    console.log(guid);
-
-    $(document).on('ready', function() {
-        $.ajax({
-            method: 'GET',
-            url: apiUrl + "/api/v1/vouchers/guid/" + guid,
-            success: function(data) {
-                var tpl_voucher = $.templates('#tpl_voucher');
-                $('#voucher').append(tpl_voucher.render(data));
-            }
-        });
-    });
 </script>
 @endsection
