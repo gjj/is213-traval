@@ -150,8 +150,6 @@ Search @stop
 
 <script type="text/javascript">
 $(document).on('ready', function() {
-    var apiUrl = "http://localhost";
-
     var urlParams = new URLSearchParams(window.location.search);
 
     // If query exists
@@ -160,7 +158,7 @@ $(document).on('ready', function() {
 
         $.ajax({
             method: 'GET',
-            url: apiUrl + ':8000/api/v1/catalog_items/search/' + q,
+            url: apiUrl + '/api/v1/catalog_items/search/' + q,
             success: function(data) {
                 $('#search_count').text(data.count);
 

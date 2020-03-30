@@ -101,7 +101,7 @@ def retrieve_order_in_json():
     return jsonify({"status": "error", "message": "Order not found."}), 404
 
 # ADD or Update Cart Item
-@app.route("/orders/cart", methods=['POST'])
+@app.route("/orders/cart/update", methods=['POST'])
 def add_cart_item():
     data = request.get_json()
 

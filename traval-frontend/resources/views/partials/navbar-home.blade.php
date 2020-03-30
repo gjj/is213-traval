@@ -38,48 +38,34 @@
 
                 <div id="navBar" class="navbar-collapse u-header__navbar-collapse collapse order-2 order-xl-0 pt-4 p-xl-0 position-relative">
                     <ul class="navbar-nav u-header__navbar-nav">
-                        <!-- Home -->
                         <li class="nav-item hs-has-sub-menu u-header__nav-item" data-event="hover" data-animation-in="slideInUp" data-animation-out="fadeOut">
-                            <a id="homeMenu" class="nav-link u-header__nav-link u-header__nav-link-toggle u-header__nav-link-border" href="javascript:;" aria-haspopup="true" aria-expanded="false" aria-labelledby="homeSubMenu">Home</a>
-                            <!-- Home Submenu -->
-                            <ul id="homeSubMenu" class="hs-sub-menu u-header__sub-menu u-header__sub-menu-rounded u-header__sub-menu-bordered hs-sub-menu-right u-header__sub-menu--spacer" aria-labelledby="homeMenu" style="min-width: 230px;">
-                                <li>
-                                    <a class="nav-link u-header__sub-menu-nav-link" href="#">
-                                        Home v1 All Services
-                                    </a>
-                                </li>
-                            </ul>
-                            <!-- End Home Submenu -->
+                            <a class="nav-link u-header__nav-link u-header__nav-link-border" href=".">Home</a>
                         </li>
-                        <!-- End Home -->
 
-                        <!-- Activity -->
-                        <li class="nav-item hs-has-sub-menu u-header__nav-item" data-event="hover" data-animation-in="slideInUp" data-animation-out="fadeOut">
-                            <a id="ActivityMenu" class="nav-link u-header__nav-link u-header__nav-link-toggle u-header__nav-link-border" href="javascript:;" aria-haspopup="true" aria-expanded="false" aria-labelledby="ActivitySubMenu">Activity</a>
-                            <!-- Activity Submenu -->
-                            <ul id="ActivitySubMenu" class="hs-sub-menu u-header__sub-menu u-header__sub-menu-rounded u-header__sub-menu-bordered hs-sub-menu-right u-header__sub-menu--spacer" aria-labelledby="ActivityMenu" style="min-width: 230px;">
-                                <li><a class="nav-link u-header__sub-menu-nav-link" href="../activities/activities-list.html">Sidebar</a></li>
-                            </ul>
-                            <!-- End Activity Submenu -->
+                        <li class="nav-item hs-has-sub-menu u-header__nav-item logged-in-only" data-event="hover" data-animation-in="slideInUp" data-animation-out="fadeOut">
+                            <a class="nav-link u-header__nav-link u-header__nav-link-border" href="order">Orders</a>
                         </li>
-                        <!-- End Activity -->
                     </ul>
                 </div>
                 <!-- End Navigation -->
 
-                <!-- Shopping Cart -->
-                <!-- <div class="pl-md-4 ml-auto shopping-cart">
-                    <a id="shoppingCartDropdownInvoker" class="btn-text-secondary position-relative py-4" href="javascript:;" role="button" aria-controls="shoppingCartDropdown" aria-haspopup="true" aria-expanded="false" data-unfold-event="hover" data-unfold-target="#shoppingCartDropdown" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-delay="300" data-unfold-hide-on-scroll="true" data-unfold-animation-in="slideInUp" data-unfold-animation-out="fadeOut">
+                <div class="pl-2 pl-md-4 ml-auto shopping-cart">
+                    <a id="shoppingCartDropdownInvoker" class="btn-text-secondary py-4 position-relative" href="javascript:;" role="button" aria-controls="shoppingCartDropdown" aria-haspopup="true" aria-expanded="false" data-unfold-event="hover" data-unfold-target="#shoppingCartDropdown" data-unfold-type="css-animation" data-unfold-duration="300" data-unfold-delay="300" data-unfold-hide-on-scroll="true" data-unfold-animation-in="slideInUp" data-unfold-animation-out="fadeOut">
                         <span class="flaticon-shopping-basket font-size-25 text-primary-max-lg"></span>
                     </a>
-                    <div id="shoppingCartDropdown" class="dropdown-menu dropdown-unfold dropdown-menu-right dropdown-menu-right-fix-wd-10 text-center p-7" aria-labelledby="shoppingCartDropdownInvoker" style="min-width: 250px;">
-                        <span class="btn btn-icon btn-soft-primary rounded-circle mb-3">
-                            <span class="flaticon-shopping-basket btn-icon__inner"></span>
-                        </span>
-                        <span class="d-block">Your cart is empty</span>
+                    <div id="tpl_cart"></div>
+                    <div id="shoppingCartDropdown" class="dropdown-menu dropdown-unfold dropdown-menu-right dropdown-menu-right-fix-wd-10 p-0 mt-0 w-max-sm-100 u-unfold--css-animation font-size-16" aria-labelledby="shoppingCartDropdownInvoker" style="width: 500px; animation-duration: 300ms; right: 0px;">
+                        <div class="card">
+                            <div class="card-header border-color-8 py-3 px-5">
+                                <span class="font-weight-semi-bold">Your Cart</span>
+                            </div>
+
+                            <div id="cart_items"></div>
+
+                            <div id="cart_checkout"></div>
+                        </div>
                     </div>
-                </div> -->
-                <!-- End Shopping Cart -->
+                </div>
 
                 <!-- Sign in -->
                 <!-- <div id="react-login"></div> -->

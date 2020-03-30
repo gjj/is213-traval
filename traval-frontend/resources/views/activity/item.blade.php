@@ -170,16 +170,15 @@ Activity @stop
 
 <script type="text/javascript">
     $(document).on('ready', function() {
-        var apiUrl = "http://localhost";
         var activity = {
-            user_id: 2, // Hardcoded for now...
-            item_id: $(location).attr('pathname').split('/')[2], // Vulnerable to XSS
+            user_id: 2,
+            item_id: $(location).attr('pathname').split('/')[2],
             quantity: 0,
         }
 
         $.ajax({
             method: 'GET',
-            url: apiUrl + ":8000/api/v1/catalog_items/" + activity.item_id,
+            url: apiUrl + "/api/v1/catalog_items/" + activity.item_id,
             success: function(data) {
 
                 var tpl = $.templates('#tpl_activity_item');
@@ -190,44 +189,55 @@ Activity @stop
         $(document).on('click', '#btn_addToCart', function() {
             activity.quantity = $('input[name=quantity]').val();
 
-            $.ajax({
-                method: 'POST',
-                url: apiUrl + ":8000/api/v1/orders/cart",
-                data: JSON.stringify(activity),
-                contentType: "application/json; charset=utf-8",
-                success: function(response) {
-                    console.log("Success.", response);
+            if (localStorage.getItem('token')) {
+                var userId = localStorage.getItem('user_id');
+                console.log(JSON.stringify(activity));
 
-                    // Update cart UI
-                    $.ajax({
-                        method: 'GET',
-                        url: apiUrl + ":8000/api/v1/orders/cart/2",
-                        success: function(response) {
-                            $('#cart_items').html("");
-                            $('#cart_checkout').html("");
-                            var tpl_cart_items = $.templates('#tpl_cart_items');
-                            var tpl_cart_checkout = $.templates('#tpl_cart_checkout');
+                $.ajax({
+                    method: 'POST',
+                    url: apiUrl + "/api/v1/orders/cart/update",
+                    data: JSON.stringify(activity),
+                    contentType: "application/json; charset=utf-8",
+                    success: function(response) {
+                        console.log("Success.", response);
 
-                            $.each(response.items, function(i, item) {
-                                $('#cart_items').append(tpl_cart_items.render(item));
-                            });
+                        // Update cart UI
+                        $.ajax({
+                            method: 'GET',
+                            url: apiUrl + "/api/v1/orders/cart/" + userId,
+                            success: function(response) {
+                                $('#cart_items').html("");
+                                $('#cart_checkout').html("");
+                                var tpl_cart_items = $.templates('#tpl_cart_items');
+                                var tpl_cart_checkout = $.templates('#tpl_cart_checkout');
 
-                            $('#cart_checkout').append(tpl_cart_checkout.render(response));
-                            
-                            data.total_price = response.total_price;
-                            // And update Payment Intent
-                            updatePaymentIntent(data)
-                        },
-                        error: function(error) {
-                            console.log("Error retrieving cart items.", error);
-                        }
-                    });
-                },
-                error: function(error) {
-                    console.log("Error.", error);
-                    // Add error message.
-                }
-            });
+                                $.each(response.items, function(i, item) {
+                                    $('#cart_items').append(tpl_cart_items.render(item));
+                                });
+
+                                $('#cart_checkout').append(tpl_cart_checkout.render(response));
+                                
+                                var data = {
+                                    "total_price": response.total_price
+                                } 
+
+                                // And update Payment Intent
+                                // updatePaymentIntent(data)
+                            },
+                            error: function(error) {
+                                console.log("Error retrieving cart items.", error);
+                            }
+                        });
+                    },
+                    error: function(error) {
+                        console.log("Error.", error);
+                        // Add error message.
+                    }
+                });
+            }
+            else {
+                console.log("You're not logged in.");
+            }
         });
     });
 </script>

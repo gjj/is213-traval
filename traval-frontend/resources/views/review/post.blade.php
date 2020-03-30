@@ -69,12 +69,12 @@ Leave Review @stop
 
 <script type="text/javascript">
 
-    var apiUrl = "http://localhost";
+    
     orderid = {{ Request()->order_item_id }};
 
     $.ajax({
         method: 'GET',
-        url: apiUrl + ':8000/api/v1/orders/dets/' + orderid,
+        url: apiUrl + '/api/v1/orders/dets/' + orderid,
         async: false,
         success: function(data) {
             console.log(data)
@@ -108,7 +108,7 @@ Leave Review @stop
             $.ajax({
                 crossDomain: true,
                 method: 'POST',
-                url: apiUrl + ':8000/api/v1/reviews',
+                url: apiUrl + '/api/v1/reviews',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {

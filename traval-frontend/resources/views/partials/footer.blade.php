@@ -93,7 +93,7 @@
 
 
 <script id="tpl_cart_items" type="text/x-jsrender">
-    <div class="card-body p-0">
+<div class="card-body p-0">
     <div class="px-2 px-md-3 py-2 py-md-1 border-bottom border-color-8">
         <div class="media p-2 p-md-3">
             <div class="media-body position-relative pl-md-1">
@@ -114,7 +114,7 @@
 </script>
 
 <script id="tpl_cart_checkout" type="text/x-jsrender">
-    <div class="card-footer border-0 p-3 px-md-5 py-md-4">
+<div class="card-footer border-0 p-3 px-md-5 py-md-4">
     <div class="mb-4 pb-md-1">
         <span class="d-block font-weight-semi-bold">Subtotal: S$@{{:total_price}}</span>
     </div>
@@ -131,24 +131,31 @@
 
 <script type="text/javascript">
     $(document).on('ready', function() {
-        var apiUrl = "http://localhost";
+        if (localStorage.getItem('token')) {
+            var userId = localStorage.getItem('user_id');
 
-        $.ajax({
-            method: 'GET',
-            url: apiUrl + ":8000/api/v1/orders/cart/2",
-            success: function(response) {
-                var tpl_cart_items = $.templates('#tpl_cart_items');
-                var tpl_cart_checkout = $.templates('#tpl_cart_checkout');
+            $.ajax({
+                method: 'GET',
+                url: apiUrl + "/api/v1/orders/cart/" + userId,
+                success: function(response) {
+                    var tpl_cart_items = $.templates('#tpl_cart_items');
+                    var tpl_cart_checkout = $.templates('#tpl_cart_checkout');
 
-                $.each(response.items, function(i, item) {
-                    $('#cart_items').append(tpl_cart_items.render(item));
-                });
+                    $.each(response.items, function(i, item) {
+                        $('#cart_items').append(tpl_cart_items.render(item));
+                    });
 
-                $('#cart_checkout').append(tpl_cart_checkout.render(response));
-            },
-            error: function(error) {
-                console.log("Error retrieving cart items.", error);
-            }
-        });
+                    $('#cart_checkout').append(tpl_cart_checkout.render(response));
+                },
+                error: function(error) {
+                    console.log("Error retrieving cart items.", error);
+                }
+            });
+        }
+        else {
+            // User is not logged in, can just remove the cart
+            $('.shopping-cart').hide();
+            $('.logged-in-only').hide();
+        }
     });
 </script>

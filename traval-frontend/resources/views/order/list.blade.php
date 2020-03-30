@@ -37,7 +37,7 @@ My Order @stop
 @endsection
 @section('scripts')
 <script id="tpl_orders" type="text/x-jsrender">
-<div class="col-md-12">
+    <div class="col-md-12">
     <div class="card mb-3">
         <div class="card-header bg-light">
             <div class="d-flex">
@@ -75,20 +75,22 @@ My Order @stop
 
 <script type="text/javascript">
     $(document).on('ready', function() {
-        var apiUrl = "http://localhost";
 
-        // If query exists
-        $.ajax({
-            method: 'GET',
-            url: apiUrl + ':8000/api/v1/orders/user/2',
-            success: function(data) {
-                var tpl_orders = $.templates('#tpl_orders');
-                $.each(data, function(i, order) {
-                    $('#orders').append(tpl_orders.render(order));
-                });
-            }
-        });
-
+        if (!localStorage.getItem('token')) {
+            window.location.replace('signin');
+        } else {
+            var userId = localStorage.getItem('user_id');
+            $.ajax({
+                method: 'GET',
+                url: apiUrl + '/api/v1/orders/user/' + userId,
+                success: function(data) {
+                    var tpl_orders = $.templates('#tpl_orders');
+                    $.each(data, function(i, order) {
+                        $('#orders').append(tpl_orders.render(order));
+                    });
+                }
+            });
+        }
     });
 </script>
 @endsection

@@ -52,20 +52,20 @@ def get_all():
     return jsonify({"users": [user.json() for user in User.query.all()]})
 
 
-@app.route("/users/<string:id>")
+@app.route("/users/id/<int:id>")
 def find_by_id(id):
     user = User.query.filter_by(id=id).first()
     if user:
         return jsonify(user.json())
-    return jsonify({"message": "User not found. (Route matched to <string:id>)"}), 404
+    return jsonify({"message": "User not found (route matched to <int:id>)."}), 404
 
 
-@app.route("/users/<string:guid>")
+@app.route("/users/guid/<string:guid>")
 def find_by_guid(guid):
     user = User.query.filter_by(guid=guid).first()
     if user:
         return jsonify(user.json())
-    return jsonify({"message": "User not found. (Route matched to <string:guid>)"}), 404
+    return jsonify({"message": "User not found (route matched to <string:guid>)."}), 404
 
 
 @app.route("/users/email/<string:email>")
@@ -121,7 +121,7 @@ def create_user():
         return jsonify({"message": "An error occurred creating the user."}), 500
     return jsonify(user.json()), 201
 
-@app.route("/login", methods=['POST'])
+@app.route("/auth/login", methods=['POST'])
 def login():
     errors = []
     data = request.get_json()

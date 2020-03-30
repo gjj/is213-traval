@@ -104,4 +104,14 @@ Payment Result @stop
 @endsection
 
 @section('scripts')
+<script type="text/javascript">
+    $(document).on('ready', function() {
+        if (!localStorage.getItem('token')) {
+            window.location.replace('signin');
+        } else {
+
+        }
+    });
+</script>
+
 @endsection

@@ -1,17 +1,13 @@
 
-$(document).on('ready', function () {
-    var apiUrl = "http://localhost:5000/";
+var apiUrl = "http://localhost:8000";
 
+$(document).on('ready', function () {
     if (localStorage.getItem('token')) {
         var name = localStorage.getItem('name');
         $('#signInStatus').text('Hello, ' + name);
         $('#signInStatus').attr('href', 'signout');
     }
 });
-
-// Stripe
-
-
 
 // 'use strict';
 

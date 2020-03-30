@@ -129,12 +129,10 @@ Register @stop
                 phone: iti.getNumber() // Replace unformatted number with formatted number
             }
             console.log(JSON.stringify(data));
-
-            var apiUrl = "http://localhost";
-
+            
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':8000/api/v1/users',
+                url: apiUrl + '/api/v1/users',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {

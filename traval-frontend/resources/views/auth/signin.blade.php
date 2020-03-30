@@ -16,7 +16,7 @@ Sign in @stop
                     <div class="col-md-6 offset-md-3">
                         <div class="card border-0 tab-shadow tab-shadow">
                             <div class="card-body">
-                                <h5 class="card-title">Sign in</h5>
+                                <h5 class="card-title">Sign in (or <a href="register">register</a>)</h5>
 
                                 <form method="post">
                                 <div class="form-group">
@@ -55,13 +55,10 @@ Sign in @stop
                 email:    $('#email').val(),
                 password: $('#password').val(),
             }
-            console.log(JSON.stringify(data));
-
-            var apiUrl = "http://localhost";
-
+            
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':5000/login',
+                url: apiUrl + '/api/v1/auth/login',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {
@@ -71,11 +68,11 @@ Sign in @stop
                     localStorage.setItem('user_id', result.id);
                     
                     console.log(result);
-                    window.location.replace(".");
+                    window.location.href = ".";
                 },
                 error: function(error) {
-                    console.log(error.responseJSON);
-                    window.location.replace("signin#invalid");
+                    console.log(error);
+                    window.location.href = "signin#invalid";
                 }
             });
         });

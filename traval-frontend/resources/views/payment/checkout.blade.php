@@ -528,160 +528,163 @@ Checkout @stop
 <script src="https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/js/intlTelInput.min.js" integrity="sha256-679hprK8vxlf4fnVBENMDhjXffz6MSULSiah9G9FRZg=" crossorigin="anonymous"></script>
 
 <script type="text/javascript">
-    var apiUrl = "http://localhost";
-
     $(document).on('ready', function() {
-        var data = {
-            user_id: localStorage.getItem('user_id')
-        };
+        if (!localStorage.getItem('token')) {
+            window.location.replace('signin');
+        } else {
 
-        var input = document.querySelector("#phone")
+            var data = {
+                user_id: localStorage.getItem('user_id')
+            };
 
-        // initialise plugin
-        var iti = window.intlTelInput(input, {
-            utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/js/utils.js",
-            initialCountry: "sg",
-            geoIpLookup: function(callback) {
-                $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
-                    var countryCode = (resp && resp.country) ? resp.country : "";
-                    callback(countryCode);
-                });
-            },
-        });
+            var input = document.querySelector("#phone")
 
-        // other stuff
-
-        // Pre-fill in some fields.
-        $.ajax({
-            method: 'GET',
-            url: apiUrl + ':8000/api/v1/users/' + data.user_id,
-            success: function(response) {
-                $('input[name=name]').val(response.name);
-                $('input[name=email]').val(response.email);
-                iti.setNumber(response.phone);
-
-            },
-            error: function(error) {
-                console.log(error.responseJSON);
-            }
-        });
-
-        var cartItems = [];
-
-        // Get cart items.
-        $.ajax({
-            method: 'GET',
-            url: apiUrl + ':8000/api/v1/orders/cart/' + data.user_id,
-            success: function(response) {
-
-                var tpl = $.templates('#tpl_checkout_items');
-                $.each(response.items, function(i, item) {
-                    item.subtotal = item.price * item.quantity;
-                    $('#checkout_items').append(tpl.render(item));
-                });
-
-                var tpl = $.templates('#tpl_checkout_payment');
-                $('#checkout_payment').append(tpl.render(response));
-
-                data.total_price = response.total_price;
-                console.log(response);
-                updatePaymentIntent(data);
-
-                cartItems = response;
-            },
-            error: function(error) {
-                console.log(error.responseJSON);
-            }
-        });
-
-        var stripe = Stripe('pk_test_FlBqXwgBTcD0Cnrg5WtCuqwX00wJVaEIdt');
-
-        var elements = stripe.elements();
-
-        var cardStyle = {
-            base: {
-                color: '#32325d',
-                fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
-                fontSmoothing: 'antialiased',
-                fontSize: '16px',
-                '::placeholder': {
-                    color: '#aab7c4'
-                }
-            },
-            invalid: {
-                color: '#fa755a',
-                iconColor: '#fa755a'
-            }
-        };
-
-        var card = elements.create('card', {
-            style: cardStyle,
-        });
-        card.mount('#card-element');
-
-        card.addEventListener('change', function(event) {
-            var displayError = document.getElementById('card-errors');
-            if (event.error) {
-                displayError.textContent = event.error.message;
-            } else {
-                displayError.textContent = '';
-            }
-        });
-
-        $('#checkout').on('submit', function(e) {
-            e.preventDefault();
-            var clientSecret = localStorage.getItem('stripe_clientSecret');
-
-            data.items = cartItems.items;
-            data.payment_intent_id = localStorage.getItem("stripe_paymentIntentId");
-
-            console.log("Sending data...", data);
-            $.ajax({
-                method: 'POST',
-                url: apiUrl + ':8000/api/v1/orders',
-                data: JSON.stringify(data),
-                contentType: "application/json; charset=utf-8",
-                success: function(response) {
-                    console.log(response);
-
-                    data.order_id = response.id;
-                    console.log("Checkout.", data);
-
-                    updatePaymentIntent(data); // Attach order ID to this payment intent.
-
-                    stripe.confirmCardPayment(clientSecret, {
-                        payment_method: {
-                            card: card,
-                            billing_details: {
-                                name: $('input[name=card_name]').val()
-                            }
-                        }
-                    }).then(function(result) {
-                        if (result.error) {
-                            // Show error to your customer (e.g., insufficient funds)
-                            console.log(result.error.message);
-                        } else {
-                            // The payment has been processed!
-                            if (result.paymentIntent.status === 'succeeded') {
-                                console.log(result.paymentIntent);
-                                // Show a success message to your customer
-                                // There's a risk of the customer closing the window before callback
-                                // execution. Set up a webhook or plugin to listen for the
-                                // payment_intent.succeeded event that handles any business critical
-                                // post-payment actions.
-
-                                localStorage.removeItem('stripe_paymentIntentId');
-                                localStorage.removeItem('stripe_clientSecret');
-                                window.location.replace('payment/result');
-                            }
-                        }
+            // initialise plugin
+            var iti = window.intlTelInput(input, {
+                utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/16.0.11/js/utils.js",
+                initialCountry: "sg",
+                geoIpLookup: function(callback) {
+                    $.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
+                        var countryCode = (resp && resp.country) ? resp.country : "";
+                        callback(countryCode);
                     });
+                },
+            });
+
+            // other stuff
+
+            // Pre-fill in some fields.
+            $.ajax({
+                method: 'GET',
+                url: apiUrl + '/api/v1/users/id/' + data.user_id,
+                success: function(response) {
+                    $('input[name=name]').val(response.name);
+                    $('input[name=email]').val(response.email);
+                    iti.setNumber(response.phone);
+
                 },
                 error: function(error) {
                     console.log(error.responseJSON);
                 }
             });
-        });
+
+            var cartItems = [];
+
+            // Get cart items.
+            $.ajax({
+                method: 'GET',
+                url: apiUrl + '/api/v1/orders/cart/' + data.user_id,
+                success: function(response) {
+
+                    var tpl = $.templates('#tpl_checkout_items');
+                    $.each(response.items, function(i, item) {
+                        item.subtotal = item.price * item.quantity;
+                        $('#checkout_items').append(tpl.render(item));
+                    });
+
+                    var tpl = $.templates('#tpl_checkout_payment');
+                    $('#checkout_payment').append(tpl.render(response));
+
+                    data.total_price = response.total_price;
+                    console.log(response);
+                    updatePaymentIntent(data);
+
+                    cartItems = response;
+                },
+                error: function(error) {
+                    console.log(error.responseJSON);
+                }
+            });
+
+            var stripe = Stripe('pk_test_FlBqXwgBTcD0Cnrg5WtCuqwX00wJVaEIdt');
+
+            var elements = stripe.elements();
+
+            var cardStyle = {
+                base: {
+                    color: '#32325d',
+                    fontFamily: '"Helvetica Neue", Helvetica, sans-serif',
+                    fontSmoothing: 'antialiased',
+                    fontSize: '16px',
+                    '::placeholder': {
+                        color: '#aab7c4'
+                    }
+                },
+                invalid: {
+                    color: '#fa755a',
+                    iconColor: '#fa755a'
+                }
+            };
+
+            var card = elements.create('card', {
+                style: cardStyle,
+            });
+            card.mount('#card-element');
+
+            card.addEventListener('change', function(event) {
+                var displayError = document.getElementById('card-errors');
+                if (event.error) {
+                    displayError.textContent = event.error.message;
+                } else {
+                    displayError.textContent = '';
+                }
+            });
+
+            $('#checkout').on('submit', function(e) {
+                e.preventDefault();
+                var clientSecret = localStorage.getItem('stripe_clientSecret');
+
+                data.items = cartItems.items;
+                data.payment_intent_id = localStorage.getItem("stripe_paymentIntentId");
+
+                console.log("Sending data...", data);
+                $.ajax({
+                    method: 'POST',
+                    url: apiUrl + '/api/v1/orders',
+                    data: JSON.stringify(data),
+                    contentType: "application/json; charset=utf-8",
+                    success: function(response) {
+                        console.log(response);
+
+                        data.order_id = response.id;
+                        console.log("Checkout.", data);
+
+                        updatePaymentIntent(data); // Attach order ID to this payment intent.
+
+                        stripe.confirmCardPayment(clientSecret, {
+                            payment_method: {
+                                card: card,
+                                billing_details: {
+                                    name: $('input[name=card_name]').val()
+                                }
+                            }
+                        }).then(function(result) {
+                            if (result.error) {
+                                // Show error to your customer (e.g., insufficient funds)
+                                console.log(result.error.message);
+                            } else {
+                                // The payment has been processed!
+                                if (result.paymentIntent.status === 'succeeded') {
+                                    console.log(result.paymentIntent);
+                                    // Show a success message to your customer
+                                    // There's a risk of the customer closing the window before callback
+                                    // execution. Set up a webhook or plugin to listen for the
+                                    // payment_intent.succeeded event that handles any business critical
+                                    // post-payment actions.
+
+                                    localStorage.removeItem('stripe_paymentIntentId');
+                                    localStorage.removeItem('stripe_clientSecret');
+                                    window.location.replace('payment/result');
+                                }
+                            }
+                        });
+                    },
+                    error: function(error) {
+                        console.log(error.responseJSON);
+                    }
+                });
+            });
+        }
     });
 
     function updatePaymentIntent(data) {
@@ -689,7 +692,7 @@ Checkout @stop
         if (!localStorage.getItem('stripe_clientSecret')) {
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':8000/api/v1/payments/stripe',
+                url: apiUrl + '/api/v1/payments/stripe',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {
@@ -707,7 +710,7 @@ Checkout @stop
             data.payment_intent_id = localStorage.getItem('stripe_paymentIntentId');
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':8000/api/v1/payments/update',
+                url: apiUrl + '/api/v1/payments/update',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {

@@ -205,12 +205,12 @@ Cart @stop
 
 <script type="text/javascript">
 $(document).on('ready', function() {
-    var apiUrl = "http://localhost";
+    
 
     // If query exists
     $.ajax({
         method: 'GET',
-        url: apiUrl + ':8000/api/v1/orders',
+        url: apiUrl + '/api/v1/orders',
         success: function(data) {
             console.log(data)
             var tpl = $.templates('#order_results_tpl');
