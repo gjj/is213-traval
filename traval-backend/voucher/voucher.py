@@ -88,7 +88,7 @@ def sent_to_notification():
 
 #unconfirm#########
 #UC2 - Merchant Traval UI interaction (Voucher status change)
-@app.route("/voucher", methods=['PUT']) 
+@app.route("/vouchers", methods=['PUT']) 
 def merchant_redeem(id):
     voucher_status= Voucher.query.filter_by(id=id).first()
     voucher_status[4]['status']=status
@@ -96,7 +96,7 @@ def merchant_redeem(id):
     item = Voucher(data)
 
 #creating voucher (for testing)
-@app.route("/voucher", methods=['POST'])
+@app.route("/vouchers", methods=['POST'])
 def create_voucher():
     data = request.get_json()
     item = Voucher(**data)
