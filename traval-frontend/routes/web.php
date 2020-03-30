@@ -87,6 +87,19 @@ Route::get('/activity/{id}/reviews', function () {
 ->name('review.list');
 
 /* Merchant */
+Route::get('/merchant/register', function () {
+    return view('merchant.register');
+})
+->name('merchant.register');
+Route::get('/merchant/signin', function () {
+    return view('merchant.signin');
+})
+->name('merchant.signin');
+Route::get('/merchant/signout', function () {
+    return view('merchant.signout');
+})
+->name('merchant.signout');
+
 Route::get('/merchant/scan', function () {
     return view('merchant.scan');
 })

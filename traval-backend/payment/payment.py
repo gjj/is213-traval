@@ -174,8 +174,10 @@ def payment_stripe_webhook():
 
         channel.exchange_declare(exchange=exchangename, exchange_type='topic')
         channel.queue_declare(queue='order.update_status', durable=True)
-        # make sure the queue is bound to the exchange
-        channel.queue_bind(exchange=exchangename, queue='order.update_status', routing_key='order.update.*')
+        channel.queue_bind(exchange=exchangename, queue='order.update_status', routing_key='order.update.*') # make sure the queue is bound to the exchange
+        
+        channel.queue_declare(queue='voucher.create_voucher', durable=True)
+        channel.queue_bind(exchange=exchangename, queue='voucher.create_voucher', routing_key='voucher.create') # make sure the queue is bound to the exchange
         
         # prepare the message body content
         data = {
@@ -189,6 +191,14 @@ def payment_stripe_webhook():
         channel.basic_publish(
             exchange=exchangename,
             routing_key='order.update.success',
+            body=message,
+            properties=pika.BasicProperties(
+                delivery_mode=2,  # make message persistent
+            ))
+        
+        channel.basic_publish(
+            exchange=exchangename,
+            routing_key='voucher.create',
             body=message,
             properties=pika.BasicProperties(
                 delivery_mode=2,  # make message persistent

@@ -33,6 +33,13 @@ services:
     networks:
       - traval-net
 
+  # Order RabbitMQ consumer
+  order-rabbitmq:
+    container_name: order-rabbitmq
+    restart: unless-stopped
+    networks:
+      - traval-net
+
   # Payment microservice
   payment:
     container_name: payment
@@ -48,6 +55,13 @@ services:
     restart: unless-stopped
     ports:
       - "5004:5004"
+    networks:
+      - traval-net
+  
+  # Voucher RabbitMQ consumer
+  voucher-rabbitmq:
+    container_name: voucher-rabbitmq
+    restart: unless-stopped
     networks:
       - traval-net
 

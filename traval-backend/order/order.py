@@ -127,6 +127,25 @@ def add_cart_item():
 
     return jsonify({"user_id": data["user_id"], "item_id": data["item_id"], "quantity": data["quantity"]}), 201
 
+# Clear cart
+@app.route("/orders/cart/clear", methods=['POST'])
+def clear_cart():
+    data = request.get_json()
+
+    # Handle empty JSON query
+    if not data:
+        return jsonify({"status": "error", "message": "No JSON data received in the request."}), 500
+    if 'user_id' not in data:
+        return jsonify({"status": "error", "message": "The key user_id is not found in the request."}), 500
+
+    try:
+        CartItem.query.filter_by(user_id=data["user_id"]).delete()
+        db.session.commit()
+    except error:
+        return jsonify({"status": "error", "message": "An error occurred when clearing the user's cart"}), 500
+
+    return jsonify({"status": "success", "message": "Cart is cleared."}), 200
+
 # List all card items by user
 @app.route("/orders/cart/<string:user_id>")
 def get_cart_items_by_user_id(user_id):

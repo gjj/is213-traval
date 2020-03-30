@@ -27,8 +27,8 @@ exchangename = "traval.payments"
 connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port))
 channel = connection.channel()
 channel.exchange_declare(exchange=exchangename, exchange_type='topic') # Creates the exchange
-channel.queue_declare(queue='order.update_status', durable=True) # Creates the queue
-channel.queue_bind(exchange=exchangename, queue='order.update_status', routing_key='order.update.*') # Bind queue to exchange, with the routing key
+channel.queue_declare(queue='voucher.create_voucher', durable=True)
+channel.queue_bind(exchange=exchangename, queue='voucher.create_voucher', routing_key='voucher.create') # make sure the queue is bound to the exchange
 
 print(' [voucher_consumer] Waiting for messages from order.update_status queue.')
 
@@ -42,8 +42,6 @@ def callback(ch, method, properties, body):
 
 def create_voucher(message):
     try:
-        # call http://localhost:5002/orders/2
-        
         r = requests.get(API_URL + ":5002/orders/" + message["order_id"])
         data = json.loads(r.text)
         time_now = datetime.datetime.now() # Get current timestamp
@@ -61,5 +59,5 @@ def create_voucher(message):
         print("Failed to update record: {}".format(error))
 
 channel.basic_qos(prefetch_count=1)
-channel.basic_consume(queue='order.update_status', on_message_callback=callback)
+channel.basic_consume(queue='voucher.create_voucher', on_message_callback=callback)
 channel.start_consuming()

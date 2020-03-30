@@ -671,10 +671,17 @@ Checkout @stop
                                     // execution. Set up a webhook or plugin to listen for the
                                     // payment_intent.succeeded event that handles any business critical
                                     // post-payment actions.
-
-                                    localStorage.removeItem('stripe_paymentIntentId');
-                                    localStorage.removeItem('stripe_clientSecret');
-                                    window.location.replace('payment/result');
+                                    $.ajax({
+                                        method: 'POST',
+                                        url: apiUrl + '/api/v1/orders/cart/clear',
+                                        data: JSON.stringify(data),
+                                        contentType: "application/json; charset=utf-8",
+                                        success: function(response) {
+                                            localStorage.removeItem('stripe_paymentIntentId');
+                                            localStorage.removeItem('stripe_clientSecret');
+                                            window.location.href = "payment/result";
+                                        }
+                                    });
                                 }
                             }
                         });
