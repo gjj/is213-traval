@@ -179,7 +179,7 @@ Activity @stop
 
         $.ajax({
             method: 'GET',
-            url: apiUrl + ":5001/catalog_items/" + activity.item_id,
+            url: apiUrl + ":8000/api/v1/catalog_items/" + activity.item_id,
             success: function(data) {
 
                 var tpl = $.templates('#tpl_activity_item');
@@ -192,7 +192,7 @@ Activity @stop
 
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ":5002/orders/cart",
+                url: apiUrl + ":8000/api/v1/orders/cart",
                 data: JSON.stringify(activity),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {
@@ -201,7 +201,7 @@ Activity @stop
                     // Update cart UI
                     $.ajax({
                         method: 'GET',
-                        url: apiUrl + ":5002/orders/cart/2",
+                        url: apiUrl + ":8000/api/v1/orders/cart/2",
                         success: function(response) {
                             $('#cart_items').html("");
                             $('#cart_checkout').html("");

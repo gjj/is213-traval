@@ -134,7 +134,7 @@ Register @stop
 
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':5000/users',
+                url: apiUrl + ':8000/api/v1/users',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {

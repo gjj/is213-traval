@@ -135,7 +135,7 @@
 
         $.ajax({
             method: 'GET',
-            url: apiUrl + ":5002/orders/cart/2",
+            url: apiUrl + ":8000/api/v1/orders/cart/2",
             success: function(response) {
                 var tpl_cart_items = $.templates('#tpl_cart_items');
                 var tpl_cart_checkout = $.templates('#tpl_cart_checkout');

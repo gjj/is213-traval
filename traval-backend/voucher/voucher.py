@@ -88,28 +88,28 @@ def sent_to_notification():
 
 #unconfirm#########
 #UC2 - Merchant Traval UI interaction (Voucher status change)
-@app.route("/vouchers", methods=['PUT']) 
-def merchant_redeem(id):
-    voucher_status= Voucher.query.filter_by(id=id).first()
-    voucher_status[4]['status']=status
-    data = request.get_json()
-    item = Voucher(data)
+# @app.route("/vouchers", methods=['PUT']) 
+# def merchant_redeem(id):
+#     voucher_status= Voucher.query.filter_by(id=id).first()
+#     voucher_status[4]['status']=status
+#     data = request.get_json()
+#     item = Voucher(data)
 
 #creating voucher (for testing)
-@app.route("/vouchers", methods=['POST'])
-def create_voucher():
-    data = request.get_json()
-    item = Voucher(**data)
+# @app.route("/vouchers", methods=['POST'])
+# def create_voucher():
+#     data = request.get_json()
+#     item = Voucher(**data)
 
-    if (Voucher.query.filter_by(id=Voucher.id).first()):
-        return jsonify({"message": "A voucher with voucher id '{}' already exists.".format(Voucher.id)}), 400
+#     if (Voucher.query.filter_by(id=Voucher.id).first()):
+#         return jsonify({"message": "A voucher with voucher id '{}' already exists.".format(Voucher.id)}), 400
     
-    try:
-        db.session.add(item)
-        db.session.commit()
-    except:
-        return jsonify({"message": "An error occurred creating the voucher."}), 500
-    return jsonify(item.json()), 201
+#     try:
+#         db.session.add(item)
+#         db.session.commit()
+#     except:
+#         return jsonify({"message": "An error occurred creating the voucher."}), 500
+#     return jsonify(item.json()), 201
 
 
 if __name__ == '__main__':

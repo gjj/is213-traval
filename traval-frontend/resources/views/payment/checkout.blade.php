@@ -554,7 +554,7 @@ Checkout @stop
         // Pre-fill in some fields.
         $.ajax({
             method: 'GET',
-            url: apiUrl + ':5000/users/' + data.user_id,
+            url: apiUrl + ':8000/api/v1/users/' + data.user_id,
             success: function(response) {
                 $('input[name=name]').val(response.name);
                 $('input[name=email]').val(response.email);
@@ -571,7 +571,7 @@ Checkout @stop
         // Get cart items.
         $.ajax({
             method: 'GET',
-            url: apiUrl + ':5002/orders/cart/' + data.user_id,
+            url: apiUrl + ':8000/api/v1/orders/cart/' + data.user_id,
             success: function(response) {
 
                 var tpl = $.templates('#tpl_checkout_items');
@@ -638,7 +638,7 @@ Checkout @stop
             console.log("Sending data...", data);
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':5002/orders',
+                url: apiUrl + ':8000/api/v1/orders',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {
@@ -689,7 +689,7 @@ Checkout @stop
         if (!localStorage.getItem('stripe_clientSecret')) {
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':5003/payments/stripe',
+                url: apiUrl + ':8000/api/v1/payments/stripe',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {
@@ -707,7 +707,7 @@ Checkout @stop
             data.payment_intent_id = localStorage.getItem('stripe_paymentIntentId');
             $.ajax({
                 method: 'POST',
-                url: apiUrl + ':5003/payments/update',
+                url: apiUrl + ':8000/api/v1/payments/update',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {

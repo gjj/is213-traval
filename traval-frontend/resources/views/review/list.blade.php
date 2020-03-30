@@ -63,7 +63,7 @@ Review @stop
 
         $.ajax({
             method: 'GET',
-            url: apiUrl + ':5004/catalog_items/search/' + q,
+            url: apiUrl + ':8000/api/v1/catalog_items/search/' + q,
             success: function(data) {
                 $('#search_count').text(data.count);
 

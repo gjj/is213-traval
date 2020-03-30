@@ -74,7 +74,7 @@ Leave Review @stop
 
     $.ajax({
         method: 'GET',
-        url: apiUrl + ':5002/orders/dets/' + orderid,
+        url: apiUrl + ':8000/api/v1/orders/dets/' + orderid,
         async: false,
         success: function(data) {
             console.log(data)
@@ -108,7 +108,7 @@ Leave Review @stop
             $.ajax({
                 crossDomain: true,
                 method: 'POST',
-                url: apiUrl + ':5005/reviews',
+                url: apiUrl + ':8000/api/v1/reviews',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {

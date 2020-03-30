@@ -80,7 +80,7 @@ My Order @stop
         // If query exists
         $.ajax({
             method: 'GET',
-            url: apiUrl + ':5002/orders/user/2',
+            url: apiUrl + ':8000/api/v1/orders/user/2',
             success: function(data) {
                 var tpl_orders = $.templates('#tpl_orders');
                 $.each(data, function(i, order) {
