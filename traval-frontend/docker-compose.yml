@@ -7,7 +7,7 @@ services:
         user: traval
         uid: 1000
       context: ./
-      dockerfile: Dockerfile
+      dockerfile: ./docker/app/Dockerfile
     container_name: app
     restart: unless-stopped
     tty: true
@@ -18,7 +18,7 @@ services:
     volumes:
       - ./:/var/www
     networks:
-      - app-network
+      - app-net
 
   # Nginx
   nginx:
@@ -29,13 +29,14 @@ services:
     volumes:
       - ./:/var/www
       - ./docker/nginx/conf.d:/etc/nginx/conf.d
+      - ./docker/nginx/ssl:/etc/nginx/certificates
     ports:
       - "8080:80"
       - "443:443"
     networks:
-      - app-network
+      - app-net
 
 # Docker Networks
 networks:
-  app-network:
+  app-net:
     driver: bridge
