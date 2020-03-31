@@ -128,8 +128,19 @@ Activity @stop
                             <span class="font-size-24 text-gray-6 font-weight-bold ml-1">S$@{{:price}}</span>
                         </div>
                     </div>
-                    <div class="p-4">
-                        <!-- Input -->
+                    <div class="p-4" id="cart_controls">
+                        <div class="alert alert-success alert-dismissible fade show" role="alert" id="cart_success">
+                            <strong>Yay!</strong> 😃 Item added to your cart! 🛒🛒🛒
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert" id="cart_error">
+                            <strong>Whoops!</strong> ☹️ Something went wrong while adding this item to your cart.
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
                         <span class="d-block text-gray-1 font-weight-normal mb-2 text-left">Quantity</span>
                         <div class="mb-4">
                             <div class="border-bottom border-width-2 border-color-1 pb-1">
@@ -149,17 +160,21 @@ Activity @stop
 
                         <div class="text-center">
                             <a href="javascript:;" id="btn_addToCart" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
-                                Add to Cart
+                                Add to Cart 🛒
                             </a>
                         </div>
 
                         <div class="pb-1"></div>
                         
-                        <div class="text-center">
+                        <!-- <div class="text-center">
                             <a href="{{ route('payment.checkout') }}" id="btn_bookNow" class="btn btn-primary d-flex align-items-center justify-content-center  height-60 w-100 mb-xl-0 mb-lg-1 transition-3d-hover font-weight-bold">
                                 Book Now
                             </a>
-                        </div>
+                        </div> -->
+                    </div>
+
+                    <div class="p-4" id="sign_in_notice">
+                        You're not logged in. Please <a href="/signin">sign in</a> or <a href="/register">register</a> to add to cart!
                     </div>
                 </div>
             </div>
@@ -171,7 +186,7 @@ Activity @stop
 <script type="text/javascript">
     $(document).on('ready', function() {
         var activity = {
-            user_id: 2,
+            user_id: localStorage.getItem('user_id'),
             item_id: $(location).attr('pathname').split('/')[2],
             quantity: 0,
         }
@@ -180,9 +195,20 @@ Activity @stop
             method: 'GET',
             url: apiUrl + "/api/v1/catalog_items/" + activity.item_id,
             success: function(data) {
-
                 var tpl = $.templates('#tpl_activity_item');
                 $('#activity_item').append(tpl.render(data));
+
+                // Hide cart controls if not logged in
+                if (!localStorage.getItem('token')) {
+                    $('#sign_in_notice').show();
+                    $('#cart_controls').hide();
+                } else {
+                    $('#sign_in_notice').hide();
+                    $('#cart_controls').show();
+                }
+
+                $('#cart_success').hide();
+                $('#cart_error').hide();
             }
         });
 
@@ -206,6 +232,8 @@ Activity @stop
                             method: 'GET',
                             url: apiUrl + "/api/v1/orders/cart/" + userId,
                             success: function(response) {
+                                $('#cart_success').show();
+                                $('#cart_error').hide();
                                 $('#cart_items').html("");
                                 $('#cart_checkout').html("");
                                 var tpl_cart_items = $.templates('#tpl_cart_items');
@@ -216,10 +244,10 @@ Activity @stop
                                 });
 
                                 $('#cart_checkout').append(tpl_cart_checkout.render(response));
-                                
+
                                 var data = {
                                     "total_price": response.total_price
-                                } 
+                                }
 
                                 // And update Payment Intent
                                 // updatePaymentIntent(data)
@@ -231,11 +259,11 @@ Activity @stop
                     },
                     error: function(error) {
                         console.log("Error.", error);
-                        // Add error message.
+                        $('#cart_success').hide();
+                        $('#cart_error').show();
                     }
                 });
-            }
-            else {
+            } else {
                 console.log("You're not logged in.");
             }
         });

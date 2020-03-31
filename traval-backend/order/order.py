@@ -336,6 +336,33 @@ def get_order_item(id):
     else:
         return jsonify({"message": "An order item is not found with this ID."}), 404
 
+# Get entire order details by order item ID
+@app.route("/orders/item/<string:id>/all")
+def get_order_details_by_order_item_id(id):
+    item = OrderItem.query.filter_by(id=id).first()
+    
+    if item:
+        order = Order.query.filter_by(id=item.order_id).first()
+        
+        items = get_order_items(item.order_id)
+        total_price = sum([item.price * item.quantity for item in items])
+        items = [item.json() for item in items]
+
+        #store in dictionary
+        reply = {
+            "id": order.id,
+            "user_id": order.user_id,
+            "datetime": order.datetime,
+            "status": order.status,
+            #"currency": "SGD",
+            "total_price": total_price,
+            "items": items
+        }
+
+        return jsonify(reply), 200
+    else:
+        return jsonify({"message": "An order item is not found with this ID."}), 404
+
 # Get all orders
 @app.route("/orders")
 def get_all_orders():

@@ -50,18 +50,23 @@ Home @stop
 
     <div class="container mb-5 mb-lg-8 pb-lg-1">
         <div class="w-md-80 w-lg-50 text-center mx-md-auto mt-3">
-            <h2 class="section-title text-black font-size-30 font-weight-bold mb-5">Unmissable Destinations</h2>
+            <h2 class="section-title text-black font-size-30 font-weight-bold mb-5">Top Destinations</h2>
         </div>
         <div class="row">
             <div class="col-md-12 col-lg-5 col-xl-6">
                 <div class="mb-5 mb-lg-0">
                     <img class="img-fluid w-100 rounded-top" src="assets/img/630x450/img1.jpg" alt="Image-Description">
                     <div class="bg-pink p-4 p-md-5 px-xl-8 pt-xl-5 pb-xl-7 rounded-bottom">
-                        <h6 class="font-size-xs-30 font-size-50 font-weight-bold text-dark-2 mb-1">New York</h6>
-                        <p class="text-lh-lg text-dark-2 pr-xl-14 mb-4">Take in the iconic skyline and visit the
-                            neighborhood hangouts that you’ve only ever seen on TV.</p>
-                        <a href="#" class="btn btn-outline-dark-2 rounded height-51 width-223 transition-3d-hover d-flex align-items-center justify-content-center border-width-2 mb-1">Explore
-                            things to do</a>
+                        <h6 class="font-size-xs-30 font-size-50 font-weight-bold text-dark-2 mb-1">
+                            Singapore
+                        </h6>
+                        <p class="text-lh-lg text-dark-2 pr-xl-14 mb-4">
+                            Take in the iconic skyline and visit the
+                            neighborhood hangouts that you’ve only ever seen on TV.
+                        </p>
+                        <a href="#" class="btn btn-outline-dark-2 rounded height-51 width-223 transition-3d-hover d-flex align-items-center justify-content-center border-width-2 mb-1">
+                            Explore things to do
+                        </a>
                     </div>
                 </div>
             </div>
@@ -110,10 +115,10 @@ Home @stop
         <div class="gradient-overlay-half-bg-orange bg-img-hero space-3 space-bottom-xl-2" style="background-image: url(assets/img/1920x500/img6.jpg);">
             <div class="container">
                 <div class="text-center mt-xl-4 mb-xl-7">
-                    <h6 class="text-white font-size-40 font-weight-bold mb-2">Who is the Local Expert?</h6>
-                    <p class="text-white font-weight-normal mb-5 pb-xl-2">Morbi semper fames lobortis ac hac
-                        penatibus</p>
-                    <a class="btn btn-outline-white border-width-2 rounded-xs min-width-200 font-weight-normal transition-3d-hover" href="../others/become-expert.html">Become Local Expert</a>
+                    <h6 class="text-white font-size-40 font-weight-bold mb-2">New to Traval?</h6>
+                    <p class="text-white font-weight-normal mb-5 pb-xl-2">M
+                        Book your next adventure with the Traval app
+                    </p>
                 </div>
             </div>
         </div>
