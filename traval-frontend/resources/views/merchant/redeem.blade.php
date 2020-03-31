@@ -38,7 +38,7 @@ Search @stop
 
 @section('scripts')
 <script id="tpl_voucher" type="text/x-jsrender">
-<div class="col-md-12">
+    <div class="col-md-12">
     <div class="card mb-3">
         <div class="card-header bg-light">
             <div class="d-flex">
@@ -46,7 +46,7 @@ Search @stop
                     Order ID: @{{:id}}
                 </div>
                 <div class="ml-auto mr-3">
-                    <span class="badge badge-primary">@{{:status}}</span>
+                    <span class="badge badge-primary" id="voucher_status">@{{:status}}</span>
                 </div>
             </div>
         </div>
@@ -57,14 +57,13 @@ Search @stop
             </p>
         </div>
         <div class="card-body">
-            <a href="#" class="btn btn-success" role="button">Redeem</a>
+            <a href="javascript:;" id="btn_redeem" class="btn btn-success" role="button">Redeem</a>
         </div>
     </div>
 </div>
 </script>
 
 <script type="text/javascript">
-    
     var guid = $(location).attr('pathname').split('/')[3];
 
     $(document).on('ready', function() {
@@ -75,6 +74,28 @@ Search @stop
                 var tpl_voucher = $.templates('#tpl_voucher');
                 $('#voucher').append(tpl_voucher.render(data));
             }
+        });
+
+        var data = {
+            voucher_guid: guid
+        }
+
+        $(document).on('click', '#btn_redeem', function (){
+            $.ajax({
+                crossDomain: true,
+                method: 'POST',
+                url: apiUrl + '/api/v1/vouchers/merchant/redeem',
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+                success: function(result) {
+                    var voucherStatus = result.voucher_status;
+                    $('#voucher_status').innerText = voucherStatus;
+                    console.log(result.voucher_status);
+                },
+                error: function(error) {
+                    console.log(error);
+                }
+            });
         });
     });
 </script>

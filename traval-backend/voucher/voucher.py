@@ -82,9 +82,17 @@ def merchant_scan_voucher(vouchers_id):
     return jsonify({"message":"Voucher not found."}), 404
 
 #UC2 - AMQP to notification (automatically sent to notification api after voucher status changed)
-@app.route("/vouchers/merchant/redeem/<string:voucher_status>")
-def sent_to_notification():
-    pass
+@app.route("/vouchers/merchant/redeem", methods=['POST'])
+def merchant_redeem_voucher():
+    data = request.get_json()
+
+    try:
+        db.session.query(Voucher).filter_by(guid=data["voucher_guid"]).update({"status": "Redeemed"})
+        db.session.commit()
+    except error:
+        return jsonify({"status": "error", "message": "An error occurred when updating the voucher status."}), 500
+
+    return jsonify({"status": "success", "message": "Voucher successfully redeemed.", "voucher_status": "Redeemed"}), 200
 
 #unconfirm#########
 #UC2 - Merchant Traval UI interaction (Voucher status change)

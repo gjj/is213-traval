@@ -18,7 +18,7 @@ Leave Review @stop
     }
 
     .hero-block {
-        background-image: url(assets/img/1920x750/img1.jpg);
+        background-image: url(/assets/img/1920x750/img1.jpg);
     }
 
 </style>
@@ -70,21 +70,21 @@ Leave Review @stop
 <script type="text/javascript">
 
     
-    orderid = {{ Request()->order_item_id }};
+    var orderItemId = $(location).attr('pathname').split('/')[3];
 
     $.ajax({
         method: 'GET',
-        url: apiUrl + '/api/v1/orders/dets/' + orderid,
+        url: apiUrl + '/api/v1/orders/item/' + orderItemId,
         async: false,
         success: function(data) {
             console.log(data)
             $("#activity").text(data.title);
-            $(".hero-block").css("background-image", "url("+data.photo+")");
+            $(".hero-block").css("background-image", "url("+data.photo_urls[0]+")");
         }
     });
 
     $("#rating").starRating({
-        initialRating: 4,
+        initialRating: 0,
         useFullStars: true,
         strokeColor: '#894A00',
         strokeWidth: 10,
