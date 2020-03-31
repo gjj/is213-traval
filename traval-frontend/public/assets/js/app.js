@@ -1,7 +1,7 @@
 //var protocol = window.location.protocol;
 var hostname = window.location.hostname;
 
-var apiUrl = "http://" + hostname + ":8000";
+var apiUrl = "https://" + hostname + ":8443";
 
 $(document).on('ready', function () {
     if (localStorage.getItem('token')) {
