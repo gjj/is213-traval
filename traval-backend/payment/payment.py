@@ -21,14 +21,12 @@ STRIPE_SECRET_KEY = os.getenv("STRIPE_SECRET_KEY")
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
-CORS(app)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + DATABASE_PASSWORD + \
     '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_payments'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+CORS(app)
 db = SQLAlchemy(app)
-
 
 class Payment(db.Model):
     __tablename__ = 'payments'
@@ -53,47 +51,9 @@ class Payment(db.Model):
     def json(self):
         return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "payment_intent_id": self.payment_intent_id, "amount": self.amount, "status": self.status, "datetime": self.datetime}
 
-
-def AMQP():
-    hostname = "localhost"  # default broker hostname.
-    port = 5672  # default messaging port.
-    connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host=hostname, port=port))
-    channel = connection.channel()
-    # set up the exchange if the exchange doesn't exist
-    exchangename = "payment_direct"
-    channel.exchange_declare(exchange=exchangename, exchange_type='direct')
-
-    payment_info = {"user_id": 1, "order_id": 1,
-                    "applicable_date": "2020-03-15"}
-    # convert a JSON object to a string
-    message = json.dumps(payment_info, default=str)
-
-    # make sure queue exist and durable
-    channel.queue_declare(queue="voucher", durable=True)
-
-    # vlind queue to exchange
-    channel.queue_bind(exchange=exchangename, queue="voucher",
-                       routing_key="voucher.payment")
-
-    # send the message to voucher
-    channel.basic_publish(exchange=exchangename,
-                          routing_key="voucher.payment", body=message)
-
-    connection.close()
-
-
-@app.route("/payments", methods=['POST'])
-def create_payment():
-    data = request.get_json()
-    id = data["id"]
-    quantity = data["quantity"]
-    catalog_price = data["price"]
-    payment_price = catalog_price * quantity
-    AMQP()
-    return {"payment_price": payment_price}
-
-# Create new PaymentIntent
+# POST /payments/stripe
+# Create new PaymentIntent, this will connect to Stripe API
+# @params JSON data {"user_id": 2, "total_price": 28.5}
 @app.route("/payments/stripe", methods=['POST'])
 def create_payment_intent():
     data = request.get_json()
@@ -113,13 +73,17 @@ def create_payment_intent():
 
     return payload, 200
 
-# Update existing PaymentIntent by user's cart items
+# POST /payments/update
+# Update existing PaymentIntent's amount to charge using 
+# total price derived from a user's cart items
+# Reason is because we do not want frontend users to tamper with the charge amount
+# @params JSON data {"user_id": 2}, the key "order_id" is optional
 @app.route("/payments/update", methods=['POST'])
 def update_payment_intent():
     data = request.get_json()
 
     try:
-        # extract json data from catalog
+        # extract json data from user's cart
         r = requests.get(API_URL + ":5002/orders/cart/" + str(data["user_id"]))
         cart = json.loads(r.text)
 
@@ -139,7 +103,9 @@ def update_payment_intent():
     except ValueError as e:
         return jsonify({'status': 'error', 'message': 'Invalid payload.'}), 400
 
-
+# GET /payments/stripe/lookup
+# Retrieves the entire PaymentIntent object from Stripe, using a given PaymentIntent ID
+# @params payment_intent_id a Stripe PaymentIntent ID that looks like e.g. pi_e5AFJEz32eAKds088
 @app.route("/payments/stripe/lookup/<string:payment_intent_id>", methods=['GET'])
 def retrieve_payment_intent(payment_intent_id):
     payload = stripe.PaymentIntent.retrieve(
@@ -148,7 +114,9 @@ def retrieve_payment_intent(payment_intent_id):
 
     return payload, 200
 
-
+# POST /payments/stripe/webhook
+# Receives payment_intent.* events from Stripe
+# @params JSON data (from Stripe)
 @app.route("/payments/stripe/webhook", methods=['POST'])
 def payment_stripe_webhook():
     payload = request.get_json()
@@ -162,6 +130,7 @@ def payment_stripe_webhook():
     except ValueError as e:
         return jsonify({'status': 'error', 'message': 'Invalid payload.'}), 400
 
+    # If Stripe calls us to tell us that somebody has successfully made payment...
     if event.type == 'payment_intent.succeeded':
         payment_intent = event.data.object
         
