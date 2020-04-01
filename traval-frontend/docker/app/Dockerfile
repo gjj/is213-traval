@@ -31,12 +31,12 @@ RUN mkdir -p /home/$user/.composer && \
 # Set working directory
 WORKDIR /var/www
 
-# Copy files over
+# Copy files over from host to Docker image
 COPY ./ /var/www
 RUN composer install
 
-# It's faster to use --chown
-COPY --chown=www-data:www-data . /var/www 
+# Let $user own the /var/www folder, and it's faster to use --chown
+COPY --chown=$user:$user . /var/www 
 
 USER $user
 
