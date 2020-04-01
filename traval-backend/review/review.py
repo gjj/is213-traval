@@ -109,7 +109,7 @@ def get_all_reviews():
 # GET /reviews/<string:catalog_item_id>
 # Get reviews by catalog item ID
 @app.route("/reviews/<string:catalog_item_id>")
-def get_by_order(catalog_item_id):
+def get_by_catalog_item_id(catalog_item_id):
     reviews = {
         "reviews": [review.json() for review in Review.query.filter_by(item_id=catalog_item_id).order_by(Review.datetime.desc()).all()]
     }
@@ -131,11 +131,24 @@ def get_by_order(catalog_item_id):
     else:
         avg_rating = sum_rating / n
 
-    reviews.update({"avg_rating": avg_rating})
+    reviews.update({"avg_rating": round(avg_rating, 2)}) # round off to 2dp
     reviews.update({"number_of_reviews": n})
+    
+    return jsonify(reviews), 200
 
-    # calc avg rating
-    return jsonify(reviews)
+# GET /reviews/order_item_id/<string:order_item_id>
+# Get specific review by order item ID
+@app.route("/reviews/order_item_id/<string:order_item_id>")
+def get_by_order_item_id(order_item_id):
+    
+    review = Review.query.filter_by(order_item_id=order_item_id).first()
+
+    if not review:
+        review = {}
+    else:
+        review = review.json()
+    
+    return jsonify(review), 200
 
 # POST /reviews
 # Create new review, with review photo upload as well

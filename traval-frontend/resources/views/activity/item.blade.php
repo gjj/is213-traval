@@ -13,8 +13,11 @@ Activity @stop
 
 @section('scripts')
 <script id="tpl_activity_item" type="text/x-jsrender">
-    <div class="mb-4 mb-lg-8">
-    <img class="img-fluid" src="@{{:photo_urls[0]}}" alt="Image" id="item-image" />
+<!-- <div class="mb-4 mb-lg-8 pt-4">
+    <div style="background-image:url(@{{:photo_urls[0]}})"></div>
+    <img class="img-fluid hero-block" src="" alt="Image" id="item-image" />
+</div> -->
+<div style="background-image:url(@{{:photo_urls[0]}}); min-height:500px; background-position: center;" class="hero-block img-fluid hero-v6 bg-img-hero-bottom gradient-overlay-half-blue-gradient z-index-2 mb-2 mb-lg-6 mb-xl-8 pb-xl-1">
 </div>
 <div class="container">
     <div class="row">
@@ -29,18 +32,19 @@ Activity @stop
                     <div class="d-block d-md-flex flex-horizontal-center">
                         <div class="mr-4 mb-2 mb-md-0">
                             <span class="badge badge-pill badge-warning text-lh-sm text-white py-1 px-2 font-size-14 border-radius-3 font-weight-normal">
-                                @{{if rating}}
-                                    @{{:rating}}/5
+                                @{{if avg_rating}}
+                                    @{{:avg_rating}}/5
                                 @{{else}}
                                     No ratings
                                 @{{/if}}
                             </span>
-                            <span class="font-size-14 text-gray-1 ml-2">(@{{:reviews_count}} reviews)</span>
+                            <span class="font-size-14 text-gray-1 ml-2">(@{{:number_of_reviews}} reviews)</span>
                         </div>
                         <div class="d-block d-md-flex flex-horizontal-center font-size-14 text-gray-1 mb-2 mb-md-0">
                             <i class="icon flaticon-placeholder mr-2 font-size-20"></i>
-                            <div id="item-location">Singapore</div>
-                            <a href="#" class="ml-1 d-block d-md-inline"> - View on map</a>
+                            <div id="item-location">
+                                @{{:location}}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -55,7 +59,7 @@ Activity @stop
                 </p>
             </div>
             <div class="border-bottom py-4">
-                <h5 class="font-size-21 font-weight-bold text-dark mb-4">
+                <h5 class="font-size-21 font-weight-bold text-dark mb-4" id="location">
                     Location
                 </h5>
                 <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2586.4155709724932!2d103.85118714755811!3d1.2957954075671003!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0xb9649de50a2e2a51!2sSMU%20Li%20Ka%20Shing%20Library!5e0!3m2!1sen!2ssg!4v1584473010455!5m2!1sen!2ssg" width="100%" height="480" frameborder="0" style="border:0;" allowfullscreen=""></iframe>
@@ -70,14 +74,14 @@ Activity @stop
                         <div class="border rounded flex-content-center py-5 border-width-2">
                             <div class="text-center">
                                 <h2 class="font-size-50 font-weight-bold text-primary mb-0 text-lh-sm">
-                                    @{{if rating}}
-                                        @{{:rating}}
+                                    @{{if avg_rating}}
+                                        @{{:avg_rating}}
                                     @{{else}}
                                         -
                                     @{{/if}}
                                     <span class="font-size-20">/5</span>
                                 </h2>
-                                <div class="text-gray-1">From @{{:reviews_count}} reviews</div>
+                                <div class="text-gray-1">From @{{:number_of_reviews}} reviews</div>
                             </div>
                         </div>
                     </div>
@@ -85,39 +89,13 @@ Activity @stop
             </div>
             <div class="border-bottom py-4" id="reviews">
                 <h5 class="font-size-21 font-weight-bold text-dark mb-8">
-                    @{{if reviews_count}}
-                        Showing @{{:reviews_count}} reviews
+                    @{{if number_of_reviews}}
+                        Showing @{{:number_of_reviews}} reviews
                     @{{else}}
                         No reviews
                     @{{/if}}
                 </h5>
-                <div class="media flex-column flex-md-row align-items-center align-items-md-start mb-4">
-                    <div class="mr-md-5">
-                        <a class="d-block" href="#">
-                            <img class="img-fluid mb-3 mb-md-0 rounded-circle" src="assets/img/85x85/img1.jpg" alt="Image-Description">
-                        </a>
-                    </div>
-                    <div class="media-body text-center text-md-left">
-                        <div class="mb-4">
-                            <h6 class="font-weight-bold text-gray-3">
-                                <a href="#">Helena</a>
-                            </h6>
-                            <div class="font-weight-normal font-size-14 text-gray-9 mb-2">April 25, 2019 at 10:46 am</div>
-                            <div class="d-flex align-items-center flex-column flex-md-row mb-2">
-                                <button type="button" class="btn btn-xs btn-primary rounded-xs font-size-14 py-1 px-2 mr-2 mb-2 mb-md-0">4.6 /5 </button>
-                                <span class="font-weight-bold font-italic text-gray-3">The worst hotel ever ”</span>
-                            </div>
-                            <p class="text-lh-1dot6 mb-0 pr-lg-5">Morbi velit eros, sagittis in facilisis non, rhoncus et erat. Nam posuere ultricies tortor imperdiet vitae. Curabitur lacinia neque non metus</p>
-                        </div>
-                        <div class="review">
-                            <div class="row no-gutters justify-content-between align-items-center border border-color-8 border-width-2 rounded-xs p-3 px-md-3 py-md-2 pr-xl-5">
-                                <div class="col">
-                                    <div class="font-weight-normal font-size-14 text-gray-1 mx-lg-1 my-lg-1 mb-3 mb-md-0">Was This Review...?</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <div id="reviews"></div>
             </div>
         </div>
         <div class="col-lg-4 col-xl-3">
@@ -183,6 +161,38 @@ Activity @stop
 </div>
 </script>
 
+<script id="tpl_reviews" type="text/x-jsrender">
+    <div class="media flex-column flex-md-row align-items-center align-items-md-start mb-4">
+    <div class="media-body text-center text-md-left">
+        <div class="mb-4">
+            <h6 class="font-weight-bold text-gray-3">
+                A Traval user
+            </h6>
+            <div class="font-weight-normal font-size-14 text-gray-9 mb-2">
+                @{{:datetime}}
+            </div>
+            <div class="d-flex align-items-center flex-column flex-md-row mb-2">
+                <button type="button" class="btn btn-xs btn-primary rounded-xs font-size-14 py-1 px-2 mr-2 mb-2 mb-md-0">
+                    @{{:rating}}/5
+                </button>
+            </div>
+            <p class="text-lh-1dot6 mb-0 pr-lg-5">
+                @{{:review}}
+            </p>
+            
+            @{{if photo_urls != ""}}
+                <p class="pt-2 text-lh-1dot6 mb-0 pr-lg-5 font-weight-bold">
+                    Photos of my experience 📸
+                </p>
+                @{{for photo_urls}}
+                <img src="@{{:}}" style="height: 125px" class="img-thumbnail" />
+                @{{/for}}
+            @{{/if}}
+        </div>
+    </div>
+</div>
+</script>
+
 <script type="text/javascript">
     $(document).on('ready', function() {
         var activity = {
@@ -209,6 +219,18 @@ Activity @stop
 
                 $('#cart_success').hide();
                 $('#cart_error').hide();
+
+                $.ajax({
+                    method: 'GET',
+                    url: apiUrl + "/api/v1/reviews/" + activity.item_id,
+                    success: function(data) {
+
+                        $.each(data.reviews, function(i, review) {
+                            var tpl_reviews = $.templates('#tpl_reviews');
+                            $('#reviews').append(tpl_reviews.render(review));
+                        });
+                    }
+                });
             }
         });
 

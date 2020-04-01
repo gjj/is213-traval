@@ -714,7 +714,7 @@ Checkout @stop
                                                     localStorage.removeItem('stripe_paymentIntentId');
                                                     localStorage.removeItem('stripe_clientSecret');
 
-                                                    window.location.href = "payment/result";
+                                                    window.location.href = "payment/success?order_id=" + data.order_id;
                                                 }
                                             });
                                         }

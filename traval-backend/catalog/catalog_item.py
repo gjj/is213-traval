@@ -83,13 +83,24 @@ def get_all():
 def find_by_id(id):
     item = CatalogItem.query.filter_by(id=id).first()
     
-    if item:
-        photos = get_photos(item, id)
-        updated_item = item.json()
-        updated_item.update(photos)
-        return jsonify(updated_item)
+    if not item:
+        return jsonify({"message": "Item not found."}), 404
     
-    return jsonify({"message": "Item not found."}), 404
+    photos = get_photos(item, id)
+    updated_item = item.json()
+    updated_item.update(photos)
+
+    r = requests.get(API_URL + ":5005/reviews/" + id)
+    reviews = json.loads(r.text)
+
+    updated_item.update({
+        'avg_rating': reviews['avg_rating'],
+        'number_of_reviews': reviews['number_of_reviews']
+    })
+
+    return jsonify(updated_item), 200
+    
+    
 
 # POST /catalog_items
 # Create a new item to sell
@@ -142,38 +153,30 @@ def search(q):
         item = CatalogItem.query.filter_by(id=id).first()
         if item:
             photos = get_photos(item, id)
-            item_dict.update(photos)               
+            item_dict.update(photos)
+        
+        # Get reviews data
+        r = requests.get(API_URL + ":5005/reviews/" + str(id))
+        reviews = json.loads(r.text)
+
+        item_dict.update({
+            'avg_rating': reviews['avg_rating'],
+            'number_of_reviews': reviews['number_of_reviews']
+        })
+
     return jsonify(result)
 
 # GET /catalog_items/<string:id>/reviews
 # Get reviews of a particular catalog item
 @app.route("/catalog_items/<string:id>/reviews")
 def get_item_reviews(id):
-    reviews = {'reviews':[], 'Avgrating': 0}
-
     item = CatalogItem.query.filter_by(id=id).first()
     if not item:
-        return jsonify({"message":"Item not found."}), 404
-    item_id = str(item.id)
+        return jsonify({"message":"Item ID not found."}), 404
 
-    r = requests.get(API_URL + ":5003/order/item/" + item_id)
+    r = requests.get(API_URL + ":5005/reviews/" + id)
+    reviews = json.loads(r.text)
     
-    total = 0
-    count = 0
-    orders = r.json()['id']
-    if len(orders) < 1:
-        return jsonify({"message":"Reviews not found."}), 404
-    
-    for order in orders:
-        review_r = requests.get(traval_review_url + '/catalog_items/' + str(order) + '/reviews')
-        if review_r:
-            count += 1
-            reviews_json = review_r.json()['reviews']
-            print(reviews_json)
-            reviews['reviews'] = reviews['reviews'] + reviews_json
-            total += reviews_json[0]['rating']
-    reviews['Avgrating'] = total/count
-    print(total, count)
     return jsonify(reviews)
 
 if __name__ == '__main__':

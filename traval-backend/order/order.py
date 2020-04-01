@@ -1,14 +1,11 @@
 from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
-import datetime
-import json
-
 from dotenv import load_dotenv
+import json
+import datetime
 import os
-
 import requests
-
 
 load_dotenv()
 
@@ -18,15 +15,13 @@ travel_catalog_url = API_URL + ":5001/catalog_items"
 
 app = Flask(__name__)
 app.config['JSON_SORT_KEYS'] = False
-CORS(app)
-
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://traval:' + \
     DATABASE_PASSWORD + \
     '@traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com:3306/traval_orders'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
+CORS(app)
 db = SQLAlchemy(app)
-
 
 class Order(db.Model):
     __tablename__ = 'orders'
@@ -44,7 +39,6 @@ class Order(db.Model):
 
     def json(self):
         return {"id": self.id, "user_id": self.user_id, "datetime": self.datetime, "status": self.status}
-
 
 class OrderItem(db.Model):
     __tablename__ = 'order_items'
@@ -65,11 +59,14 @@ class OrderItem(db.Model):
         self.photo_urls = photo_urls
 
     def json(self):
-        #return {"id": self.id, "order_id": self.order_id, "item_id": self.item_id, "price": self.price, "quantity": self.quantity}
+        json_string = {"id": self.id, "item_id": self.item_id, "title": self.title, "price": self.price, "quantity": self.quantity, "photo_urls": self.photo_urls}
+
         if hasattr(self, 'voucher_guid'):
-            return {"id": self.id, "item_id": self.item_id, "title": self.title, "price": self.price, "quantity": self.quantity, "voucher_guid": self.voucher_guid, "photo_urls": self.photo_urls}
-        else:
-            return {"id": self.id, "item_id": self.item_id, "title": self.title, "price": self.price, "quantity": self.quantity, "photo_urls": self.photo_urls}
+            json_string.update({"voucher_guid": self.voucher_guid})
+        if hasattr(self, 'review'):
+            json_string.update({"review": self.review})
+
+        return json_string
 
 class CartItem(db.Model):
     __tablename__ = 'cart_items'
@@ -280,9 +277,17 @@ def get_order_items(order_id):
         item.description = data["description"]
         item.photo_urls = data["photo_urls"]
 
+        # Grab review of this item
+        review = None
+        r = requests.get(API_URL + ":5005/reviews/order_item_id/" + str(item.id)) # Using order item ID here
+        data = json.loads(r.text)
+        if data:
+            review = data
+        item.review = review
+        
+        # If voucher exists
         if voucher_guid:
             item.voucher_guid = voucher_guid
-
     return items
 
 def get_voucher(order_item_id):

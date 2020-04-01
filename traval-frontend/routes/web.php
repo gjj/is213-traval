@@ -58,10 +58,10 @@ Route::get('/payment/checkout', function () {
 })
 ->name('payment.checkout');
 
-Route::get('/payment/result', function () {
-    return view('payment.result');
+Route::get('/payment/success', function () {
+    return view('payment.success');
 })
-->name('payment.result');
+->name('payment.success');
 
 /* Orders */
 Route::get('/order', function () {

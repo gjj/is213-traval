@@ -120,20 +120,20 @@ Search @stop
                 </div>
             </div>
             <div class="card-body px-4 py-3">
-                <a href="../activities/activities-single-v1.html" class="card-title font-size-17 font-weight-medium text-dark d-inline-block mb-1">
+                <a href="activity/@{{:id}}" class="card-title font-size-17 font-weight-medium text-dark d-inline-block mb-1">
                     @{{:title}}
                 </a>
                 <div class="mt-2 mb-3">
                     <span class="badge badge-pill badge-warning text-lh-sm text-white py-1 px-2 font-size-14 border-radius-3 font-weight-normal">
-                        @{{if rating}}
-                            @{{:rating}}/5
+                        @{{if avg_rating}}
+                            @{{:avg_rating}}/5
                         @{{else}}
                             No ratings
                         @{{/if}}
                     </span>
                     <span class="font-size-14 text-gray-1 ml-2">
-                        @{{if reviews_count}}
-                            (@{{:reviews_count}} reviews)
+                        @{{if number_of_reviews}}
+                            (@{{:number_of_reviews}} reviews)
                         @{{else}}
                             (No reviews)
                         @{{/if}}

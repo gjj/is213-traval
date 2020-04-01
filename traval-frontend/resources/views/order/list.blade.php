@@ -16,7 +16,7 @@ My Order @stop
                 <!-- Shop-control-bar Title -->
                 <div class="d-flex justify-content-between align-items-center mb-4">
                     <h3 class="font-size-21 font-weight-bold mb-0 text-lh-1">
-                        My orders
+                        My orders 🌇🏜🛫
                     </h3>
 
                 </div>
@@ -37,7 +37,7 @@ My Order @stop
 @endsection
 @section('scripts')
 <script id="tpl_orders" type="text/x-jsrender">
-    <div class="col-md-12">
+<div class="col-md-12">
     <div class="card mb-3">
         <div class="card-header bg-light">
             <div class="d-flex">
@@ -62,7 +62,11 @@ My Order @stop
                     Quantity: @{{:quantity}}
                 </p>
                 <a href="voucher/view/@{{:voucher_guid}}" class="btn btn-primary" role="button">View voucher</a>
-                <a href="order/item/@{{:id}}/review" class="btn btn-outline-secondary" role="button">Leave review</a>
+                @{{if review == null}}
+                <a href="order/item/@{{:id}}/review" class="btn btn-outline-success" role="button">Leave review</a>
+                @{{else}}
+                <a href="activity/@{{:item_id}}" class="btn btn-outline-secondary" role="button">Read your review</a>
+                @{{/if}}
 
                 @{{if #index+1 != #get("array").data.length}}
                 <hr />
@@ -88,6 +92,10 @@ My Order @stop
                     $.each(data, function(i, order) {
                         $('#orders').append(tpl_orders.render(order));
                     });
+
+                    if (data.length == 0) {
+                        $('#orders').html('<div class="col-md-12">😢 You don\'t have any orders so far, why not <a href="/search?q=singapore">book an adventure now</a>?</div>');
+                    }
                 }
             });
         }
