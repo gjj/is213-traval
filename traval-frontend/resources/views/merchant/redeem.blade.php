@@ -89,7 +89,7 @@ Search @stop
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {
                     var voucherStatus = result.voucher_status;
-                    $('#voucher_status').innerText = voucherStatus;
+                    $('#voucher_status').text(voucherStatus);
                     console.log(result.voucher_status);
                 },
                 error: function(error) {

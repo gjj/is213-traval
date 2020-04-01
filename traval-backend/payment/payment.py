@@ -65,11 +65,19 @@ def create_payment_intent():
     r = requests.get(API_URL + ":5002/orders/cart/" + str(data["user_id"]))
     cart = json.loads(r.text)
 
-    payload = stripe.PaymentIntent.create(
-        amount=int(float(cart["total_price"]) * 100),  # make sure to validate this
-        currency="sgd",
-        payment_method_types=["card"]
-    )
+    if "order_id" in data:
+        payload = stripe.PaymentIntent.create(
+            amount=int(float(cart["total_price"]) * 100),
+            currency="sgd",
+            payment_method_types=["card"],
+            metadata={"order_id": data["order_id"]}
+        )
+    else:
+        payload = stripe.PaymentIntent.create(
+            amount=int(float(cart["total_price"]) * 100),
+            currency="sgd",
+            payment_method_types=["card"]
+        )
 
     return payload, 200
 
@@ -190,8 +198,10 @@ def payment_stripe_webhook():
         #           "subject": "💳✅ Payment success event",
         #           "text": "payment_intent.success event is acknowledged."})
         # print(str(mg))
+        return jsonify({'status': 'success', 'message': 'Ok! We got this payment_intent.suceeded event. :)'}), 200
 
-    return jsonify({'status': 'success', 'message': 'payment_intent event acknowledged.'}), 200
+
+    return jsonify({'status': 'success', 'message': 'Ok, we got this.'}), 200
 
 
 if __name__ == '__main__':

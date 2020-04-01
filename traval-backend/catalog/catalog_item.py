@@ -28,16 +28,18 @@ class CatalogItem(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(80), nullable=False)
     description = db.Column(db.String(1000), nullable=False)
+    location = db.Column(db.String(255), nullable=False)
     price = db.Column(db.Float(precision=2), nullable=False)
 
-    def __init__(self, id, title, description, price):
+    def __init__(self, id, title, description, location, price):
         self.id = id
         self.title = title
         self.description = description
+        self.location = location
         self.price = price
 
     def json(self):
-        return {"id": self.id, "title": self.title, "description": self.description, "price": self.price}
+        return {"id": self.id, "title": self.title, "description": self.description, "location": self.location, "price": self.price}
 
 class CatalogItemPhoto(db.Model):
     __tablename__ = 'catalog_photos'
@@ -62,7 +64,8 @@ def get_photos(item, id):
         }
         return photos
 
-
+# GET /catalog_items
+# Get all catalog items, everything!
 @app.route("/catalog_items")
 def get_all():
     all_items = {"catalog_items": [item.json() for item in CatalogItem.query.all()]}
@@ -74,7 +77,8 @@ def get_all():
             item_dict.update(photos)               
     return jsonify(all_items)
 
-
+# GET /catalog_items
+# Get catalog item using its ID
 @app.route("/catalog_items/<string:id>")
 def find_by_id(id):
     item = CatalogItem.query.filter_by(id=id).first()
@@ -87,7 +91,8 @@ def find_by_id(id):
     
     return jsonify({"message": "Item not found."}), 404
 
-
+# POST /catalog_items
+# Create a new item to sell
 @app.route("/catalog_items", methods=['POST'])
 def create_item():
     data = request.get_json()
@@ -103,6 +108,8 @@ def create_item():
     
     return jsonify(item.json()), 201
 
+# POST /catalog_items
+# Create new catalog photo records
 @app.route("/catalog_photos", methods=['POST'])
 def create_photo():
     data = request.get_json()
@@ -121,6 +128,8 @@ def create_photo():
     
     return jsonify(item.json()), 201
 
+# GET /catalog_items/search/<string:q>
+# Search feature
 @app.route("/catalog_items/search/<string:q>")
 def search(q):
     q = "%{}%".format(q) # Wildcard search
@@ -136,7 +145,8 @@ def search(q):
             item_dict.update(photos)               
     return jsonify(result)
 
-# will need to call order class
+# GET /catalog_items/<string:id>/reviews
+# Get reviews of a particular catalog item
 @app.route("/catalog_items/<string:id>/reviews")
 def get_item_reviews(id):
     reviews = {'reviews':[], 'Avgrating': 0}
@@ -165,8 +175,6 @@ def get_item_reviews(id):
     reviews['Avgrating'] = total/count
     print(total, count)
     return jsonify(reviews)
-        
-    
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5001, debug=True)

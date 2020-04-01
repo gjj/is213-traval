@@ -402,6 +402,22 @@ Checkout @stop
                             <div class="tab-pane fade pt-8 show active" id="pills-one-example2" role="tabpanel" aria-labelledby="pills-one-example2-tab">
                                 <form action="" method="post" id="checkout">
                                     <div class="row">
+                                        <div class="col-sm-12">
+                                            <div class="alert alert-success alert-dismissible fade show" role="alert" id="payment_success">
+                                                <strong>Yay! 😃</strong>
+                                                Your payment suceeded. Please do not leave this page while we redirect you.
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                            <div class="alert alert-danger alert-dismissible fade show" role="alert" id="payment_error">
+                                                <strong>Whoops! ☹️</strong>
+                                                <span id="payment_error_text"></span>
+                                                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                                    <span aria-hidden="true">&times;</span>
+                                                </button>
+                                            </div>
+                                        </div>
                                         <div class="col-sm-12 mb-4">
                                             <label class="form-label">
                                                 Card Holder Name
@@ -529,6 +545,9 @@ Checkout @stop
 
 <script type="text/javascript">
     $(document).on('ready', function() {
+        $('#payment_error').hide();
+        $('#payment_success').hide();
+
         if (!localStorage.getItem('token')) {
             window.location.replace('signin');
         } else {
@@ -637,52 +656,73 @@ Checkout @stop
                 data.items = cartItems.items;
                 data.payment_intent_id = localStorage.getItem("stripe_paymentIntentId");
 
-                console.log("Sending data...", data);
+                console.log("Check out process initiated.", data);
+
                 $.ajax({
                     method: 'POST',
                     url: apiUrl + '/api/v1/orders',
                     data: JSON.stringify(data),
                     contentType: "application/json; charset=utf-8",
                     success: function(response) {
-                        console.log(response);
-
+                        // Attach order ID to this payment intent.
+                        data.payment_intent_id = localStorage.getItem('stripe_paymentIntentId');
                         data.order_id = response.id;
-                        console.log("Checkout.", data);
+                        console.log("Order record created.", data, response);
 
-                        updatePaymentIntent(data); // Attach order ID to this payment intent.
+                        $.ajax({
+                            method: 'POST',
+                            url: apiUrl + '/api/v1/payments/update',
+                            data: JSON.stringify(data),
+                            contentType: "application/json; charset=utf-8",
+                            success: function(response) {
+                                console.log("PaymentIntent successfully updated to attach the order_id.", response);
 
-                        stripe.confirmCardPayment(clientSecret, {
-                            payment_method: {
-                                card: card,
-                                billing_details: {
-                                    name: $('input[name=card_name]').val()
-                                }
-                            }
-                        }).then(function(result) {
-                            if (result.error) {
-                                // Show error to your customer (e.g., insufficient funds)
-                                console.log(result.error.message);
-                            } else {
-                                // The payment has been processed!
-                                if (result.paymentIntent.status === 'succeeded') {
-                                    console.log(result.paymentIntent);
-                                    // Show a success message to your customer
-                                    // There's a risk of the customer closing the window before callback
-                                    // execution. Set up a webhook or plugin to listen for the
-                                    // payment_intent.succeeded event that handles any business critical
-                                    // post-payment actions.
-                                    $.ajax({
-                                        method: 'POST',
-                                        url: apiUrl + '/api/v1/orders/cart/clear',
-                                        data: JSON.stringify(data),
-                                        contentType: "application/json; charset=utf-8",
-                                        success: function(response) {
-                                            localStorage.removeItem('stripe_paymentIntentId');
-                                            localStorage.removeItem('stripe_clientSecret');
-                                            window.location.href = "payment/result";
+                                stripe.confirmCardPayment(clientSecret, {
+                                    payment_method: {
+                                        card: card,
+                                        billing_details: {
+                                            name: $('input[name=card_name]').val()
                                         }
-                                    });
-                                }
+                                    }
+                                }).then(function(result) {
+                                    if (result.error) {
+                                        // Show error to your customer (e.g., insufficient funds)
+                                        console.log(result.error.message);
+
+                                        $('#payment_error').show();
+                                        $('#payment_success').hide();
+                                        $('#payment_error_text').text(result.error.message);
+                                    } else {
+                                        // The payment has been processed!
+                                        if (result.paymentIntent.status === 'succeeded') {
+                                            console.log(result.paymentIntent);
+                                            // Show a success message to your customer
+                                            // There's a risk of the customer closing the window before callback
+                                            // execution. Set up a webhook or plugin to listen for the
+                                            // payment_intent.succeeded event that handles any business critical
+                                            // post-payment actions.
+
+                                            $('#payment_error').hide();
+                                            $('#payment_success').show();
+
+                                            $.ajax({
+                                                method: 'POST',
+                                                url: apiUrl + '/api/v1/orders/cart/clear',
+                                                data: JSON.stringify(data),
+                                                contentType: "application/json; charset=utf-8",
+                                                success: function(response) {
+                                                    localStorage.removeItem('stripe_paymentIntentId');
+                                                    localStorage.removeItem('stripe_clientSecret');
+
+                                                    window.location.href = "payment/result";
+                                                }
+                                            });
+                                        }
+                                    }
+                                });
+                            },
+                            error: function(error) {
+                                console.log(error);
                             }
                         });
                     },
@@ -706,7 +746,7 @@ Checkout @stop
                     localStorage.setItem('stripe_paymentIntentId', response.id);
                     localStorage.setItem('stripe_clientSecret', response.client_secret);
 
-                    console.log("PaymentIntent created.", response);
+                    console.log("PaymentIntent successfully created.", response);
                 },
                 error: function(error) {
                     console.log(error);
@@ -721,7 +761,7 @@ Checkout @stop
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(response) {
-                    console.log("PaymentIntent updated.", response);
+                    console.log("PaymentIntent successfully updated.", response);
                 },
                 error: function(error) {
                     console.log(error);
