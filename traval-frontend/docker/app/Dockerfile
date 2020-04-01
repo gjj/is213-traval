@@ -23,15 +23,21 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Set working directory
+WORKDIR /var/www
+
+# Copy files over
+COPY ./ /var/www
+RUN composer install
+
 # Create system user to run Composer and Artisan Commands
 RUN useradd -G www-data,root -u $uid -d /home/$user $user
 RUN mkdir -p /home/$user/.composer && \
     chown -R $user:$user /home/$user
+RUN chown -R www-data:www-data /var/www
+RUN chmod -R 755 /var/www/storage/logs/laravel.log
 
-# Set working directory
-WORKDIR /var/www
-
-USER $user
+# USER $user
 
 # Expose port 9000 and start php-fpm server
 EXPOSE 9000

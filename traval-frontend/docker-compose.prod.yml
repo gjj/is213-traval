@@ -1,0 +1,20 @@
+version: '3'
+services:
+  # Our Traval app
+  app:
+    build:
+      args:
+        user: traval
+        uid: 1000
+      context: ./
+      dockerfile: ./docker/app/Dockerfile
+    environment:
+      SERVICE_NAME: app
+      SERVICE_TAGS: dev
+    working_dir: /var/www
+
+  # Nginx
+  nginx:
+    build:
+      context: ./
+      dockerfile: ./docker/nginx/Dockerfile
