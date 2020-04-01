@@ -1,12 +1,15 @@
+var amqp        = require('amqplib/callback_api');
+var util        = require('util');
+var dotenv      = require('dotenv').config();
+
 const accountSid        = process.env.TWILIO_ACCOUNT_SID;
 const authToken         = process.env.TWILIO_AUTH_TOKEN;
 const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
+const mailgunApiKey     = process.env.MAILGUN_API_KEY;
+const mailgunDomain     = process.env.MAILGUN_DOMAIN;
 
-var amqp    = require('amqplib/callback_api');
-var util    = require('util');
-var dotenv  = require('dotenv').config();
-var mailgun = require('mailgun-js')({apiKey: process.env.MAILGUN_API_KEY, domain: process.env.MAILGUN_DOMAIN});
-var twilio  = require('twilio')(accountSid, authToken);
+var mailgun     = require('mailgun-js')({apiKey: mailgunApiKey, domain: mailgunDomain});
+const twilio    = require('twilio')(accountSid, authToken);
 
 amqp.connect('amqp://localhost', function(error0, connection) {
     if (error0) {
@@ -45,18 +48,18 @@ amqp.connect('amqp://localhost', function(error0, connection) {
                 mg_title = "[Traval] 🏕 Vouchers confirmed - time to go on an adventure!";
                 mg_body = "Your voucher has been issued.";
             }
-            
+
             // SMS
             twilio.messages
                 .create({
-                    body: util.format("[Traval] Your Order #%s is now confirmed. You'll be receiving your vouchers shortly.", message.order_id),
+                    body: twilio_text,
                     from: twilioPhoneNumber,
                     to: message.phone_number
                 })
                 .then(sms =>
                     console.log(' [notifications] SMS for event %s and order ID %s sent to %s (Twilio SMS ID %s)', message.message_type, message.order_id, message.phone_number, sms.sid)
                 );
-
+            
             // Email
             const data = {
                 from: 'The Traval App <hello@traval.app>',
