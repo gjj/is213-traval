@@ -83,7 +83,7 @@ Activity @stop
                     </div>
                 </div>
             </div>
-            <div class="border-bottom py-4">
+            <div class="border-bottom py-4" id="reviews">
                 <h5 class="font-size-21 font-weight-bold text-dark mb-8">
                     @{{if reviews_count}}
                         Showing @{{:reviews_count}} reviews

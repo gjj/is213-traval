@@ -45,15 +45,17 @@ class Review(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, nullable=False)
+    item_id = db.Column(db.Integer, nullable=False)
     order_item_id = db.Column(db.Integer, nullable=False)
     datetime = db.Column(db.DateTime, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     review = db.Column(db.String(800), nullable=True)
     status = db.Column(db.String(8), nullable=False)
 
-    def __init__(self, id, user_id, order_item_id, datetime, rating, review, status):
+    def __init__(self, id, user_id, item_id, order_item_id, datetime, rating, review, status):
         self.id = id
         self.user_id = user_id
+        self.item_id = item_id
         self.order_item_id = order_item_id
         self.datetime = datetime
         self.rating = rating
@@ -61,7 +63,7 @@ class Review(db.Model):
         self.status = status
     
     def json(self):
-        return {"id": self.id, "user_id": self.user_id, "order_item_id": self.order_item_id, "datetime": self.datetime, "rating": self.rating, "review": self.review, "status": self.status}
+        return {"id": self.id, "user_id": self.user_id, "item_id": self.item_id, "order_item_id": self.order_item_id, "datetime": self.datetime, "rating": self.rating, "review": self.review, "status": self.status}
 
 class ReviewPhoto(db.Model):
     __tablename__ = 'review_photos'
@@ -108,17 +110,32 @@ def get_all_reviews():
 # Get reviews by catalog item ID
 @app.route("/reviews/<string:catalog_item_id>")
 def get_by_order(catalog_item_id):
-    # Need to change this
-    all_reviews = {"reviews": [review.json() for review in Review.query.filter_by(order_item_id=order_item_id).all()]}
-    for review_dict in all_reviews["reviews"]:
+    reviews = {
+        "reviews": [review.json() for review in Review.query.filter_by(item_id=catalog_item_id).order_by(Review.datetime.desc()).all()]
+    }
+
+    sum_rating = 0
+    for review_dict in reviews["reviews"]:
         id = review_dict["id"]
         review = Review.query.filter_by(id=id).first()
+        sum_rating += float(review_dict["rating"])
+
         if review:
             photos = get_photos(review, id)
             review_dict.update(photos)
-    
+            
+    n = len(reviews["reviews"])
+
+    if n == 0:
+        avg_rating = 0 # Prevent division by zero error
+    else:
+        avg_rating = sum_rating / n
+
+    reviews.update({"avg_rating": avg_rating})
+    reviews.update({"number_of_reviews": n})
+
     # calc avg rating
-    return jsonify(all_reviews)
+    return jsonify(reviews)
 
 # POST /reviews
 # Create new review, with review photo upload as well
@@ -130,12 +147,16 @@ def create_review():
     r = requests.get(travel_order_url + "/item/" + str(data["order_item_id"]) + "/all")
     user_id = json.loads(r.text)["user_id"]
 
+    # Get the specific order item to get the item ID
+    r = requests.get(travel_order_url + "/item/" + str(data["order_item_id"]))
+    item_id = json.loads(r.text)["item_id"]
+
     if (Review.query.filter_by(user_id=user_id).filter_by(order_item_id=data["order_item_id"]).first()):
         return jsonify({"message": "You have already placed a review for this order."}), 400
 
     time_now = datetime.datetime.now() # Get current timestamp
 
-    review = Review(None, user_id, data["order_item_id"], time_now, int(float(data["rating"])), data["review"], "Success")
+    review = Review(None, user_id, item_id, data["order_item_id"], time_now, int(float(data["rating"])), data["review"], "Success")
 
     # try:
     db.session.add(review)

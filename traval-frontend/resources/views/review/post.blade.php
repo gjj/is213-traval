@@ -86,13 +86,16 @@ Leave Review @stop
 
 <script type="text/javascript">
     var orderItemId = $(location).attr('pathname').split('/')[3];
+    var itemId = 0
 
     $.ajax({
         method: 'GET',
         url: apiUrl + '/api/v1/orders/item/' + orderItemId,
         async: false,
         success: function(data) {
-            console.log(data)
+            console.log(data);
+            itemId = data.item_id;
+
             $("#activity").text(data.title);
             $(".hero-block").css("background-image", "url(" + data.photo_urls[0] + ")");
         }
@@ -124,6 +127,7 @@ Leave Review @stop
 
             var formData = new FormData();
             formData.append('order_item_id', orderItemId);
+            formData.append('item_id', itemId)
             formData.append('rating', $('#rating').starRating('getRating'));
             formData.append('review', $('#review').val());
             formData.append('file', $('input[type=file]')[0].files[0]); // Attach file
@@ -142,7 +146,7 @@ Leave Review @stop
                     $('#review_success').show();
                     $('#review_error').hide();
 
-
+                    window.location.href = "/activity/" + itemId;
                     // Redirect.
                 },
                 error: function(error) {
