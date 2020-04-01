@@ -48,6 +48,38 @@ def update_order_status(order):
         db.commit()
         cursor.close()
 
+        # Send to notifications microservice
+        # default username / password to the borker are both 'guest'
+        hostname = "host.docker.internal" # default broker hostname. Web management interface default at http://localhost:15672
+        port = 5672 # default messaging port.
+        exchangename = "traval.notifications"
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host=hostname, port=port))
+        channel = connection.channel()
+
+        channel.exchange_declare(exchange=exchangename, exchange_type='topic')
+        channel.queue_declare(queue='notification.notify', durable=True)
+        channel.queue_bind(exchange=exchangename, queue='notification.notify', routing_key='notify.#') # make sure the queue is bound to the exchange
+        
+        # prepares the msg to send
+        data = {
+            'order_id': order.id,
+            'status':   order.status,
+            'message_type': 'payment_success'
+        }
+
+        message = json.dumps(data, default=str) # convert a JSON object to a string
+
+        # since we successfully updated the order status, send a message to notifications to send out
+        # email + sms
+        channel.basic_publish(
+            exchange=exchangename,
+            routing_key='notify.payment.success',
+            body=message,
+            properties=pika.BasicProperties(
+                delivery_mode=2,  # make message persistent
+            ))
+        connection.close()
+
     except Error as error:
         print("Failed to update record: {}".format(error))
     # r = requests.post(API_URL + ":5002/orders/" + message['order_id'], json=message)
