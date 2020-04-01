@@ -116,7 +116,7 @@ Home @stop
             <div class="container">
                 <div class="text-center mt-xl-4 mb-xl-7">
                     <h6 class="text-white font-size-40 font-weight-bold mb-2">New to Traval?</h6>
-                    <p class="text-white font-weight-normal mb-5 pb-xl-2">M
+                    <p class="text-white font-weight-normal mb-5 pb-xl-2">
                         Book your next adventure with the Traval app
                     </p>
                 </div>
