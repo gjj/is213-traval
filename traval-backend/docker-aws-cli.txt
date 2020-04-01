@@ -1,0 +1,27 @@
+docker tag traval-backend_catalog:latest 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_catalog:latest
+docker push 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_catalog:latest
+
+docker tag traval-backend_notification:latest 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_notification:latest
+docker push 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_notification:latest
+
+docker tag traval-backend_order:latest 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_order:latest
+docker push 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_order:latest
+
+docker tag traval-backend_order-rabbitmq:latest 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_order-rabbitmq:latest
+docker push 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_order-rabbitmq:latest
+
+docker tag traval-backend_payment:latest 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_payment:latest
+docker push 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_payment:latest
+
+docker tag traval-backend_review:latest 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_review:latest
+docker push 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_review:latest
+
+docker tag traval-backend_user:latest 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_user:latest
+docker push 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_user:latest
+
+docker tag traval-backend_voucher:latest 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_voucher:latest
+docker push 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_voucher:latest
+
+docker tag traval-backend_voucher-rabbitmq:latest 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_voucher-rabbitmq:latest
+docker push 839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-backend_voucher-rabbitmq:latest
+
