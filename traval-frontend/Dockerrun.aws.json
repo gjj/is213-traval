@@ -1,0 +1,30 @@
+{
+    "AWSEBDockerrunVersion": 2,
+    "containerDefinitions": [
+        {
+            "name": "app",
+            "image": "839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-frontend_app:latest",
+            "essential": true,
+            "memory": 128
+        },
+        {
+            "name": "nginx",
+            "image": "839402039975.dkr.ecr.ap-southeast-1.amazonaws.com/traval-frontend_nginx:latest",
+            "essential": true,
+            "memory": 128,
+            "portMappings": [
+                {
+                    "hostPort": 80,
+                    "containerPort": 80
+                },
+                {
+                    "hostPort": 443,
+                    "containerPort": 443
+                }
+            ],
+            "links": [
+                "app"
+            ]
+        }
+    ]
+}
