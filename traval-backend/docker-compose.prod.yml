@@ -21,6 +21,13 @@ services:
       context: ./order
       dockerfile: Dockerfile
     command: "python /usr/src/app/order.py"
+  
+  # Order RabbitMQ consumer
+  order-rabbitmq:
+    build:
+      context: ./order
+      dockerfile: Dockerfile
+    command: "python /usr/src/app/order_consumer.py"
 
   # Payment microservice
   payment:
@@ -35,6 +42,13 @@ services:
       context: ./voucher
       dockerfile: Dockerfile
     command: "python /usr/src/app/voucher.py"
+  
+  # Voucher RabbitMQ consumer
+  voucher-rabbitmq:
+    build:
+      context: ./voucher
+      dockerfile: Dockerfile
+    command: "python /usr/src/app/voucher_consumer.py"
 
   # Review microservice
   review:
