@@ -23,6 +23,11 @@ RUN docker-php-ext-install pdo_mysql mbstring exif pcntl bcmath gd
 # Get latest Composer
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
+# Create system user to run Composer and Artisan Commands
+RUN useradd -G www-data,root -u $uid -d /home/$user $user
+RUN mkdir -p /home/$user/.composer && \
+    chown -R $user:$user /home/$user
+
 # Set working directory
 WORKDIR /var/www
 
@@ -30,14 +35,8 @@ WORKDIR /var/www
 COPY ./ /var/www
 RUN composer install
 
-# Create system user to run Composer and Artisan Commands
-RUN useradd -G www-data,root -u $uid -d /home/$user $user
-RUN mkdir -p /home/$user/.composer && \
-    chown -R $user:$user /home/$user
-
 # It's faster to use --chown
 COPY --chown=www-data:www-data . /var/www 
-RUN chmod -R 755 /var/www/storage/logs/laravel.log
 
 USER $user
 

@@ -11,7 +11,7 @@ const mailgunDomain     = process.env.MAILGUN_DOMAIN;
 var mailgun     = require('mailgun-js')({apiKey: mailgunApiKey, domain: mailgunDomain});
 const twilio    = require('twilio')(accountSid, authToken);
 
-amqp.connect('amqp://localhost', function(error0, connection) {
+amqp.connect('amqp://host.docker.internal', function(error0, connection) {
     if (error0) {
         throw error0;
     }

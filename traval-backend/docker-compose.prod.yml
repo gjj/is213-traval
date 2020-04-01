@@ -42,3 +42,10 @@ services:
       context: ./review
       dockerfile: Dockerfile
     command: "python /usr/src/app/review.py"
+  
+  # Notification microservice
+  notification:
+    build:
+      context: ./notification
+      dockerfile: Dockerfile
+    command: "node app"
