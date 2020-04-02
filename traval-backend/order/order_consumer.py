@@ -11,6 +11,8 @@ load_dotenv()
 
 DATABASE_PASSWORD = os.getenv("DATABASE_PASSWORD")
 API_URL = os.getenv("API_URL")
+AMQP_SERVER = os.getenv("AMQP_SERVER")
+
 hostname = "traval.clkje4jkvizo.ap-southeast-1.rds.amazonaws.com"
 port = 3306
 db = 'traval_orders'
@@ -20,7 +22,7 @@ db = mysql.connector.connect(
     host=hostname, port=port, database=db, user=user, password=password)
 
 print(' [order_consumer] Connecting to exchange...')
-hostname = "host.docker.internal"
+hostname = AMQP_SERVER
 port = 5672
 exchangename = "traval.payments"
 connection = pika.BlockingConnection(
@@ -58,7 +60,7 @@ def update_order_status(order):
     # Send to notifications microservice
     # default username / password to the borker are both 'guest'
     # default broker hostname. Web management interface default at http://localhost:15672
-    hostname = "host.docker.internal"
+    hostname = AMQP_SERVER
     port = 5672  # default messaging port.
     exchangename = "traval.notifications"
     connection = pika.BlockingConnection(

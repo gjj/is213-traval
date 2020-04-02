@@ -7,6 +7,9 @@ services:
       context: ./user-management
       dockerfile: Dockerfile
     command: "python /usr/src/app/user.py"
+    extra_hosts:
+      - "rabbitmq:172.31.22.232"
+      - "host.docker.internal:172.31.22.232"
 
   # Catalog microservice
   catalog:
@@ -14,6 +17,9 @@ services:
       context: ./catalog
       dockerfile: Dockerfile
     command: "python /usr/src/app/catalog_item.py"
+    extra_hosts:
+      - "rabbitmq:172.31.22.232"
+      - "host.docker.internal:172.31.22.232"
 
   # Order microservice
   order:
@@ -21,6 +27,9 @@ services:
       context: ./order
       dockerfile: Dockerfile
     command: "python /usr/src/app/order.py"
+    extra_hosts:
+      - "rabbitmq:172.31.22.232"
+      - "host.docker.internal:172.31.22.232"
   
   # Order RabbitMQ consumer
   order-rabbitmq:
@@ -28,6 +37,9 @@ services:
       context: ./order
       dockerfile: Dockerfile
     command: "python /usr/src/app/order_consumer.py"
+    extra_hosts:
+      - "rabbitmq:172.31.22.232"
+      - "host.docker.internal:172.31.22.232"
 
   # Payment microservice
   payment:
@@ -35,6 +47,9 @@ services:
       context: ./payment
       dockerfile: Dockerfile
     command: "python /usr/src/app/payment.py"
+    extra_hosts:
+      - "rabbitmq:172.31.22.232"
+      - "host.docker.internal:172.31.22.232"
 
   # Voucher microservice
   voucher:
@@ -42,6 +57,9 @@ services:
       context: ./voucher
       dockerfile: Dockerfile
     command: "python /usr/src/app/voucher.py"
+    extra_hosts:
+      - "rabbitmq:172.31.22.232"
+      - "host.docker.internal:172.31.22.232"
   
   # Voucher RabbitMQ consumer
   voucher-rabbitmq:
@@ -49,6 +67,9 @@ services:
       context: ./voucher
       dockerfile: Dockerfile
     command: "python /usr/src/app/voucher_consumer.py"
+    extra_hosts:
+      - "rabbitmq:172.31.22.232"
+      - "host.docker.internal:172.31.22.232"
 
   # Review microservice
   review:
@@ -56,6 +77,9 @@ services:
       context: ./review
       dockerfile: Dockerfile
     command: "python /usr/src/app/review.py"
+    extra_hosts:
+      - "rabbitmq:172.31.22.232"
+      - "host.docker.internal:172.31.22.232"
   
   # Notification microservice
   notification:
@@ -63,3 +87,6 @@ services:
       context: ./notification
       dockerfile: Dockerfile
     command: "node app"
+    extra_hosts:
+      - "rabbitmq:172.31.22.232"
+      - "host.docker.internal:172.31.22.232"
