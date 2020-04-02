@@ -101,7 +101,7 @@ Payment Result @stop
 
             $.ajax({
                 method: 'GET',
-                url: apiUrl + '/api/v1/orders/' + orderId,
+                url: apiUrl + '/v1/orders/' + orderId,
                 success: function(response) {
                     $('#order_id').text(response.id);
                     $('#order_datetime').text(response.datetime);

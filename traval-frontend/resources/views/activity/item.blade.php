@@ -203,7 +203,7 @@ Activity @stop
 
         $.ajax({
             method: 'GET',
-            url: apiUrl + "/api/v1/catalog_items/" + activity.item_id,
+            url: apiUrl + "/v1/catalog_items/" + activity.item_id,
             success: function(data) {
                 var tpl = $.templates('#tpl_activity_item');
                 $('#activity_item').append(tpl.render(data));
@@ -222,7 +222,7 @@ Activity @stop
 
                 $.ajax({
                     method: 'GET',
-                    url: apiUrl + "/api/v1/reviews/" + activity.item_id,
+                    url: apiUrl + "/v1/reviews/" + activity.item_id,
                     success: function(data) {
 
                         $.each(data.reviews, function(i, review) {
@@ -243,7 +243,7 @@ Activity @stop
 
                 $.ajax({
                     method: 'POST',
-                    url: apiUrl + "/api/v1/orders/cart/update",
+                    url: apiUrl + "/v1/orders/cart/update",
                     data: JSON.stringify(activity),
                     contentType: "application/json; charset=utf-8",
                     success: function(response) {
@@ -252,7 +252,7 @@ Activity @stop
                         // Update cart UI
                         $.ajax({
                             method: 'GET',
-                            url: apiUrl + "/api/v1/orders/cart/" + userId,
+                            url: apiUrl + "/v1/orders/cart/" + userId,
                             success: function(response) {
                                 $('#cart_success').show();
                                 $('#cart_error').hide();

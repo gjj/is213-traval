@@ -1,7 +1,7 @@
 //var protocol = window.location.protocol;
 var hostname = window.location.hostname;
 
-var apiUrl = "https://" + hostname + ":8443";
+var apiUrl = "https://api.traval.app";
 
 $(document).on('ready', function () {
     if (localStorage.getItem('token')) {

@@ -86,7 +86,7 @@ My Order @stop
             var userId = localStorage.getItem('user_id');
             $.ajax({
                 method: 'GET',
-                url: apiUrl + '/api/v1/orders/user/' + userId,
+                url: apiUrl + '/v1/orders/user/' + userId,
                 success: function(data) {
                     var tpl_orders = $.templates('#tpl_orders');
                     $.each(data, function(i, order) {

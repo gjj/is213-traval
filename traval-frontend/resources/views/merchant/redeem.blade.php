@@ -69,7 +69,7 @@ Search @stop
     $(document).on('ready', function() {
         $.ajax({
             method: 'GET',
-            url: apiUrl + "/api/v1/vouchers/guid/" + guid,
+            url: apiUrl + "/v1/vouchers/guid/" + guid,
             success: function(data) {
                 var tpl_voucher = $.templates('#tpl_voucher');
                 $('#voucher').append(tpl_voucher.render(data));
@@ -84,7 +84,7 @@ Search @stop
             $.ajax({
                 crossDomain: true,
                 method: 'POST',
-                url: apiUrl + '/api/v1/vouchers/merchant/redeem',
+                url: apiUrl + '/v1/vouchers/merchant/redeem',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {

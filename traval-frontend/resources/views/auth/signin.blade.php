@@ -58,7 +58,7 @@ Sign in @stop
             
             $.ajax({
                 method: 'POST',
-                url: apiUrl + '/api/v1/auth/login',
+                url: apiUrl + '/v1/auth/login',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {

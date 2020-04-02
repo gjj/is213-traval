@@ -132,7 +132,7 @@ Register @stop
             
             $.ajax({
                 method: 'POST',
-                url: apiUrl + '/api/v1/users',
+                url: apiUrl + '/v1/users',
                 data: JSON.stringify(data),
                 contentType: "application/json; charset=utf-8",
                 success: function(result) {
