@@ -22,7 +22,7 @@ db = mysql.connector.connect(
     host=hostname, port=port, database=db, user=user, password=password)
 
 print(' [order_consumer] Connecting to exchange...')
-hostname = AMQP_SERVER
+hostname = "host.docker.internal"
 port = 5672
 exchangename = "traval.payments"
 connection = pika.BlockingConnection(
@@ -60,7 +60,7 @@ def update_order_status(order):
     # Send to notifications microservice
     # default username / password to the borker are both 'guest'
     # default broker hostname. Web management interface default at http://localhost:15672
-    hostname = AMQP_SERVER
+    hostname = "host.docker.internal"
     port = 5672  # default messaging port.
     exchangename = "traval.notifications"
     connection = pika.BlockingConnection(
