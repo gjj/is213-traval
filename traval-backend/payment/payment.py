@@ -55,6 +55,12 @@ class Payment(db.Model):
     def json(self):
         return {"id": self.id, "user_id": self.user_id, "order_id": self.order_id, "payment_intent_id": self.payment_intent_id, "amount": self.amount, "status": self.status, "datetime": self.datetime}
 
+# GET /payments
+# Get all payments
+@app.route("/payments")
+def get_all():
+    return jsonify({"payments": [payment.json() for payment in Payment.query.all()]})
+
 # POST /payments/stripe
 # Create new PaymentIntent, this will connect to Stripe API
 # @params JSON data {"user_id": 2, "total_price": 28.5}
