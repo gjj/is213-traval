@@ -7,11 +7,12 @@ const authToken         = process.env.TWILIO_AUTH_TOKEN;
 const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
 const mailgunApiKey     = process.env.MAILGUN_API_KEY;
 const mailgunDomain     = process.env.MAILGUN_DOMAIN;
+const amqpConnection    = process.env.AMQP_CONNECTION;
 
 var mailgun     = require('mailgun-js')({apiKey: mailgunApiKey, domain: mailgunDomain});
 const twilio    = require('twilio')(accountSid, authToken);
 
-amqp.connect('amqp://rabbitmq', function(error0, connection) {
+amqp.connect(amqpConnection, function(error0, connection) {
     if (error0) {
         throw error0;
     }
