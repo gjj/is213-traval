@@ -64,7 +64,7 @@ Home @stop
                             Take in the iconic skyline and visit the
                             neighborhood hangouts that you’ve only ever seen on TV.
                         </p>
-                        <a href="#" class="btn btn-outline-dark-2 rounded height-51 width-223 transition-3d-hover d-flex align-items-center justify-content-center border-width-2 mb-1">
+                        <a href="{{ route('search') }}?q=Singapore" class="btn btn-outline-dark-2 rounded height-51 width-223 transition-3d-hover d-flex align-items-center justify-content-center border-width-2 mb-1">
                             Explore things to do
                         </a>
                     </div>
