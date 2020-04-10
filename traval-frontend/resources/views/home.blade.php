@@ -71,42 +71,6 @@ Home @stop
                 </div>
             </div>
             <div class="col-md-12 col-lg-7 col-xl-6">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="mb-3 mb-lg-2">
-                            <div class="h-100">
-                                <div class="position-relative">
-                                    <a href="#" class="d-block gradient-overlay-half-bg-gradient-v6">
-                                        <img class="img-fluid rounded-xs min-height-230 bg-img-hero w-100" src="assets/img/300x230/img53.jpg" alt="Image-Description">
-                                    </a>
-                                    <div class="position-absolute bottom-0 left-0 right-0">
-                                        <div class="px-4 pb-3">
-                                            <a href="#" class="d-block">
-                                                <div class="d-flex align-items-center font-size-14 text-white">
-                                                    <i class="icon flaticon-pin-1 mr-2 font-size-20"></i> Greater
-                                                    London, United Kingdom
-                                                </div>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="py-3">
-                                    <a href="../others/destination.html" class="card-title font-size-17 font-weight-medium text-dark">NYC: Priority
-                                        or Flexible Statue of Liberty Ticket</a>
-                                    <div class="my-2 pb-1">
-                                        <span class="badge badge-pill badge-yellow-lighter-2 text-white py-1 px-2 font-size-14 rounded-xs font-weight-normal">4.6/5</span>
-                                        <span class="font-size-14 text-gray-1 ml-2">(166 reviews)</span>
-                                    </div>
-                                    <div class="mb-0">
-                                        <span class="mr-1 font-size-14 text-gray-1">From</span>
-                                        <span class="font-weight-bold">S$350.00</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!-- Repeatable item -->
-                </div>
             </div>
         </div>
     </div>
